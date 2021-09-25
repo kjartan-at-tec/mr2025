@@ -1,0 +1,217 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.13}
+
+\begin{document}
+
+% \def\sysCont{tf([1, 2], [1, 1]);}
+\def\Go{6.1*tf([1], [1, 1, 0]);}
+\def\Gb{3*tf([1,0], [1, 1, 0]);}
+\def\Gbb{0.1*tf([1], [1, 1, 0]);}
+\def\Gbbb{10*tf([1], [1, 2, 1]);}
+
+\def\pw{7cm}
+\def\ph{3cm}
+\def\phh{21mm}
+\def\phshift{7.8cm}
+\def\pvshift{-55mm}
+\begin{tikzpicture}
+
+  \begin{scope}
+    % --------------------------------------------------------------
+    % Wrong Bode 1 
+    % --------------------------------------------------------------
+
+    \begin{semilogxaxis} [
+      ylabel=$|G_o(i\omega)|$,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      % ytick={0.7, 1, 1.52},
+      % yticklabels={-3dB, 0dB, $M_p$}, 
+      xtick={2.34, 3.72},
+      xticklabels={$\omega_r$, $\omega_B$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+      xmin=0.1, xmax=6,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeG01M,] {octave --eval  "pkg load control; G0=\Gb;   [mag,phi,w]=bode(G0); disp(cat(2,w',mag2db(mag)))"};
+    \end{semilogxaxis}
+    \begin{semilogxaxis} [
+      yshift=-\phh,
+      ylabel=$\arg G_o(i\omega)$,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      % ytick={0.7, 1, 1.52},
+      % yticklabels={-3dB, 0dB, $M_p$}, 
+      xtick={2.34, 3.72},
+      xticklabels={$\omega_r$, $\omega_B$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+      xmin=0.1, xmax=6,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeG01P,] {octave --eval  "pkg load control; G0=\Gb;   [mag,phi,w]=bode(G0); disp(cat(2,w',phi))"};
+    \end{semilogxaxis}
+  \end{scope}
+
+  \begin{scope} [xshift=\phshift]
+    % --------------------------------------------------------------
+    % Correct Bode 1
+    % --------------------------------------------------------------
+    \begin{semilogxaxis} [
+      ylabel=$|G_o(i\omega)|$,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      % ytick={0.7, 1, 1.52},
+      % yticklabels={-3dB, 0dB, $M_p$}, 
+      xtick={2.34, 3.72},
+      xticklabels={$\omega_r$, $\omega_B$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+      xmin=0.1, xmax=6,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeG02M,] {octave --eval  "pkg load control; G0=\Go;   [mag,phi,w]=bode(G0); disp(cat(2,w',mag2db(mag)))"};
+    \end{semilogxaxis}
+    \begin{semilogxaxis} [
+      yshift=-\phh,
+      ylabel=$\arg G_o(i\omega)$,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      % ytick={0.7, 1, 1.52},
+      % yticklabels={-3dB, 0dB, $M_p$}, 
+      xtick={2.34, 3.72},
+      xticklabels={$\omega_r$, $\omega_B$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+      xmin=0.1, xmax=6,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeG02P,] {octave --eval  "pkg load control; G0=\Go;   [mag,phi,w]=bode(G0); disp(cat(2,w',phi))"};
+    \end{semilogxaxis}
+  \end{scope}
+
+  \begin{scope} [yshift=\pvshift]
+    % --------------------------------------------------------------
+    % Wrong Bode 3
+    % --------------------------------------------------------------
+    \begin{semilogxaxis} [
+      ylabel=$|G_o(i\omega)|$,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      % ytick={0.7, 1, 1.52},
+      % yticklabels={-3dB, 0dB, $M_p$}, 
+      xtick={2.34, 3.72},
+      xticklabels={$\omega_r$, $\omega_B$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+      xmin=0.1, xmax=6,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeG03M,] {octave --eval  "pkg load control; G0=\Gbb;   [mag,phi,w]=bode(G0); disp(cat(2,w',mag2db(mag)))"};
+    \end{semilogxaxis}
+    \begin{semilogxaxis} [
+      yshift=-\phh,
+      ylabel=$\arg G_o(i\omega)$,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      % ytick={0.7, 1, 1.52},
+      % yticklabels={-3dB, 0dB, $M_p$}, 
+      xtick={2.34, 3.72},
+      xticklabels={$\omega_r$, $\omega_B$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+      xmin=0.1, xmax=6,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeG03P,] {octave --eval  "pkg load control; G0=\Gbb;   [mag,phi,w]=bode(G0); disp(cat(2,w',phi))"};
+    \end{semilogxaxis}
+  \end{scope}
+
+  \begin{scope} [xshift=\phshift, yshift=\pvshift]
+    % --------------------------------------------------------------
+    % Wrong Bode 4
+    % --------------------------------------------------------------
+    \begin{semilogxaxis} [
+      ylabel=$|G_o(i\omega)|$,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      % ytick={0.7, 1, 1.52},
+      % yticklabels={-3dB, 0dB, $M_p$}, 
+      xtick={2.34, 3.72},
+      xticklabels={$\omega_r$, $\omega_B$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+      xmin=0.1, xmax=6,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeG04M,] {octave --eval  "pkg load control; G0=\Gbbb;   [mag,phi,w]=bode(G0); disp(cat(2,w',mag2db(mag)))"};
+    \end{semilogxaxis}
+    \begin{semilogxaxis} [
+      yshift=-\phh,
+      ylabel=$\arg G_o(i\omega)$,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      % ytick={0.7, 1, 1.52},
+      % yticklabels={-3dB, 0dB, $M_p$}, 
+      xtick={2.34, 3.72},
+      xticklabels={$\omega_r$, $\omega_B$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+      xmin=0.1, xmax=6,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeG04P,] {octave --eval  "pkg load control; G0=\Gbbb;   [mag,phi,w]=bode(G0); disp(cat(2,w',phi))"};
+    \end{semilogxaxis}
+  \end{scope}
+
+  \node[blue!80] at (2,-1.5) {\Huge 1};
+  \node[blue!80] at (10,-1.5) {\Huge 2};
+
+  \node[blue!80] at (2,-7) {\Huge 3};
+  \node[blue!80] at (10,-7) {\Huge 4};
+
+\end{tikzpicture}
+
+\end{document}
+
+% Local Variables:
+% Tex-engine: default-shell-escape
+% End:

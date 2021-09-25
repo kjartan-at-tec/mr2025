@@ -1,0 +1,22 @@
+
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+
+\begin{document}
+
+\begin{tikzpicture}[node distance=20mm, anchor=north]
+   \node[rectangle, draw, inner sep=3mm] (lti) {$F(s)$};
+   \node[rectangle, draw, below of=lti, inner sep=3mm] (minus) {$-1$};
+   \node[rectangle, draw, right of=lti, inner sep=3mm] (lti2) {$G(s)$};
+   \node[circle, draw, inner sep=2pt, right of=lti2] (sum) {\footnotesize $\Sigma$};
+   \node[coordinate, above of=sum] (input) {};
+   \node[coordinate, right of=sum, node distance=30mm] (output) {};
+   \draw[->] (input) -- node[near start, right] {$r(t)$}  (sum);
+   \draw[->] (lti) -- node[near start, above] {}  (lti2);
+   \draw[->] (lti2) -- node[near start, above] {}  (sum);
+   \draw[->] (sum) -- node[coordinate] (meas) {} node[near end, above] {$y(t)$} (output);
+   \draw[->] (meas) |- (minus) -- ++(-14mm, 0) |- (lti);
+ \end{tikzpicture}
+\end{document}

@@ -1,0 +1,101 @@
+\documentclass[margin=10mm]{standalone}
+%\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+%\usepackage{pythontex}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+
+
+
+\begin{document}
+
+\def\TRF{zpk([],[-0.2, -1, -2], 3.5)}
+%\def\wwnull{2}
+%\def\TRF{tf([3],[(1/\wwnull)^2, 3/\wwnull, 3])}
+\def\tshift{32}
+
+
+\begin{tikzpicture}
+  \begin{scope}[yshift=8cm]
+    \node[draw, inner sep=10pt,] (plant) {$G(s)$};
+    \node[draw, inner sep=10pt, left of=plant, node distance=22mm] (cont) {$F(s)$};
+    \node[draw, circle, inner sep=1pt, left of=cont, node distance=28mm] (sum) {\footnotesize $\Sigma$};
+    \draw[->] (sum) ++(-20mm, 0) -- (sum);
+    \draw[->] (sum) -- node[above, near start]{\textcolor{green!80!black}{$e(t)$}} (cont);
+    \draw[->] (plant) -- node[coordinate, pos=0.7] (meas) {} node[above, very near end]{\textcolor{blue!80!black}{$y(t)$}} ++(2.8cm, 0);
+    \draw[->] (cont) -- (plant);
+    \draw[->] (meas) -- ++(0, -18mm) -| node[left, pos=0.96] {$-$} (sum);
+    \draw[red] (-3.4, -1) rectangle (1.6, 1);
+    \node[red] at (-1, 1.5) {$G_o(s)=G(s)F(s)$};
+  \end{scope}
+  \begin{loglogaxis} [
+    xshift=-2cm,
+    width=12cm,
+      height=5cm,
+      ylabel=$|G_o|$,
+      xticklabels=\empty,
+      grid=both,
+      minor y tick num=9,
+      xmax=10,
+      %ymax=100,
+      %ymin=0.001,
+      %ytick={0.01, 1, 10},
+%      extra y ticks={.5}, % how to convert to fixed point tick label ?
+%      extra y tick style={log identify minor tick positions=true},
+      every major grid/.style={red, opacity=0.5},
+  ]
+
+  \addplot 
+    shell[thick, black, no marks, prefix=pgfshell_, id=bm] {octave -q --eval  "format long; pkg load control; G=\TRF; [mag,phi,w]=bode(G); disp(cat(2,w',mag))"};
+  \end{loglogaxis}
+\begin{semilogxaxis} [
+  xlabel={$\omega$ [rad/s]},
+      ylabel=$\arg G_o$,
+      yshift = -3.5cm, 
+      xshift = -2cm, 
+      width=12cm,
+      height=5cm,
+      grid=both,
+      ytick={0, -90, -180, -270, -360},
+      minor y tick num=8,
+      xmax=10,
+      every major grid/.style={red, opacity=0.5},
+      xtick={0.01, 0.1, 1, 10},
+      %xticklabels={$0.01\omega_N$, $0.1\omega_N$, $\omega_N$, $10\omega_N$},
+  ]
+    \addplot 
+    shell[thick,black, no marks, prefix=pgfshell_, id=bg] {octave -q --eval  "format long; pkg load control; G=\TRF ; [mag,phi,w]=bode(G); disp(cat(2,w',phi))"};
+  \end{semilogxaxis}
+\end{tikzpicture}
+
+%\def\w{1}
+%\def\ys{4cm}
+%\def\a{1}
+\begin{tikzpicture}
+  \foreach \w/\a/\ps/\ys in {1/1/0/0cm, 1/1/-60/4cm, 0.4/1/0/8cm, 0.4/0.3/0/12cm, 2/1/0/16cm}
+  {
+    \begin{axis} [
+      width=12cm,
+      height=3.5cm,
+      yshift=\ys,
+      ylabel={\textcolor{green!80!black}{$e(t)$}, \textcolor{blue!80!black}{$y(t)$}},
+      xlabel={time [s]},
+      grid=both,
+      minor x tick num=9,
+      %xmax=15,
+%      extra y ticks={.5}, % how to convert to fixed point tick label ?
+%      extra y tick style={log identify minor tick positions=true},
+      every major grid/.style={red, opacity=0.5},
+  ]
+  \addplot[thick, green!80!black, no marks, smooth, domain=0:\tshift, samples=300] {sin(deg(\w*(x+\tshift))};
+  \addplot 
+    shell[thick, blue!80!black, no marks, smooth, prefix=pgfshell_, id=bm] {octave -q --eval  "format long; pkg load control; G=\TRF; t=linspace(0, 2*\tshift, 600); phi=\ps/180*pi; u=sin(\w*t-phi); [y, tt] = lsim(G, u, t); disp(cat(2,tt(300:end)-\tshift,\a*y(300:end)))"};
+  \end{axis}
+}
+
+\end{tikzpicture}
+
+\end{document}

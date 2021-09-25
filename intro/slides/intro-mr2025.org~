@@ -1,0 +1,335 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169, usenames, dvipsnames]
+#+OPTIONS: H:2
+
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{amssymb}
+#+LaTex_HEADER: \usepgfplotslibrary{groupplots}
+
+#+LaTex_HEADER: \newcommand*{\shift}{\operatorname{q}}
+#+LaTex_HEADER:   \definecolor{ppc}{rgb}{0.1,0.1,0.6}
+#+LaTex_HEADER:   \definecolor{iic}{rgb}{0.6,0.1,0.1}
+#+LaTex_HEADER:   \definecolor{ddc}{rgb}{0.1,0.6,0.1}
+
+
+#+title: Design of control systems
+# #+date: 2020-09-01
+
+* What do I want the students to understand?			   :noexport:
+  - Course structure
+  - Feedback control
+  - Performance requirements
+
+* Which activities will the students do?			   :noexport:
+  - Block diagram feedback system
+  - Sensitivity and complementary sensitivity
+  - Root locus simple case
+
+* Course content
+
+** MR2023 Modelación y automatización
+
+\begin{center}
+  \includegraphics[width=.4\linewidth]{../../figures/DB-content-1.png}
+  \includegraphics[width=.4\linewidth]{../../figures/DB-content-2.png}
+\end{center}
+
+** MR2025 Design of control systems
+\begin{center}
+  \includegraphics[width=.4\linewidth]{../../figures/DB-content-3.png}
+\end{center}
+
+* Control systems specifications
+
+** Feedback control system
+
+\begin{center}
+  \includegraphics[width=.3\linewidth]{../../figures/curiosity-wheel.jpg}
+  \includegraphics[width=.6\linewidth]{../../figures/electric-drive-block.png}
+\end{center}
+
+
+** Performance requirements - time domain
+
+\begin{center}
+  \includegraphics[width=.8\linewidth]{../../figures/step-response-specifications}
+\end{center}
+
+** Performance requirements - time domain
+
+ *Activity* Does the system satisfy the requirements?
+
+*** Graphics
+:PROPERTIES:
+:BEAMER_col: 0.7
+:END:
+
+    \begin{center}
+     \includegraphics[width=1.0\linewidth]{../../figures/second-order-response-example}
+    \end{center}
+*** Text
+:PROPERTIES:
+:BEAMER_col: 0.3
+:END:
+
+ | Rise time | < 1.5s |
+ | Overshoot | < 18% |
+
+ 
+** Performance requirements - frequency domain
+
+\begin{center}
+  \includegraphics[width=.8\linewidth]{../../figures/spec-bode-closed-loop-new}
+\end{center}
+
+
+** Performance requirements - frequency domain
+
+\begin{center}
+  \includegraphics[width=1.0\linewidth]{../../figures/bode-closed-loop-example-responses}
+\end{center}
+
+#+BEAMER: \pause
+
+*Activity* What is the gain and phase shift at $\omega = 2$ rad/s?
+
+** Performance requirements - frequency domain
+
+\begin{center}
+  \includegraphics[width=.8\linewidth]{../../figures/spec-bode-closed-loop-new}
+\end{center}
+
+
+** Performance requirements - frequency domain
+
+ *Activity* Does the system satisfy the requirements?
+
+ 
+*** Graphics
+:PROPERTIES:
+:BEAMER_col: 0.7
+:END:
+
+    \begin{center}
+     \includegraphics[width=1.0\linewidth]{../../figures/bode-closed-loop-example}
+    \end{center}
+*** Text
+:PROPERTIES:
+:BEAMER_col: 0.3
+:END:
+
+ | Bandwidth      | >3 rad/s |
+ | Resonance peak | <9dB    |
+
+
+ 
+
+* Feedback, sensitivity and complementary sensitivity
+
+** Block diagram algebra
+
+\begin{center}
+  \includegraphics[width=.6\linewidth]{../../figures/block-simple-feedback}
+\end{center}
+
+Transfer function from $r(t)$ to $y(t)$:
+\[ \frac{Y(s)}{R(s)} = \frac{G(s)}{ 1+ G(s)}\]
+
+
+** Block diagram algebra
+
+ *Activity* Pair the block-diagram with the correct closed-loop transfer function!
+
+
+#+ATTR_LATEX:  :center :environment longtable :align cccc
+| \textcolor{red}{A}                                                       | \textcolor{red}{B}                                                        | \textcolor{red}{C}                                                        |  \textcolor{red}{D}                                                       |
+| \includegraphics[width=3cm]{../../figures/block-simple-control-feedback} | \includegraphics[width=3cm]{../../figures/block-simple-control-feedback2} | \includegraphics[width=3cm]{../../figures/block-simple-control-feedback3} | \includegraphics[width=3cm]{../../figures/block-simple-control-feedback4} |
+
+
+#+ATTR_LATEX:  :center :environment longtable :align cccc
+| \textcolor{blue!80!black}{I}                     | \textcolor{blue!80!black}{II}                              | \textcolor{blue!80!black}{III}                      |                                                   \textcolor{blue!80!black}{IV}    |
+| \( \frac{Y(s)}{R(s)}=\frac{G(s)F(s)}{1 + G(s)}\) | \(\quad \frac{Y(s)}{R(s)}=\frac{G(s)}{1 + G(s)F(s)}\quad\) | \(\frac{Y(s)}{R(s)}=\frac{1}{1 + G(s)F(s)}\)        | \(\frac{Y(s)}{R(s)}=\frac{G(s)F(s)}{1 + G(s)F(s)}\) |
+
+
+** The two-degree-of-freedom controller
+
+\begin{center}
+  \includegraphics[width=.7\linewidth]{../../figures/2dof-block-complete}
+\end{center}
+
+#+BEAMER: \pause
+
+Using the property of /superposition/ of LTIs:
+\begin{align*}
+Y(s) &= G_c(s)R(s) + S(s)V(s) - T(s)N(s)
+\end{align*}
+
+#+BEAMER: \pause
+
+| Closed-loop system (from reference to output) | \(G_c(s) = \frac{G(s)F_f(s)}{1 + G(s)F_b(s)}\) |
+| Sensitivity function                          | \(S(s) = \frac{1}{1 + G(s)F_b(s)}\)            |
+| Complementary sensitivity function            | \(T(s) = \frac{G(s)F_b(s)}{1 + G(s)F_b(s)}\)   |
+
+** The two-degree-of-freedom controller
+
+\begin{center}
+  \includegraphics[width=.5\linewidth]{../../figures/2dof-block-complete}
+\end{center}
+
+| Sensitivity function                          | \(S(s) = \frac{1}{1 + G(s)F_b(s)}\)            |
+| Complementary sensitivity function            | \(T(s) = \frac{G(s)F_b(s)}{1 + G(s)F_b(s)}\)   |
+
+*Activity* Calculate \(S(s) + T(s) = \)
+
+
+** The two-degree-of-freedom controller
+
+\begin{center}
+  \includegraphics[width=.6\linewidth]{../../figures/2dof-block-complete}
+\end{center}
+
+*Why* the two-degrees of freedom controller?
+
+#+BEAMER: \pause
+
+To seperate two design requirements:
+
+1. Obtain desired reference (set-point) tracking.
+2. Find good trade-off between disturbance rejection (small \(S(s)\)) and noise attenuation (small \(T(s)\)).
+
+
+* Proportional control of the DC motor
+
+** The DC motor
+
+*** Graphics
+:PROPERTIES:
+:BEAMER_col: 0.5
+:END:
+
+    \begin{center}
+     \includegraphics[width=1.0\linewidth]{../../figures/block-DC-feedback-white}
+    \end{center}
+*** Text
+:PROPERTIES:
+:BEAMER_col: 0.5
+:END:
+
+    \begin{center}
+     \def\ggain{200}
+     \def\Tcnst{0.1}
+     \begin{tikzpicture}
+       \begin{axis}[
+       width=7cm,
+       height=6cm,
+       grid = both,
+       xlabel = {Time [s]},
+       ylabel = {Ang vel [rad/s]},
+       %xtick = {0, \tdelay, \tone, \two},
+       %xticklabels = {0, $\theta$, $\theta+\frac{\tau}{3}$, $\theta + \tau$},
+       %ytick = {0, \yone, \ytwo, \uampl, \yfinal},
+       %yticklabels = {0, $0.283y_{f}$, $0.632y_f$, $u_f$, $y_f$},
+       xmin = -0.2, xmax=2,
+       minor y tick num=9,
+       minor x tick num=9,
+       every major grid/.style={red, opacity=0.5},
+       ]
+	 \addplot [thick, green!50!black, no marks, domain=-0.2:2, samples=100] {(x>0)*\ggain*(1 - exp(-(x/\Tcnst)))}; 
+      \end{axis}
+     \end{tikzpicture}
+    \end{center}
+
+
+
+** The normalized DC motor
+
+*** Graphics
+:PROPERTIES:
+:BEAMER_col: 0.5
+:END:
+
+    \begin{center}
+     \includegraphics[width=1.0\linewidth]{../../figures/block-normalized-DC-feedback-white}
+    \end{center}
+
+*** Text
+:PROPERTIES:
+:BEAMER_col: 0.5
+:END:
+
+    \begin{center}
+     \def\ggain{1}
+     \def\Tcnst{1}
+     \begin{tikzpicture}
+       \begin{axis}[
+       width=7cm,
+       height=6cm,
+       grid = both,
+       xlabel = {Time [$\tau$]},
+       ylabel = {Ang vel [20 rad/$\tau$], angle [20 rad]},
+       %xtick = {0, \tdelay, \tone, \two},
+       %xticklabels = {0, $\theta$, $\theta+\frac{\tau}{3}$, $\theta + \tau$},
+       %ytick = {0, \yone, \ytwo, \uampl, \yfinal},
+       %yticklabels = {0, $0.283y_{f}$, $0.632y_f$, $u_f$, $y_f$},
+       xmin = -2, xmax=20,
+       minor y tick num=9,
+       minor x tick num=9,
+       every major grid/.style={red, opacity=0.5},
+       ]
+	 \addplot [thick, green!50!black, no marks, domain=-2:20, samples=100] {(x>0)*\ggain*(1 - exp(-(x/\Tcnst)))};
+	 \addplot [thick, red!60!black, no marks, domain=-0.2:5, samples=100] {(x>0)*\ggain*(x + exp(-(x/\Tcnst)) -1)};
+       \end{axis}
+     \end{tikzpicture}
+    \end{center}
+
+
+
+** Proportional control of the normalized DC motor
+
+*** Graphics
+:PROPERTIES:
+:BEAMER_col: 0.5
+:END:
+
+    \begin{center}
+     \includegraphics[width=1.0\linewidth]{../../figures/block-DC-feedback}
+    \end{center}
+
+*** plot
+:PROPERTIES:
+:BEAMER_col: 0.5
+:END:
+
+    \begin{center}
+     \def\ggain{1}
+     \def\Tcnst{1}
+     \begin{tikzpicture}
+       \begin{axis}[
+       width=7cm,
+       height=6cm,
+       grid = both,
+       xlabel = {Time [$\tau$]},
+       ylabel = {Angle [20 rad]},
+       title = {$K=1$},
+       %xtick = {0, \tdelay, \tone, \two},
+       %xticklabels = {0, $\theta$, $\theta+\frac{\tau}{3}$, $\theta + \tau$},
+       %ytick = {0, \yone, \ytwo, \uampl, \yfinal},
+       %yticklabels = {0, $0.283y_{f}$, $0.632y_f$, $u_f$, $y_f$},
+       xmin = -2, xmax=20,
+       minor y tick num=4,
+       minor x tick num=4,
+       every major grid/.style={red, opacity=0.5},
+       ]
+	 \addplot [thick, black, no marks, domain=-2:20, samples=200] {x>0};
+	 \addplot [thick, red!60!black, no marks, domain=-0.2:20, samples=100] {(x>0)*(1 - (exp(-x/2)* (sqrt(3)* cos(deg((sqrt(3)* x)/2)) + sin(deg((sqrt(3)* x)/2))))/sqrt(3))};
+       \end{axis}
+     \end{tikzpicture}
+    \end{center}
+
+
+    #+BEAMER: \pause
+    *Activity* What is the overshoot (in percent) and rise time (in seconds)?
+    

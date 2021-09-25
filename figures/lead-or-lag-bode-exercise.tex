@@ -1,0 +1,134 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+
+\begin{document}
+
+% \def\sysCont{tf([1, 2], [1, 1]);}
+\def\alphad{4}
+\def\Td{10}
+\def\alphai{0.1}
+\def\Ti{0.2}
+
+\def\Flead{tf([\alphad * \Td, 1], [\Td, 1]);}
+\def\Flag{1/\alphai * tf([\alphai * \Ti, 1], [\Ti, 1]);}
+
+\def\pw{7cm}
+\def\ph{3cm}
+\def\phh{21mm}
+\def\phshift{7.8cm}
+\def\pvshift{-55mm}
+
+\small
+\begin{tikzpicture}
+
+  \begin{scope}
+    % --------------------------------------------------------------
+    % Lag
+    % --------------------------------------------------------------
+
+    \begin{semilogxaxis} [
+      ylabel=Magnitude,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      % ytick={0.7, 1, 1.52},
+      % yticklabels={-3dB, 0dB, $M_p$}, 
+      %xtick={2.34, 3.72},
+      %xticklabels={$\omega_r$, $\omega_B$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+       xmin=0.001, xmax=1000,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeG01M,] {octave --eval  "pkg load control; G0=\Flag;   [mag,phi,w]=bode(G0,{0.01, 1000}); disp(cat(2,w',mag2db(mag)))"};
+    \end{semilogxaxis}
+    \begin{semilogxaxis} [
+      yshift=-\phh,
+      ylabel=Phase,
+      xlabel=$\omega$,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+       xmin=0.001, xmax=1000,
+      % ytick={0.7, 1, 1.52},
+      % yticklabels={-3dB, 0dB, $M_p$}, 
+      %xtick={2.34, 3.72},
+      %xticklabels={$\omega_r$, $\omega_B$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+      %xmin=0.1, xmax=6,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeG01P,] {octave --eval  "pkg load control; G0=\Flag;   [mag,phi,w]=bode(G0,{0.01, 1000}); disp(cat(2,w',phi))"};
+    \end{semilogxaxis}
+  \end{scope}
+
+  \begin{scope} [yshift=\pvshift]
+    % --------------------------------------------------------------
+    % Flead
+    % --------------------------------------------------------------
+    \begin{semilogxaxis} [
+      ylabel=Magnitude,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+       xmin=0.001, xmax=1000,
+      % ytick={0.7, 1, 1.52},
+      % yticklabels={-3dB, 0dB, $M_p$}, 
+      %xtick={2.34, 3.72},
+      %xticklabels={$\omega_r$, $\omega_B$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+      %xmin=0.1, xmax=6,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeG03M,] {octave --eval  "pkg load control; G0=\Flead;   [mag,phi,w]=bode(G0,{0.01, 1000}); disp(cat(2,w',mag2db(mag)))"};
+    \end{semilogxaxis}
+    \begin{semilogxaxis} [
+      yshift=-\phh,
+      ylabel=Phase,
+      xlabel=$\omega$,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+       xmin=0.001, xmax=1000,
+      % ytick={0.7, 1, 1.52},
+      % yticklabels={-3dB, 0dB, $M_p$}, 
+      %xtick={2.34, 3.72},
+      %xticklabels={$\omega_r$, $\omega_B$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+      %xmin=0.1, xmax=6,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeG03P,] {octave --eval  "pkg load control; G0=\Flead;   [mag,phi,w]=bode(G0,{0.01, 1000}); disp(cat(2,w',phi))"};
+    \end{semilogxaxis}
+  \end{scope}
+
+  \node[blue!80] at (1.6,-1.5) {\Huge 1};
+  \node[blue!80] at (1.6,-7) {\Huge 2};
+
+\end{tikzpicture}
+
+\end{document}
+
+% Local Variables:
+% Tex-engine: default-shell-escape
+% End:

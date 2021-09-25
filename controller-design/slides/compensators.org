@@ -1,0 +1,321 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169, usenames, dvipsnames]
+#+OPTIONS: H:2
+
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{amssymb}
+#+LaTex_HEADER: \usepgfplotslibrary{groupplots}
+
+#+LaTex_HEADER: \newcommand*{\shift}{\operatorname{q}}
+#+LaTex_HEADER:   \definecolor{ppc}{rgb}{0.1,0.1,0.6}
+#+LaTex_HEADER:   \definecolor{iic}{rgb}{0.6,0.1,0.1}
+#+LaTex_HEADER:   \definecolor{ddc}{rgb}{0.1,0.6,0.1}
+
+
+#+title: Compensator design - Loop shaping
+# #+date: 2020-09-01
+
+* What do I want the students to understand?			   :noexport:
+  - How to design a lead-lag compensator
+
+* Which activities will the students do?			   :noexport:
+  1. Determine effect of PD regulator in Bode plot and in root locus
+  2. Sketch the Sensitivity function from Nyquist plot
+
+* Intro
+
+** Partial exam 2 is Thursday March 22 - What to expect		   :noexport:
+
+   1. Sketch a root locus
+   2. Interpret a root locus
+   3. Design lead-lag compensator using root locus
+   4. Apply the Nyquist stability criterion
+   5. Interpret Bode plots
+   6. Show understanding of the connection between the Bode plot and the Nyquist plot
+   7. Determine phase margin and gain margin from Nyquist plots and Bode plots
+   8. Show understanding of the connection between a Bode plot and the response of the LTI to sinusoidal input (sine in - sine out). 
+
+* Repetition							   :noexport:
+
+** The Bode diagram 
+   \begin{center}
+     \begin{tikzpicture}[scale = 0.8, node distance=20mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+     
+     \node[coordinate] (input) {};
+     \node[block, right of=input] (G) {$G(s)$};
+     \node[coordinate, right of=G] (output) {};
+
+     \draw[->] (input) -- node[above, pos=0.3] {$u(t)$}  (G);
+     \draw[->] (G) -- node[above, pos=0.7] {$y(t)$}  (output);
+     \end{tikzpicture}
+   \end{center}
+
+   *Sinus in - sinus out!* With \(u(t) = \sin\omega_1 t\)
+   
+   \[ y(t) = \underbrace{|G(i\omega_1)|}_{\text{amplification}} \sin \big( \omega_1 t + \underbrace{\arg G(i\omega_1)}_{\text{phase shift}} \big) \]
+
+   The Bode diagram shows the magnitude and phase of the transfer function evaluated on the positive imaginary axis. It thus contains all information about the steady-state response of the system to input signals of different frequency.
+
+** The Bode diagram 
+   \begin{center}
+     \begin{tikzpicture}[scale = 0.8, node distance=20mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+     
+     \node[coordinate] (input) {};
+     \node[block, right of=input] (G) {$G(s)$};
+     \node[coordinate, right of=G] (output) {};
+
+     \draw[->] (input) -- node[above, pos=0.3] {$u(t)$}  (G);
+     \draw[->] (G) -- node[above, pos=0.7] {$y(t)$}  (output);
+     \end{tikzpicture}
+   \end{center}
+
+   \[ y(t) = \underbrace{|G(i\omega_1)|}_{\text{amplification}} \sin \big( \omega_1 t + \underbrace{\arg G(i\omega_1)}_{\text{phase shift}} \big) \]
+
+   The logarithmic y-axis used in the magnitude plot makes it convenient to study the result of multiplying two systems $G_o(i\omega) = F(i\omega) G(i\omega)$ since 
+   \[ \log |G_o(i\omega)| = \log |F(i\omega)| + \log |G(i\omega)| \]
+   Also, for the phase plot
+   \[ \arg G_o(i\omega) = \arg F(i\omega) + \arg G(i\omega) \]
+
+** Stability margins - phase margin
+#+BEGIN_CENTER 
+ \includegraphics[width=0.38\linewidth]{../figures/implane-nyquist-margins}
+#+END_CENTER
+   - Cross-over frequency: The frequency \(\omega_c\) for which \(|G_o(i\omega)| = 1\). 
+   - Phase margin: The angle \(\varphi_m\) to the negative real axis for the point where the Nyquist curve intersects the unit circle. \[\varphi_m = \arg G_o(i\omega_c) - (-180\degree) = \arg G_o(i\omega_c) + 180\degree\]
+
+** Stability margins - gain margin
+#+BEGIN_CENTER 
+ \includegraphics[width=0.38\linewidth]{../figures/implane-nyquist-margins}
+#+END_CENTER
+   - phase-cross-over frequency: The frequency \(\omega_p\) for which \(\arg G_o(i\omega) = -180\degree\). 
+   - Gain margin: The gain $K=A$ that would make the Nyquist curve of \(KG_o(i\omega h)\) go through the point \(-1 + i0\). This means that \[ |G_o(i\omega_p )| = \frac{1}{A}. \]
+
+* Lead-lag design
+
+** Specifications on the frequency properties of the closed-loop system
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.999\linewidth]{../figures/spec-bode-closed-loop}
+#+END_CENTER
+
+** The design procedure - overview
+#+BEGIN_CENTER
+\fbox{Specifications on the closed-loop system \(G_c(i\omega)\)}\\
+\(\downarrow\)\\
+\fbox{Specifications on the loop gain \(G_o(i\omega)\)}\\
+\(\downarrow\)\\
+\fbox{Determine \(F(i\omega)\) in \(G_o(i\omega) = G(i\omega)F(i\omega)\)}\\
+#+END_CENTER 
+
+** From specifications on \(G_c\) to specifications on \(G_o\)
+
+#+BEGIN_CENTER
+   | Closed-loop specifications        | Loop gain specifications          |
+   |-----------------------------------+-----------------------------------|
+   | Bandwidth \(\omega_B\)            | cross-over frequency \(\omega_c\) |
+   | Resonance peak \(M_p\)            | phase margin \(\varphi_m\)        |
+   | Static gain \( G_c(0) \approx 1\) | static gain \(G_o(0)\) high       |
+   |-----------------------------------+-----------------------------------|
+#+END_CENTER
+
+
+   \[ e_0 = |G_c(0)-1| = \left|\frac{G_o(0)}{1+G_o(0)}-1\right| = \left|\frac{1}{1+G_o(0)}\right| < \epsilon\] \[\Rightarrow\]  \[G_o(0) > ?\]
+
+** From specifications on \(G_c\) to specifications on \(G_o\)
+
+#+BEGIN_CENTER
+   | Closed-loop specifications        | Loop gain specifications          |
+   |-----------------------------------+-----------------------------------|
+   | Bandwidth \(\omega_B\)            | cross-over frequency \(\omega_c\) |
+   | Resonance peak \(M_p\)            | phase margin \(\varphi_m\)        |
+   | Static gain \( G_c(0) \approx 1\) | static gain \(G_o(0)\) high       |
+   |-----------------------------------+-----------------------------------|
+#+END_CENTER
+
+   \[ e_0 = |G_c(0)-1| = \left|\frac{G_o(0)}{1+G_o(0)}-1\right| = \left|\frac{1}{1+G_o(0)}\right| < \epsilon\] \[\Rightarrow\]  \[G_o(0) > \frac{1}{\epsilon} - 1\]
+
+
+** Design procedure in detail
+
+Given \(G(i\omega)\) and specifications on \(G_o(i\omega)\): \(\omega_c\), \(\varphi_m\), steady-state error \(e_0\).
+
+#+BEGIN_CENTER 
+ \includegraphics[width=1.02\linewidth]{../figures/design-procedure}
+#+END_CENTER
+   
+
+* Exercise							   :noexport:
+** Exercise: phase advance
+
+\[G(s) = \frac{2.236}{s(s^2+2s+2)}\]
+
+Specifications: $\omega_c = 1$ and $\varphi_m > 70\degree$
+
+** Exercise: phase advance
+
+\[G(s) = \frac{2.236}{s(s^2+2s+2)}\]
+
+
+*Sketch the root locus!*
+
+** Exercise: phase advance
+
+\[G(s) = \frac{2.236}{s(s^2+2s+2)}\]
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.5\linewidth]{../figures/lead-lag-prep-rlocus-crop}
+#+END_CENTER
+
+
+** Exercise: phase advance, contd
+
+\(G(s) = \frac{2.236}{s(s^2+2s+2)}\) 
+Which is the corresponding Nyquist plot?
+#+BEGIN_CENTER 
+ \includegraphics[width=0.6\linewidth]{../figures/lead_lag_prep_nyquist_plots-crop}
+#+END_CENTER
+
+** Exercise: phase advance, contd
+
+\[G(s) = \frac{2.236}{s(s^2+2s+2)}\]
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.9\linewidth]{../figures/lead-lag-prep-nyq-bode-crop}
+#+END_CENTER
+
+Have the correct cross-over frequency $\omega_c$, but too little phase margin.
+
+** Exercise: phase advance, contd
+
+Try PD-control \(G_o(s) = G(s)F(s)\), with \(F(s) = \frac{s+1}{\sqrt{2}}\)
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.9\linewidth]{../figures/lead-lag-prep-bode-bode-crop}
+#+END_CENTER
+
+What is the resulting phase margin for \(G_o\)?
+
+** Exercise: phase advance, solution
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.9\linewidth]{../figures/lead-lag-prep-Gc-nyq-bode-crop}
+#+END_CENTER
+
+** Exercise: phase advance, solution
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.9\linewidth]{../figures/lead_lag_prep_Gc-crop}
+#+END_CENTER
+
+
+* Why lead filter instead of PD controller
+** The problem with a PD-controller
+#+BEGIN_CENTER 
+\begin{tikzpicture}
+    \node[anchor=south west,inner sep=0] at (0,0) {\includegraphics[width=0.9\linewidth]{../figures/lead-lag-prep-bode-bode-crop}};
+\draw[red,ultra thick,rounded corners] (9.7,2.8) rectangle (12.3,4.5);
+\end{tikzpicture} 
+#+END_CENTER
+
+** The problem with a PD-controller, contd
+   \begin{center}
+     \begin{tikzpicture}[scale = 0.8, node distance=20mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+     
+     \node[coordinate] (refinput) {};
+     \node[sumnode, right of=refinput, node distance=20mm] (sumerr) {\tiny $\sum$};
+     \node[block, right of=sumerr] (controller) {$F(s)$};
+     \node[block, right of=controller, node distance=24mm] (valve) {$G(s)$};
+     \node[coordinate, right of=valve, node distance=30mm] (output) {};
+     \draw[->] (valve) -- node[coordinate] (measure) {} node[above, pos=0.8] {$y(t)$} (output);
+     \node[sumnode, below of=measure, node distance=16mm] (sumnoise) {\tiny $\sum$};
+     \node[coordinate, right of=sumnoise, node distance=12mm] (noise) {};
+
+     \draw[->] (refinput) -- node[above, pos=0.3] {$y_{ref}(t)$} (sumerr);
+     \draw[->] (sumerr) -- node[above] {$e(t)$} (controller);
+     \draw[->] (controller) -- node[above] {$u(t)$} (valve);
+     \draw[->] (measure) -- node[above] {} (sumnoise);
+     \draw[->] (sumnoise) -| node[above, pos=0.3]{$y_m(t)$} node[right, pos=0.95] {$-$} (sumerr);
+     \draw[->] (noise) -- node[above] {$n(t)$} (sumnoise);
+     \end{tikzpicture}
+   \end{center}
+
+
+
+
+** The problem with a PD-controller, contd
+   \begin{center}
+     \begin{tikzpicture}[scale = 0.8, node distance=20mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+     
+     \node[coordinate] (refinput) {};
+     \node[sumnode, right of=refinput, node distance=20mm] (sumerr) {\tiny $\sum$};
+     \node[block, right of=sumerr] (controller) {$F(s)$};
+     \node[block, right of=controller, node distance=24mm] (valve) {$G(s)$};
+     \node[coordinate, right of=valve, node distance=30mm] (output) {};
+     \draw[->] (valve) -- node[coordinate] (measure) {} node[above, pos=0.8] {$y(t)$} (output);
+     \node[sumnode, below of=measure, node distance=16mm] (sumnoise) {\tiny $\sum$};
+     \node[coordinate, right of=sumnoise, node distance=12mm] (noise) {};
+
+     \draw[->] (refinput) -- node[above, pos=0.3] {$y_{ref}(t)$} (sumerr);
+     \draw[->] (sumerr) -- node[above] {$e(t)$} (controller);
+     \draw[->] (controller) -- node[above] {$u(t)$} (valve);
+     \draw[->] (measure) -- node[above] {} (sumnoise);
+     \draw[->] (sumnoise) -| node[above, pos=0.3]{$y_m(t)$} node[right, pos=0.95] {$-$} (sumerr);
+     \draw[->] (noise) -- node[above] {$n(t)$} (sumnoise);
+     \end{tikzpicture}
+   \end{center}
+
+   *High frequency measurement noise entering the system is amplified in the PD-controller \(F(s)\)*
+
+
+
+** PD-controller + Low-pass filter = lead compensator + gain
+
+   \begin{center}
+     \begin{tikzpicture}[scale = 0.8, node distance=20mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+     
+     \node[coordinate] (refinput) {};
+     \node[sumnode, right of=refinput, node distance=12mm] (sumerr) {\tiny $\sum$};
+     \node[block, right of=sumerr, node distance=30mm] (controller) {$F_{PD}=K(\alpha_dT_ds + 1)$};
+     \node[block, right of=controller, node distance=40mm] (lowpass) {$F_{LP} = \frac{1}{T_ds + 1}$};
+     \node[block, right of=lowpass, node distance=30mm] (valve) {$G(s)$};
+     \node[coordinate, right of=valve, node distance=25mm] (output) {};
+     \draw[->] (valve) -- node[coordinate] (measure) {} node[above, pos=0.8] {$y(t)$} (output);
+     \node[sumnode, below of=measure, node distance=16mm] (sumnoise) {\tiny $\sum$};
+     \node[coordinate, right of=sumnoise, node distance=12mm] (noise) {};
+
+     \draw[->] (refinput) -- node[above, pos=0.3] {$y_{ref}(t)$} (sumerr);
+     \draw[->] (sumerr) -- node[above] {$e(t)$} (controller);
+     \draw[->] (controller) -- node[above] {} (lowpass);
+     \draw[->] (lowpass) -- node[above] {$u(t)$} (valve);
+     \draw[->] (measure) -- node[above] {} (sumnoise);
+     \draw[->] (sumnoise) -| node[above, pos=0.3]{$y_m(t)$} node[right, pos=0.95] {$-$} (sumerr);
+     \draw[->] (noise) -- node[above] {$n(t)$} (sumnoise);
+     \end{tikzpicture}
+   \end{center}
+
+   \(F(s) = KF_{lead} = K \frac{\alpha T_d s + 1}{T_ds + 1} \)
+
+** The lead- and lag filters/compensators
+   #+BEGIN_CENTER 
+    \includegraphics[width=0.68\linewidth]{../figures/lead-lag-bode-crop}
+   #+END_CENTER
+   
+   \(F_{lead} = \frac{\alpha_d T_d s + 1}{T_ds + 1}, \; \alpha_d > 1  \qquad F_{lag} = \frac{1}{\alpha_i} \cdot \frac{\alpha_i T_i s + 1}{T_is + 1}, \; \alpha_i < 1 \; \text{or}\; F_{lag} = \frac{T_is + 1}{T_is}\)
+   
+
+* Design example
+
+** Position control of a radar antenna
+#+BEGIN_CENTER 
+ \includegraphics[width=0.5\linewidth]{../figures/fig5_1a-crop}
+#+END_CENTER
+
+** Nyquist plot of the plant
+#+BEGIN_CENTER 
+ \includegraphics[width=0.4\linewidth]{../matlab/5_1-nyqlog-crop}
+#+END_CENTER
+
+Will proportional control work? (The open-loop system is stable)

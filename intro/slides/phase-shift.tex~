@@ -1,0 +1,420 @@
+\documentclass[dvisvgm,hypertex,aspectratio=169]{beamer}
+\usefonttheme{serif}
+
+\usepackage{animate}
+\usepackage{ifthen}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PageDown, PageUp key event handling; navigation symbols
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[totpages]{zref}
+\usepackage{atbegshi}
+\usepackage{fontawesome}
+\setbeamertemplate{navigation symbols}{}
+\AtBeginShipout{%
+  \AtBeginShipoutAddToBox{%
+    \special{dvisvgm:raw
+      <defs>
+      <script type="text/javascript">
+      <![CDATA[
+        document.addEventListener('keydown', function(e){
+          if(e.key=='PageDown'){
+            \ifnum\thepage<\ztotpages
+              document.location.replace('\jobname-\the\numexpr\thepage+1\relax.svg');%
+            \fi
+          }else if(e.key=='PageUp'){
+            \ifnum\thepage>1
+            %document.location.replace('\jobname-\the\numexpr\thepage-1\relax.svg');%
+              document.location.replace('\jobname-\makeatletter\@anim@pad{2}{\thepage-1}\makeatother\relax.svg');%
+            \fi%
+          }
+        });
+      ]]>
+      </script>
+      </defs>
+    }%
+  }%
+  \AtBeginShipoutUpperLeftForeground{%
+    \raisebox{-\dimexpr\height+0.5ex\relax}[0pt][0pt]{\makebox[\paperwidth][r]{%
+      \normalsize\color{structure!40!}%
+      \ifnum\thepage>1%
+      \href{\jobname-\the\numexpr\thepage-1\relax.svg}{\faArrowLeft}%
+      \else%  
+        \textcolor{lightgray}{\faArrowLeft}%  
+      \fi\hspace{0.5ex}%
+      \ifnum\thepage<\ztotpages%
+      \href{\jobname-\the\numexpr\thepage+1\relax.svg}{\faArrowRight}%
+      \else%
+        \textcolor{lightgray}{\faArrowRight}%  
+      \fi%
+      \hspace{0.5ex}%
+    }}%
+  }%  
+}%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{animate}
+\usepackage{tikz}
+\usepackage{circuitikz}
+%\usetikzlibrary{external}
+%\tikzexternalize[prefix=tikzfigures/] % activate and define figures/ as cache folder
+
+% ------------------------------------------------
+% Determine which slides to include
+
+\includeonlyframes{%
+M0,% Rotating magnetic field
+M1,% Rotating magnetic field
+M2,% Rotating magnetic field
+dq,% Rotating magnetic field
+PMSM0,% Torque production
+P0,% Phasors
+P1A,% Phasor animation
+P2,% Phasor diagram for PMSM
+P3,% Phasor diagram for PMSM
+P4Q,% Phasor diagram for PMSM
+P4A,% Phasor diagram for PMSM
+P5Q,% Phasor diagram for PMSM
+P5A,% Phasor diagram for PMSM
+C0,% Control
+}
+% ------------------------------------------------
+
+
+% ------------------------------------------------
+% Dimensions
+
+\def\axissize{6}
+% ------------------------------------------------
+
+
+% pu values
+% \phasediagram{iq}{id}{E}{vcolor}{icolor}{fcolor}
+\newcommand{\phasordiagram}[6]{%
+  % Magnet
+  \shade[left color=green!90, right color = red!90, opacity = 0.7]  (-0.3, -0.1) rectangle (0.3, 0.1); 
+  \def\vscale{2}
+  \def\iscale{1}
+  \def\mscale{0.7}
+  \pgfmathsetmacro{\Xr}{0.3*#3} % Reactance
+   \pgfmathsetmacro{\ee}{\vscale*#3}
+    \draw[blue!80,->] (0,0) -- node[right, pos=0.6]{$E=#3$} (0,\ee);
+    \pgfmathsetmacro{\iq}{\iscale*#1}
+    \pgfmathsetmacro{\id}{-\iscale*#2}
+    \pgfmathsetmacro{\idtest}{100**#2}
+    
+    \draw[#5, thin, ->] (0,0) -- node[above, near end] {$I_d$} (\id, 0);
+    \pgfmathsetmacro{\iimag}{sqrt(#2*#2 + #1*#1)}
+
+    \pgfmathsetmacro{\ixmag}{\Xr*\iimag}
+    \draw[#5, thin, ->] (\id,0) --  node[left, near end] {$I_q$} (\id,\iq);
+    \draw[#5, ->] (0,0) -- node[right, near end] {$I=\iimag$} (\id, \iq);
+    \pgfmathsetmacro{\ixx}{\vscale*\Xr*#1}
+    \pgfmathsetmacro{\ixy}{\vscale*\Xr*#2}
+        \pgfmathsetmacro{\vvmag}{sqrt((\Xr*#1)*(\Xr*#1) + (#3-\Xr*#2)*(#3-\Xr*#2))}
+    \draw[#4,->] (0,\ee) --  node[above] {$I(#3X)=\ixmag$} ++(-\ixx,-\ixy);
+    \draw[#4,<-] (0,\ee) ++(-\ixx,-\ixy) -- node[left] {$V$} (0,0);
+    \pgfmathsetmacro{\phimag}{2}
+    \draw[green!80!black, dashed, ->] (0,0) -- node[above] {$\phi_{mag}$} (\phimag,0);
+    \draw[#6, dashed, ->] (\phimag,0) -- node[right] {$\phi_{arm}$} (\phimag+\mscale*\id,\mscale*\iq);
+    \draw[#6, dashed, ->] (0,0) -- node[right] {$\phi_{res}$} (\phimag+\mscale*\id,\mscale*\iq);
+
+    \draw[dotted,] (0, 2.08) arc [start angle=90, end angle=130, radius = 2.08] node[above] {$V_r$};
+    \draw[blue!80,->] (0,0) -- node[right, pos=0.6]{$E=#3$} (0,\ee);
+  }
+
+
+% First argument is time, second is pole number, third is amplitude,
+% fourth is phase shift, fifth is color
+\newcommand*{\drawwave}[5]{%
+  \pgfmathsetmacro{\axl}{12}
+  \draw[#5, domain=0:360, samples=36, smooth, variable=\t]
+  plot ( { \t/360*\axl }, {-#3*(sin(\n)*cos(\t*#2/2 - 90 -#4) } );
+}
+
+
+\author{Kjartan Halvorsen}
+\date{2021-06-01}
+\title{Field-oriented control of permanent magnet synchronous motors}
+
+
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}[label=M0]{Rotating magnetic field}
+
+  \begin{center}
+
+    \begin{animateinline}[controls,autoplay,loop]{20}
+\multiframe{30}{n=0+12}{
+  \begin{tikzpicture}[scale=0.4, transform shape]
+    \draw[black!20] (0, 0) circle[radius=47mm];
+    \draw[black!80] (0, 0) circle[radius=2mm];
+    \foreach \rr/\ph/\clr in {0/0/blue, 120/120/white, -120/-120/white} {
+      \begin{scope}[rotate=\rr, transform shape]
+        \pgfmathsetmacro{\aa}{4*sin(\n + \ph)}
+        \draw (-1.5, 10) to[current source] (-1.5, 13) to[short] (0,13) to[L] (0, 10) to[short] (-1.5,10);
+        \draw[\clr, ->, ultra thick] (0,5) -- ++ (0,\aa);
+    \end{scope}
+  }
+  \end{tikzpicture}    
+}
+\end{animateinline}
+\end{center}
+\end{frame}
+
+\begin{frame}[label=M1]{Rotating magnetic field}
+
+  \begin{center}
+
+    \begin{animateinline}[controls,autoplay,loop]{20}
+\multiframe{30}{n=0+12}{
+  \begin{tikzpicture}[scale=0.4, transform shape]
+    \draw[black!20] (0, 0) circle[radius=47mm];
+    \draw[black!80] (0, 0) circle[radius=2mm];
+    \foreach \rr/\ph/\clr in {0/0/blue, 120/120/orange, -120/-120/red} {
+      \begin{scope}[rotate=\rr, transform shape]
+        \pgfmathsetmacro{\aa}{4*sin(\n + \ph)}
+        \draw (-1.5, 10) to[current source] (-1.5, 13) to[short] (0,13) to[L] (0, 10) to[short] (-1.5,10);
+        \draw[\clr, ->, ultra thick] (0,5) -- ++ (0,\aa);
+    \end{scope}
+  }
+  \end{tikzpicture}    
+}
+\end{animateinline}
+\end{center}
+\end{frame}
+
+\begin{frame}[label=M2]{Rotating magnetic field}
+
+  \begin{center}
+
+    \begin{animateinline}[controls,autoplay,loop]{10}
+\multiframe{60}{n=0+6}{
+  \begin{tikzpicture}[scale=0.4, transform shape]
+    \draw[black!20] (0, 0) circle[radius=47mm];
+    \draw[black!80] (0, 0) circle[radius=2mm];
+    \foreach \rr in {0, 120, -120} {
+      \begin{scope}[rotate=\rr, ]
+        \draw (-1.5, 10) to[current source] (-1.5, 13) to[short] (0,13) to[L] (0, 10) to[short] (-1.5,10);
+    \end{scope}
+  }
+    \pgfmathsetmacro{\aU}{4*sin(\n + 0)}
+    \pgfmathsetmacro{\aV}{4*sin(\n + 120)}
+    \pgfmathsetmacro{\aW}{4*sin(\n - 120)}
+    \pgfmathsetmacro{\Ux}{0}
+    \pgfmathsetmacro{\Uy}{\aU*cos(0)}
+    \pgfmathsetmacro{\Vx}{\aV*sin(120)}
+    \pgfmathsetmacro{\Vy}{\aV*cos(120)}
+    \pgfmathsetmacro{\Wx}{\aW*sin(-120)}
+    \pgfmathsetmacro{\Wy}{\aW*cos(-120)}
+    \draw[blue, ->,  thick] (0,0) -- ++ (\Ux, \Uy);
+    \draw[orange, ->,  thick] (0,0) ++ (\Ux, \Uy) -- ++ (\Vx, \Vy);
+    \draw[red, ->,  thick] (0,0) ++ (\Ux, \Uy)  ++ (\Vx, \Vy) -- ++(\Wx, \Wy);
+    \draw[black!80, <-,  thick] (0,0) ++ (\Ux, \Uy)  ++ (\Vx, \Vy) ++(\Wx, \Wy) -- (0,0);
+
+  \end{tikzpicture}    
+}
+\end{animateinline}
+\end{center}
+\end{frame}
+
+
+\begin{frame}[label=dq]{The \(d-q\)  reference frame}
+  \begin{center}
+    \includegraphics[width=0.6\linewidth]{HD-fig8_3.png}
+  \end{center}
+\end{frame}
+
+\note{%
+  We have seen that the AC in the three windings of 3-phase stator generates a rotating magnetic field that rotates with what we call synchronous speed. This could have been produced by just two windings in quadrature. And we can find a transformation that tells us what AC current must flow in the two-winding stator in order to be equivalent to the three-phase AC current. And vice versa, there is an inverse transform that tells us the three-phase current equivalent to a two-winding AC current. This rotating field generated by the AC current in the two stator windings could also have been generated by DC current in a set of windings mounted on a structure that rotates with synchronous speed. 
+}
+
+\begin{frame}[label=PMSM0]{Producing torque in a PMSM}
+  \begin{center}
+    \includegraphics[width=0.6\linewidth]{HD-fig9_23.png}
+  \end{center}
+\end{frame}
+
+\note{%
+  In a synchronous motor the rotor rotates at synchronous speed, and we can think of the d-q axes as being fixed to the rotor. The rotor has a magnet field (two-pole in this case) that can either be generated by permanent magnets, or as here by DC current fed to windings on the rotor through slip-rings on the shaft.
+
+  The magnetic field of the rotor wants to align itself with the field of the stator. If there is an angle between these fields, the torque produced will be proportional to the product of the strength of the two fields and the cosine of the angle.
+
+  Here the motor is rotating anti-clockwise. We see that motoring and braking depends on the torque angle, i.e. angle between the two magnetic fields.
+  
+}
+%
+%---------------------------------------------------------
+%
+% RMS phasors, magnitude phasors, wave forms
+%---------------------------------------------------------
+\begin{frame}[label=P1A]{Voltage- and current phasors}
+
+  \def\vcolor{blue!80}
+  \def\icolor{orange!90}
+  \pgfmathsetmacro{\vrms}{1.2}
+  \pgfmathsetmacro{\vmag}{sqrt(2)*\vrms}
+  \pgfmathsetmacro{\irms}{1.9}
+  \pgfmathsetmacro{\iimag}{sqrt(2)*\irms}
+  \pgfmathsetmacro{\thetaval}{70}
+  \pgfmathsetmacro{\axl}{3}
+  \pgfmathsetmacro{\ws}{12}
+
+  \begin{center}
+    \begin{animateinline}[controls,autoplay,loop]{4}
+      \multiframe{120}{n=0+6}{
+        \begin{tikzpicture}[scale=0.6, transform shape]
+          \useasboundingbox (-4 cm, -4 cm) rectangle (14 cm, 8 cm);
+          \pgfmathsetmacro{\vcy}{\vmag*sin(\n+90)}
+          \pgfmathsetmacro{\icy}{\iimag*sin(\n-\thetaval+90)}
+          \begin{scope}[xshift = 2.2cm,]
+            %\draw[] (0 cm, 0) -- (\axl cm, 0);
+            %\foreach \ax in {0, 60, 120, ..., 360} {
+            %  \pgfmathsetmacro{\axx}{\ax*\axl/360.0)}
+            %  \draw (\axx cm, 0) -- (\axx cm, -0.5) node[below] {\ax};
+            %}
+            \pgfmathsetmacro{\dom}{\n + 360}
+            \draw[\vcolor, domain=0:\dom, smooth, variable=\t]
+            plot ( { \t/360.0*\axl}, {\vmag*sin(\dom+90-\t)} );
+            \draw[\icolor, domain=0:\dom, smooth, variable=\t]
+            plot ( { \t/360.0*\axl}, {\iimag*sin(\dom+90-\t-\thetaval)} );
+          \end{scope}
+
+          \begin{scope}[xshift=-1cm,]
+
+            \draw[->, thin, black!30] (-3, 0) -- (3, 0);
+            \draw[->, thin, black!30] (0,-3) -- (0, 3);
+            \node[\vcolor, ] at (0.4, \vrms)  {V}; 
+            \node[\icolor] at (\irms, 0.3) {I}; 
+
+            \pgfmathsetmacro{\iix}{\irms*sin(\thetaval)}
+            \pgfmathsetmacro{\iiy}{\irms*cos(\thetaval)}
+            \draw[\vcolor,thick, ->] (0,0) -- (0, \vrms);
+            \draw[\icolor,thick, ->] (0,0) -- (\iix, \iiy);
+
+            \pgfmathsetmacro{\vcx}{\vmag*cos(\n+90)}
+            \draw[\vcolor,  ->] (0,0) -- (\vcx, \vcy); 
+
+            \pgfmathsetmacro{\icx}{\iimag*cos(\n-\thetaval+90)}
+            \draw[\icolor,  ->] (0,0) -- (\icx, \icy); 
+          \end{scope}
+        \end{tikzpicture}    
+      }
+    \end{animateinline}
+  \end{center}
+\end{frame}
+
+\note{%
+  Understanding the field-oriented control, requires to understand phasors.
+
+  A phasor in the context of AC theory is a vector that represents sinusoidally varying quantities such as voltage and current. The magnitude represents the RMS value of the sinusoid, and the angle of the phasor represents the phase of the sinusoid. In this case we have a voltage phasor and a current phasor, and we see that the voltage phasor leads the curent phasor with a certain angle \theta. If these represents the voltage and current in a simple circuit, then the impedance of that circuit is both resistive and reactive (inductive) with zero resistance, the angle would be 90.  
+}
+
+\begin{frame}[label=P2]{Phasor diagram for the PMSM}
+
+  \begin{center}
+    \includegraphics[width=0.6\linewidth]{HD-fig9_19.png}
+  \end{center}
+    
+\end{frame}
+
+\note{%
+  Note the magnet of the rotor (north is red) and the q and d axis defined w.r.t the magnet.
+  The rotor is spinning at a certain speed, which generates an emf in the stator windings, E. The higher the speed, the higher the E (stator windings being cut by flux lines at higher rate). If stator was open-loop, this is the voltage measured over its terminals. E depends also on the strength of the magnetic field of the rotor. This is represented by \phi_mag.
+
+  In field-oriented control we are controlling the magnitude and direction of the current vector w.r.t the rotor magnetic field. Thus for this to work, we need to know very precisely the orientation of the rotor at all times.
+
+  The current vector has a component Iq and Id. The component Iq is the component which will generate torque, since it is perpendicular to the magnetic field \phi_mag.
+
+  Id is not generating any torque, but will affect the magnitude of the resulting magnetic field \phi_res. For speeds up to base speed, we want this current component to be zero. For higher speeds, we need the Id component in order to reduce the field of the permanent magnet, thus lowering the back emf, and allowing the motor to run at speeds higher than base speed event with limited supply voltage.
+
+  We are ignoring the (small) resistance in the stator, so the stator behaves like a pure inductance. Its reactance X is proportional to the speed of the motor, of course, since this is proportional to the  supply frequency. Being reactive, the voltage drop across the stator windings is given by IX, and leads the current by 90 degrees.
+
+  The voltage required in this situation is the vector sum of the IX and the E voltages.
+
+  The horizontal line indicates the locus of the current vector that gives the same output torque. We see that we get most torque per ampere when the current vector is vertical, i.e. Id=0.
+
+  The vertical dotted line indicates the voltages that would be required for different current vectors with Iq constant, i.e. constant torque.
+  
+}
+\begin{frame}[label=P3]{PMSM - full torque at base speed}
+  \tiny
+  \begin{center}
+    \begin{tikzpicture}[scale=2]
+      \phasordiagram{1}{0}{1}{blue!80}{orange!90}{green!80!black}
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}[label=P4Q]{PMSM - full torque at half speed}
+  \tiny
+  \begin{center}
+    \begin{tikzpicture}[scale=2]
+      \phasordiagram{1}{0}{1}{blue!80}{orange!90}{green!80!black}
+      \node at (0, -0.4) {Full torque, base speed}
+      \begin{scope}[xshift=4cm]
+      \phasordiagram{1}{0}{0.5}{white}{white}{white}
+    \end{scope}
+  \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\note{%
+  Let's consider a specific case. Here the motor is operating at base speed, and producing full torque. We will work with per unit values, which means that voltages and currents are expressed relative to reference values. The emf at base speed is one pu voltage, and the current required for full torque is one pu current.
+
+  The reactive voltage drop over the stator windings is here 0.3. The reactance X is of course dependent on the speed. The voltage vector will have a certain magnitude (1.04), and this is the RMS pu rated voltage. The real electrical power consumed by the motor is given by VIcos(theta).   
+}
+\begin{frame}[label=P4A]{PMSM - full torque at half speed}
+  \tiny
+  \begin{center}
+    \begin{tikzpicture}[scale=2]
+      \phasordiagram{1}{0}{1}{blue!80}{orange!90}{green!80!black}
+      \node at (0, -0.4) {Full torque, base speed}
+      \begin{scope}[xshift=4cm]
+      \phasordiagram{1}{0}{0.5}{blue!80}{orange!90}{green!80!black}
+    \end{scope}
+  \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}[label=P5Q]{PMSM - half torque at double speed}
+  \tiny
+  \begin{center}
+    \begin{tikzpicture}[scale=1.5]
+      \phasordiagram{1}{0}{1}{blue!80}{orange!90}{green!80!black}
+      \node at (0, -0.4) {Full torque, base speed}
+      \begin{scope}[xshift=6cm]
+      \phasordiagram{0.5}{1.66}{2}{white}{white}{white}
+    \end{scope}
+  \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}[label=P5A]{PMSM - half torque at double speed}
+  \tiny
+  \begin{center}
+    \begin{tikzpicture}[scale=1.5]
+      \phasordiagram{1}{0}{1}{blue!80}{orange!90}{green!80!black}
+      \node at (0, -0.4) {Full torque, base speed}
+      \begin{scope}[xshift=6cm]
+      \phasordiagram{0.5}{1.66}{2}{blue!80}{orange!90}{green!80!black}
+    \end{scope}
+  \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+
+\begin{frame}[label=C0]{Feedback control of the PMSM}
+  \begin{center}
+    \includegraphics[width=0.6\linewidth]{HD-fig9_29.png}
+  \end{center}
+\end{frame}
+
+
+
+\end{document}
+

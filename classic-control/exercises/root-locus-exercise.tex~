@@ -1,0 +1,260 @@
+% Created 2021-08-30 Mon 12:42
+% Intended LaTeX compiler: pdflatex
+\documentclass[letterpaper]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage{khpreamble}
+\usepackage[top=10mm, bottom=10mm]{geometry}
+\author{Kjartan Halvorsen}
+\date{}
+\title{Pole placement, root locus and lead-lag}
+\hypersetup{
+ pdfauthor={Kjartan Halvorsen},
+ pdftitle={Pole placement, root locus and lead-lag},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 26.3 (Org mode 9.4.6)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+
+\section*{The inverted pendulum}
+\label{sec:org18a00f3}
+The friction-less, inverted pendulum has two poles symmetric about the imaginary axis.
+
+\subsection*{PD-control}
+\label{sec:org094c83f}
+\def\omegazero{1}
+     \begin{center}
+       \small
+       \begin{tikzpicture}[scale = 0.8, node distance=20mm, block/.style={rectangle, draw, minimum width=12mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+       
+       \node[coordinate] (refinput) {};
+       \node[sumnode, right of=refinput, node distance=20mm] (sumerr) {\tiny $\sum$};
+       \node[block, right of=sumerr] (controller) {$K(2s + a)$};
+       \node[above of=controller, node distance=6mm] {controller};
+       \node[block, right of=controller, node distance=24mm] (plant) {$\frac{1}{s^2 - a^2}$};
+       \node[above of=plant, node distance=6mm] {plant};
+       \node[coordinate, right of=plant, node distance=20mm] (output) {};
+
+       \draw[->] (refinput) -- node[above, pos=0.3] {$y_{ref}(t)$} (sumerr);
+       \draw[->] (sumerr) -- node[above] {$e(t)$} (controller);
+       \draw[->] (controller) -- node[above] {$u(t)$} (plant);
+       \draw[->] (plant) -- node[coordinate] (measure) {} node[above, pos=0.8] {$y(t)$} (output);
+       \draw[->] (measure) -- ++(0,-14mm) -| node[right, pos=0.95] {$-$} (sumerr);
+
+    \begin{axis} [
+        xshift = 12cm,
+        yshift = -3cm,
+        width=12cm,
+        height=8cm,
+        axis lines=middle,
+        axis line style={->},
+        xtick={-1, 1},
+        ytick={-1, 1},
+        xticklabels={$-a$, $a$},
+        xmin=-6,
+        xmax=2,
+        ymin=-3,
+        ymax=3,
+        ytick=\empty,
+        xlabel=Re,
+        ylabel=Im,
+        ]
+        
+        \addplot [ thick,black, mark=x, mark size=6pt, only marks] coordinates { (-\omegazero,0) (\omegazero,0) }; 
+        %\addplot [ thick,black, mark=o, mark size=6pt] coordinates { (-0.5,0) }; 
+        
+      %\node[coordinate, pin={[pin distance=3cm] 135:{3 startpunkter}}] at (axis cs:0,0) {};
+      %\node[coordinate, pin={[pin distance=2.5cm] -135:{2 ändpunkter}}] at (axis cs:-0.5,0) {};
+    \end{axis}
+
+       \end{tikzpicture}
+
+
+      
+     \end{center}
+
+\subsection*{Modified PD-control}
+\label{sec:orge714fd3}
+ \def\omegazero{1}
+ \begin{center}
+   \small
+   \begin{tikzpicture}[scale = 0.8, node distance=20mm, block/.style={rectangle, draw, minimum width=12mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+
+   \node[coordinate] (refinput) {};
+   \node[sumnode, right of=refinput, node distance=20mm] (sumerr) {\tiny $\sum$};
+   \node[block, right of=sumerr] (controller) {$K\frac{s + 0.5a}{s+5a}$};
+   \node[above of=controller, node distance=6mm] {controller};
+   \node[block, right of=controller, node distance=24mm] (plant) {$\frac{1}{s^2 - a^2}$};
+   \node[above of=plant, node distance=6mm] {plant};
+   \node[coordinate, right of=plant, node distance=20mm] (output) {};
+
+   \draw[->] (refinput) -- node[above, pos=0.3] {$y_{ref}(t)$} (sumerr);
+   \draw[->] (sumerr) -- node[above] {$e(t)$} (controller);
+   \draw[->] (controller) -- node[above] {$u(t)$} (plant);
+   \draw[->] (plant) -- node[coordinate] (measure) {} node[above, pos=0.8] {$y(t)$} (output);
+   \draw[->] (measure) -- ++(0,-14mm) -| node[right, pos=0.95] {$-$} (sumerr);
+
+\begin{axis} [
+    xshift = 12cm,
+    yshift = -3cm,
+    width=12cm,
+    height=8cm,
+    axis lines=middle,
+    axis line style={->},
+    xtick={-1, 1},
+    ytick={-1, 1},
+    xticklabels={$-a$, $a$},
+    xmin=-7,
+    xmax=2,
+    ymin=-3,
+    ymax=3,
+    ytick=\empty,
+    xlabel=Re,
+    ylabel=Im,
+    ]
+
+    \addplot [ thick,black, mark=x, mark size=6pt, only marks] coordinates { (-\omegazero,0) (\omegazero,0) }; 
+    %\addplot [ thick,black, mark=o, mark size=6pt] coordinates { (-0.5,0) }; 
+
+  %\node[coordinate, pin={[pin distance=3cm] 135:{3 startpunkter}}] at (axis cs:0,0) {};
+  %\node[coordinate, pin={[pin distance=2.5cm] -135:{2 ändpunkter}}] at (axis cs:-0.5,0) {};
+\end{axis}
+
+   \end{tikzpicture}
+
+
+
+ \end{center}
+
+
+
+
+
+\section*{The DC-motor}
+\label{sec:orgb7e65fe}
+The dynamics of the velocity of the DC motor is a first-order system when the input is armature voltage. By integrating once, we get the shaft angle as the output.
+
+\subsection*{PD-control}
+\label{sec:org055ec88}
+\def\omegazero{1}
+     \begin{center}
+       \small
+       \begin{tikzpicture}[scale = 0.6, node distance=20mm, block/.style={rectangle, draw, minimum width=12mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+       
+       \node[coordinate] (refinput) {};
+       \node[sumnode, right of=refinput, node distance=20mm] (sumerr) {\tiny $\sum$};
+       \node[block, right of=sumerr] (controller) {$K(s + 2a)$};
+       \node[above of=controller, node distance=6mm] {controller};
+       \node[block, right of=controller, node distance=24mm] (plant) {$\frac{k}{s+a}$};
+       \node[block, right of=plant, node distance=20mm] (int) {$\frac{1}{s}$};
+       %\node[above of=plant, node distance=6mm] {plant};
+       \node[coordinate, right of=int, node distance=20mm] (output) {};
+
+       \draw[->] (refinput) -- node[above, pos=0.3] {$y_{ref}(t)$} (sumerr);
+       \draw[->] (sumerr) -- node[above] {$e(t)$} (controller);
+       \draw[->] (controller) -- node[above] {$u(t)$} (plant);
+       \draw[->] (plant) -- node[above] {} (int);
+       \draw[->] (int) -- node[coordinate] (measure) {} node[above, pos=0.8] {$y(t)$} (output);
+       \draw[->] (measure) -- ++(0,-14mm) -| node[right, pos=0.95] {$-$} (sumerr);
+
+    \begin{axis} [
+        xshift = 18.5cm,
+        yshift = -3cm,
+        width=12cm,
+        height=8cm,
+        axis lines=middle,
+        axis line style={->},
+        xtick={-1, 0},
+        ytick={-1, 0},
+        xticklabels={$-a$, $0$},
+        xmin=-6,
+        xmax=2,
+        ymin=-3,
+        ymax=3,
+        ytick=\empty,
+        xlabel=Re,
+        ylabel=Im,
+        ]
+        
+        \addplot [ thick,black, mark=x, mark size=6pt, only marks] coordinates { (-\omegazero,0) (0,0) }; 
+        %\addplot [ thick,black, mark=o, mark size=6pt] coordinates { (-0.5,0) }; 
+        
+      %\node[coordinate, pin={[pin distance=3cm] 135:{3 startpunkter}}] at (axis cs:0,0) {};
+      %\node[coordinate, pin={[pin distance=2.5cm] -135:{2 ändpunkter}}] at (axis cs:-0.5,0) {};
+    \end{axis}
+
+       \end{tikzpicture}
+
+
+      
+     \end{center}
+
+\subsection*{Lag-compensator}
+\label{sec:orgf0d414c}
+A lag compensator is a controller with one pole and one zero, and where the pole is closer to the origin than the zero. Such a compensator increases the gain at low frequencies, at the expense of more oscillatory response.
+
+ \def\omegazero{2}
+ \begin{center}
+   \small
+   \begin{tikzpicture}[scale = 0.8, node distance=20mm, block/.style={rectangle, draw, minimum width=12mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+
+   \node[coordinate] (refinput) {};
+   \node[sumnode, right of=refinput, node distance=20mm] (sumerr) {\tiny $\sum$};
+   \node[block, right of=sumerr] (controller) {$K\frac{s + a}{4s+a}$};
+   \node[above of=controller, node distance=6mm] {controller};
+   \node[block, right of=controller, node distance=24mm] (plant) {$\frac{1}{s(s+a)}$};
+   \node[above of=plant, node distance=6mm] {plant};
+   \node[coordinate, right of=plant, node distance=20mm] (output) {};
+
+   \draw[->] (refinput) -- node[above, pos=0.3] {$y_{ref}(t)$} (sumerr);
+   \draw[->] (sumerr) -- node[above] {$e(t)$} (controller);
+   \draw[->] (controller) -- node[above] {$u(t)$} (plant);
+   \draw[->] (plant) -- node[coordinate] (measure) {} node[above, pos=0.8] {$y(t)$} (output);
+   \draw[->] (measure) -- ++(0,-14mm) -| node[right, pos=0.95] {$-$} (sumerr);
+
+\begin{axis} [
+    xshift = 12cm,
+    yshift = -3cm,
+    width=12cm,
+    height=8cm,
+    axis lines=middle,
+    axis line style={->},
+    xtick={-2, 0},
+    ytick={-1, 0},
+    xticklabels={$-a$, $0$},
+    xmin=-7,
+    xmax=2,
+    ymin=-3,
+    ymax=3,
+    ytick=\empty,
+    xlabel=Re,
+    ylabel=Im,
+    ]
+
+    \addplot [ thick,black, mark=x, mark size=6pt, only marks] coordinates { (-\omegazero,0) (0 , 0) }; 
+    %\addplot [ thick,black, mark=o, mark size=6pt] coordinates { (-0.5,0) }; 
+
+  %\node[coordinate, pin={[pin distance=3cm] 135:{3 startpunkter}}] at (axis cs:0,0) {};
+  %\node[coordinate, pin={[pin distance=2.5cm] -135:{2 ändpunkter}}] at (axis cs:-0.5,0) {};
+\end{axis}
+
+   \end{tikzpicture}
+
+
+
+ \end{center}
+\end{document}

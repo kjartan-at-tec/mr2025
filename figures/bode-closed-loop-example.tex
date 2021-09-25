@@ -1,0 +1,45 @@
+\documentclass[margin=10mm]{standalone}
+%\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+%\usepackage{pythontex}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+
+
+
+\begin{document}
+
+\def\TRF{zpk([],[-0.1, -1, -2], 4)}
+%\def\wwnull{2}
+%\def\TRF{tf([3],[(1/\wwnull)^2, 3/\wwnull, 3])}
+\def\tshift{32}
+
+
+\begin{tikzpicture}
+  \begin{semilogxaxis} [
+    xshift=-2cm,
+    width=12cm,
+      height=9cm,
+      ylabel={$|G_c(i\omega)|$ dB},
+      xlabel={$\omega$ [rad/s]},
+      %xticklabels=\empty,
+      grid=both,
+      minor y tick num=9,
+      xmax=10,
+      %ymax=100,
+      %ymin=0.001,
+      %ytick={0.01, 1, 10},
+%      extra y ticks={.5}, % how to convert to fixed point tick label ?
+%      extra y tick style={log identify minor tick positions=true},
+      every major grid/.style={red, opacity=0.5},
+  ]
+
+  \addplot 
+    shell[thick, black, no marks, prefix=pgfshell_, id=bmm] {octave -q --eval  "format long; pkg load control; G=\TRF; Gc=feedback(G, 1); [mag,phi,w]=bode(Gc); disp(cat(2,w',mag2db(mag)))"};
+  \end{semilogxaxis}
+\end{tikzpicture}
+
+\end{document}

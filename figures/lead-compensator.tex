@@ -1,0 +1,94 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+
+\begin{document}
+
+% \def\sysCont{tf([1, 2], [1, 1]);}
+\def\alphad{4}
+\def\Td{2}
+
+\def\Flead{tf([\alphad * \Td, 1], [\Td, 1]);}
+\def\wmin{0.001}
+\def\wmax{1000}
+
+\def\pw{9cm}
+\def\ph{4cm}
+\def\phh{31mm}
+\def\phshift{7.8cm}
+\def\pvshift{-55mm}
+
+\small
+\begin{tikzpicture}
+
+  \pgfmathsetmacro{\wcornerone}{1/\Td}
+  \pgfmathsetmacro{\wcornertwo}{1/\Td/\alphad}
+  \pgfmathsetmacro{\maxgain}{log10(\alphad)*20}
+  \begin{scope}
+    % --------------------------------------------------------------
+    % Flead
+    % --------------------------------------------------------------
+    \begin{semilogxaxis} [
+      clip=false,
+      ylabel={$|F_{lead}|$ dB},
+      width=\pw,
+      height=\ph,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      xmin=0.001, xmax=1000,
+      minor y tick num = 5,
+      ymax = 15,
+      % ytick={0.7, 1, 1.52},
+      % yticklabels={-3dB, 0dB, $M_p$}, 
+      %xtick={2.34, 3.72},
+      %xticklabels={$\omega_r$, $\omega_B$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+      %xmin=0.1, xmax=6,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeG03M,] {octave --eval  "pkg load control; G0=\Flead;   [mag,phi,w]=bode(G0,{\wmin, \wmax}); disp(cat(2,w',mag2db(mag)))"};
+
+      %\draw[blue!60] (axis cs: 100, \maxgain) -- (axis cs: 0.0001, \maxgain) node[left] {$\alpha_d$};
+
+    \end{semilogxaxis}
+    \begin{semilogxaxis} [
+      clip = false,
+      yshift=-\phh,
+      ylabel=$\arg F_{lead}$,
+      xlabel=$\omega$,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+       xmin=0.001, xmax=1000,
+      % ytick={0.7, 1, 1.52},
+      % yticklabels={-3dB, 0dB, $M_p$}, 
+      %xtick={2.34, 3.72},
+      %xticklabels={$\omega_r$, $\omega_B$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+      %xmin=0.1, xmax=6,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeG03P,] {octave --eval  "pkg load control; G0=\Flead;   [mag,phi,w]=bode(G0,{\wmin, \wmax}); disp(cat(2,w',phi))"};
+
+      \draw[green!80] (axis cs: \wcornerone, 100) -- (axis cs: \wcornerone, -20) node[below] {$\frac{1}{T_d}$};
+      \draw[green!80] (axis cs: \wcornertwo, 100) -- (axis cs: \wcornertwo, -20)  node[below] {$\frac{1}{\alpha_dT_d}$};
+    \end{semilogxaxis}
+  \end{scope}
+\end{tikzpicture}
+
+\end{document}
+
+% Local Variables:
+% Tex-engine: default-shell-escape
+% End:

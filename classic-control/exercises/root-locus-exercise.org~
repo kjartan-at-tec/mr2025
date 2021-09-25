@@ -1,0 +1,189 @@
+#+EXCLUDE_TAGS: solution noexport
+#+OPTIONS: toc:nil num:nil date:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTeX_CLASS_OPTIONS: [letterpaper]
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage[top=10mm, bottom=10mm]{geometry}
+
+#+title: Pole placement, root locus and lead-lag
+#+date: 2018-09-19
+
+** The effect of a zero
+   An LTI corresponding to a pure derivation \(y(t) = \frac{d}{dt} u(t)\) is in the Laplace-domain
+   #+BEGIN_LaTeX
+     \begin{center}
+     \begin{tikzpicture}[node distance=2cm]
+       \node[coordinate] (input) {};
+       \node[draw, minimum height=10mm, minimum width=14mm, right of=input] (block) {};
+       \node[coordinate, right of=block] (output) {};
+       \draw[->] (input) -- node[above, near start] {$u(t)$} (block);  
+       \draw[->] (block) -- node[above, near end] {$y(t)$} (output);
+     \end{tikzpicture}
+     \end{center}
+   #+END_LaTeX
+   Consider the transfer function
+   \[ G(s) = \frac{2s+1}{s^2 + s + 1} =  \underbrace{\frac{1}{s^2 + s + 1}}_{G_1(s)}  +  \underbrace{\frac{2s}{s^2 + s + 1}}_{G_2(s)}.\]
+     Mark the poles and zero, fill in the empty blocks, and sketch the step-response of $G(s)$. 
+   #+BEGIN_LaTeX
+         \begin{center}
+           \begin{tikzpicture}[node distance=2cm, block/.style={draw, minimum height=16mm, minimum width=18mm}, sum/.style={circle, draw, inner sep=2pt}]
+             \draw[->] (-3, 0) -- node[above, at end] {Re} (1,0);
+             \draw[->] (0, -2) -- node[right, at end] {Im} (0,2);
+
+             \begin{scope}[xshift=3cm]
+               \node[coordinate] (input) {};
+               \node[coordinate, right of=input, node distance=3cm] (midp) {};
+               \node[block, above of=midp, node distance=1cm] (block1) {};
+               \node[block, below of=midp, node distance=1cm] (block2) {};
+               \node[block, right of=block2, node distance=20mm, minimum width=12mm, minimum height=10mm] (block3) {$2s$};
+               \node[sum, right of=midp, node distance=30mm] (sum) {\small $\Sigma$};
+               \node[coordinate, right of=sum] (output) {};
+               
+               \draw[->] (input) -- node[above, near start ] {$u(t)$} ++(1,0) |- (block1);
+               \draw[->] (input) --++(1,0) |- (block2);
+               \draw[->] (block1) -| node[right] {$y_1(t)$} (sum);
+               \draw[->] (block2) -- (block3);
+               \draw[->] (block3) -| node[right] {$y_2(t)$} (sum);
+               \draw[->] (sum) -- node [above, near end] {$y(t)$} (output);
+             \end{scope}
+
+             \begin{scope}[yshift=-7.5cm]
+               \pgfmathsetmacro{\omegan}{1}
+               \pgfmathsetmacro{\zetan}{0.5}
+               \pgfmathsetmacro{\zetan}{0.5}
+               \pgfmathsetmacro{\realpart}{\omegan * \zetan}
+               \pgfmathsetmacro{\impart}{\omegan * sqrt(1-pow(\zetan, 2))}
+               \pgfmathsetmacro{\phshift}{acos(\zetan)}
+               \begin{axis}[
+                 height=6.5cm,
+                 width=10cm,
+                 minor tick num=4,
+                 grid=both,
+                 every major grid/.style={red, opacity=0.5},
+                 ymax=2,
+                 xlabel={$t$},
+                 ylabel={$y(t), y_1(t), y_2(t)$},
+                 clip=false,
+                 ]
+                 \addplot+[black, no marks, domain=0:10, samples=200] {1 - exp(-\realpart*x)/sqrt(1-pow(\zetan, 2))*sin(deg(\impart * x) + \phshift)} node[coordinate, pos=1.0, pin={-40:{$y_1(t)$}}] {};
+         '
+               \end{axis}
+               
+             \end{scope}
+           \end{tikzpicture}
+         \end{center}
+
+   #+END_LaTeX
+** The inverted pendulum
+   The friction-less, inverted pendulum has two poles symmetric about the imaginary axis.
+
+*** PD-control
+#+BEGIN_LaTeX
+     \def\omegazero{1}
+     \begin{center}
+       \small
+       \begin{tikzpicture}[scale = 0.8, node distance=20mm, block/.style={rectangle, draw, minimum width=12mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+       
+       \node[coordinate] (refinput) {};
+       \node[sumnode, right of=refinput, node distance=20mm] (sumerr) {\tiny $\sum$};
+       \node[block, right of=sumerr] (controller) {$K(2 + s)$};
+       \node[above of=controller, node distance=6mm] {controller};
+       \node[block, right of=controller, node distance=24mm] (plant) {$\frac{1}{s^2 - 1}$};
+       \node[above of=plant, node distance=6mm] {plant};
+       \node[coordinate, right of=plant, node distance=20mm] (output) {};
+
+       \draw[->] (refinput) -- node[above, pos=0.3] {$y_{ref}(t)$} (sumerr);
+       \draw[->] (sumerr) -- node[above] {$e(t)$} (controller);
+       \draw[->] (controller) -- node[above] {$u(t)$} (plant);
+       \draw[->] (plant) -- node[coordinate] (measure) {} node[above, pos=0.8] {$y(t)$} (output);
+       \draw[->] (measure) -- ++(0,-14mm) -| node[right, pos=0.95] {$-$} (sumerr);
+
+    \begin{axis} [
+        xshift = 12cm,
+        yshift = -3cm,
+        width=12cm,
+        height=8cm,
+        axis lines=middle,
+        axis line style={->},
+        xtick={-1, 1},
+        ytick={-1, 1},
+        %xticklabels={$-b$, -1},
+        xmin=-6,
+        xmax=2,
+        ymin=-3,
+        ymax=3,
+        ytick=\empty,
+        xlabel=Re,
+        ylabel=Im,
+        ]
+        
+        \addplot [ thick,black, mark=x, mark size=6pt, only marks] coordinates { (-\omegazero,0) (\omegazero,0) }; 
+        %\addplot [ thick,black, mark=o, mark size=6pt] coordinates { (-0.5,0) }; 
+        
+      %\node[coordinate, pin={[pin distance=3cm] 135:{3 startpunkter}}] at (axis cs:0,0) {};
+      %\node[coordinate, pin={[pin distance=2.5cm] -135:{2 ändpunkter}}] at (axis cs:-0.5,0) {};
+    \end{axis}
+
+       \end{tikzpicture}
+
+
+      
+     \end{center}
+#+END_LaTeX
+*** Modified PD-control
+#    Using controller \(F(s) = K\left(2 + \frac{s}{1 + s/10}\right) = K \frac{12s + 20}{s + 10}\).
+
+#+BEGIN_LaTeX
+     \def\omegazero{1}
+     \begin{center}
+       \small
+       \begin{tikzpicture}[scale = 0.8, node distance=20mm, block/.style={rectangle, draw, minimum width=12mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+       
+       \node[coordinate] (refinput) {};
+       \node[sumnode, right of=refinput, node distance=20mm] (sumerr) {\tiny $\sum$};
+       \node[block, right of=sumerr] (controller) {$K\frac{12s + 20}{s+10}$};
+       \node[above of=controller, node distance=6mm] {controller};
+       \node[block, right of=controller, node distance=24mm] (plant) {$\frac{1}{s^2 - 1}$};
+       \node[above of=plant, node distance=6mm] {plant};
+       \node[coordinate, right of=plant, node distance=20mm] (output) {};
+
+       \draw[->] (refinput) -- node[above, pos=0.3] {$y_{ref}(t)$} (sumerr);
+       \draw[->] (sumerr) -- node[above] {$e(t)$} (controller);
+       \draw[->] (controller) -- node[above] {$u(t)$} (plant);
+       \draw[->] (plant) -- node[coordinate] (measure) {} node[above, pos=0.8] {$y(t)$} (output);
+       \draw[->] (measure) -- ++(0,-14mm) -| node[right, pos=0.95] {$-$} (sumerr);
+
+    \begin{axis} [
+        xshift = 12cm,
+        yshift = -3cm,
+        width=12cm,
+        height=8cm,
+        axis lines=middle,
+        axis line style={->},
+        xtick={-1, 1},
+        ytick={-1, 1},
+        %xticklabels={$-b$, -1},
+        xmin=-7,
+        xmax=2,
+        ymin=-3,
+        ymax=3,
+        ytick=\empty,
+        xlabel=Re,
+        ylabel=Im,
+        ]
+        
+        \addplot [ thick,black, mark=x, mark size=6pt, only marks] coordinates { (-\omegazero,0) (\omegazero,0) }; 
+        %\addplot [ thick,black, mark=o, mark size=6pt] coordinates { (-0.5,0) }; 
+        
+      %\node[coordinate, pin={[pin distance=3cm] 135:{3 startpunkter}}] at (axis cs:0,0) {};
+      %\node[coordinate, pin={[pin distance=2.5cm] -135:{2 ändpunkter}}] at (axis cs:-0.5,0) {};
+    \end{axis}
+
+       \end{tikzpicture}
+
+
+      
+     \end{center}
+#+END_LaTeX
+
+

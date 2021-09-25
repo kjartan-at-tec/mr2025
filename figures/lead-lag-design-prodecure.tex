@@ -1,0 +1,42 @@
+\documentclass[tikz]{standalone}
+\usetikzlibrary{calc}
+\usetikzlibrary{shapes,arrows}
+\usepackage{pgfplots}
+\usepgfplotslibrary{polar}
+\pgfplotsset{compat=1.9}
+
+\begin{document}
+
+
+   \tikzstyle{decision} = [diamond, draw, fill=blue!20, 
+   text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
+   \tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+   text width=6em, text centered, rounded corners, minimum height=4em]
+   \tikzstyle{line} = [draw, -latex']
+
+   \begin{tikzpicture}[node distance = 3cm, auto]
+   \node[block] (init) {Given $G(i\omega)$};
+   \node[decision, right of=init, node distance=4cm] (needlead) {Sufficient phase margin at desired \(\omega_c\)?};
+   \node [block, below of=needlead, node distance=3.5cm] (lead) {Add lead-compensator $G_1=GF_{lead}$};
+   \node [block, right of=needlead, node distance=4cm] (nolead) {Let $G_1=G$};
+   \node [block, right of=nolead, node distance=3.5cm, text width=8em] (gain) {Adjust gain so $|KG_1(i\omega_c)| = 1$};
+   \node[decision, right of=gain, node distance=4cm] (needlag) {Sufficient gain at low frequencies?};
+   \node [block, below of=needlag, node distance=3.5cm, text width=8em] (lag) {Add lag-compensator $G_2=KG_1F_{lag}$};
+   \node [block, right of=needlag, node distance=4cm] (nolag) {Let\\ $G_2=KG_1$};
+   \node [block, right of=nolag, node distance=3cm] (loopgain) {Let $G_o=G_2$};
+    
+   \draw[->] (init) -- (needlead);
+   \draw[->] (needlead) -- node {yes} (nolead);
+   \draw[->] (needlead) -- node {no} (lead);
+   \draw[->] (lead) -| (gain);
+   \draw[->] (nolead) -- (gain);
+   \draw[->] (gain) -- (needlag);
+   \draw[->] (needlag) -- node {yes} (nolag);
+   \draw[->] (needlag) -- node {no} (lag);
+   \draw[->] (lag) -| (loopgain);
+   \draw[->] (nolag) -- (loopgain);
+
+   \end{tikzpicture}
+   
+ \end{document}
+ 

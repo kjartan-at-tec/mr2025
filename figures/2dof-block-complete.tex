@@ -1,0 +1,41 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
+
+
+\begin{document}
+
+
+\begin{tikzpicture}[node distance=2.6cm, block/.style={rectangle, draw, inner sep=3mm}, sumnode/.style={circle, draw, inner sep=1pt}]
+
+  \node[block] (ffw) {$F_f(s)$};
+  \node[sumnode, right of=ffw] (sum) {\small $\Sigma$};
+  \node[block, right of=sum] (plant) {$G(s)$};
+  \node[sumnode, right of=plant] (sumdist) {\small $\Sigma$};
+  \node[block, below of=plant] (ffb) {$F_b(s)$};
+
+  \draw[->] (sumdist) -- node[coordinate] (measure) {} node[above, pos=0.9] {$y(t)$} ++(2,0);
+
+  \node[sumnode, below of=measure] (sumnoise) {\small $\Sigma$};
+
+  \node[coordinate, left of=ffw, node distance=2cm] (input) {};
+  \node[coordinate, above of=sumdist, node distance=1cm] (dist) {};
+  \node[coordinate, right of=sumnoise, node distance=1cm] (noise) {};
+
+
+  \draw[->] (input) -- node[above, pos=0.2] {$r(t)$} (ffw);
+  \draw[->] (ffw) to (sum);
+  \draw[->] (sum) -- node[above, ] {$u(t)$} (plant);
+  \draw[->] (plant) to (sumdist);
+  \draw[->] (measure) to (sumnoise);
+  \draw[->] (sumnoise) to (ffb);
+  \draw[->] (ffb) -| node[pos=0.9, right] {$-$} (sum);
+  \draw[->] (dist)  -- node[right, pos=0.2] {$v(t)$} (sumdist);
+  \draw[->] (noise)  -- node[above, pos=0.2] {$n(t)$}(sumnoise);
+\end{tikzpicture}
+
+\end{document}

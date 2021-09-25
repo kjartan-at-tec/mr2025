@@ -1,0 +1,378 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169]
+#+LaTex_HEADER: \usepackage{amssymb}
+#+LaTex_HEADER: \usepackage{circuitikz}
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepgfplotslibrary{groupplots}
+#+OPTIONS: H:2
+     
+
+#+title:  The DC motor
+# #+date: 2018-09-05
+
+* What do I want the students to understand?			   :noexport:
+  - How to read and sketch a root locus
+
+* Which activities will the students do?			   :noexport:
+  1. Sktech simple root locus0
+  2. Concept question: Values of K and step responses
+
+* Intro
+
+* The DC motor
+** Force acting on an electric conductor in a magnetic field
+   #+begin_center
+   \includegraphics[width=0.4\linewidth]{../../figures/HD-fig1_14.png}
+   \includegraphics[width=0.53\linewidth]{../../figures/HD-fig1_15.png}
+   \footnotesize Source: Hughes and Drury ''Electric motors and drives''
+   #+end_center
+
+   \[F=k_mI=(Bl_m)I,\]
+
+
+*** Solution                                                       :noexport:
+
+All electric motors, with the exception of reluctance motors, are based on the fundamental phenomenon that when a wire conducting electric current is situated in a magnetic field, it will experience a force which is proportional to the current I and the magnetic flux density B, where flux density is a measure of the strength of the magnetic field per unit area normal to the magnetic flux lines. 
+   
+** Rotating motor
+   #+begin_export latex
+   \begin{center}
+   \includegraphics[width=0.4\linewidth]{../../figures/HD-fig3_1.png}
+   \includegraphics[width=0.53\linewidth]{../../figures/HD-fig3_2.png}
+   {\footnotesize Source: Hughes and Drury ''Electric motors and drives''}
+   \end{center}
+   #+end_export
+   
+*** Notes                                                          :noexport:
+    Most electric motors rotate. The part of the motor that rotates is called the rotor, and the part that is static is called the stator.
+
+    In the brushed DC motor, copper wires are wound around the rotor. These windings are called the armature windings.
+
+    The magnetic field needed to generate force on the armature windings is generated either by a permanent magnet, or by windings in the stator. A motor can have one or more magnetic pole-pairs.
+
+    Current is fed to the rotor via brushes that contact the commutator. This construction makes sure that the direction of current in the rotor windings is always in the direction that generats maximum torque.
+    
+** Magnetic force and electro-motive force
+
+*** The magnetic force on a current-carrying conductor
+   \[ F(t) = k_f i(t) \quad\Leftrightarrow\quad T(t) = k_f r i(t) = k_m i(t)\]
+
+*** Voltage generated in a conductor moving in a magnetic field
+   \[ e(t) = k_v v(t) \quad\Leftrightarrow\quad e(t) = k_v r \omega(t) = k_e \omega(t)\]
+   \(e(t)\) is called  /Back electro-motive force (Back e.m.f.)/.
+
+   *In  SI-system units* \(k_m = k_e = k\).
+
+ 
+*** Notes                                                          :noexport:
+With a constant magnetic field, torque is proportional to the armature current, which will typically cause the motor to accelerate if the motor torque is larger then the frictiona and load torques acting on the motor.
+
+However, a conductor which moves with respect to a magnetic field will experience a voltage difference across it. This voltage difference tends to oppose the voltage that drives the armature current, hence it is called Back e.m.f.
+
+The two proportionality constants are actually equal when all physical variables are expressed in the SI-system. The reason is this. Let's simplify the situation by ignoring mechanical friction losses and resistance in the circuit, then the electrical power consumed by the motor must equal the mechanical power it produces since
+P_e = e*i = k_e\omega i, and
+P_m = T\omega = k_m i \omega
+and P_e = P_m
+we get k_e = k_m = k.
+The result holds also in practice with friction and resistance losses.
+
+** Equivalent circuit
+
+   Consider a DC motor with separate excitation
+   #+begin_export latex
+      \begin{center}
+	\begin{circuitikz}
+	  \draw (4,1) node[elmech](motor){M};
+	  \draw (motor.north) to[R=$R$] (4,4) to[L=$L$] (0,4)
+	  to[american voltage source, label=$u$] (0,0) -| (motor.south);
+	  \draw[thick,->>](motor.right)--++(1,0)node[midway,above]{$\omega$};
+
+	  \node[] at (2, -0.8 cm) {\(L \frac{d}{dt}i(t) +  Ri(t) + k\omega(t) = u\)};
+
+	  \node[] at (2, 4.5 cm) {Armature};
+
+	  \begin{scope}[xshift=8cm]
+	  \draw (0,1) to (4,1) to[R=$R_f$] (4,3) to[L=$L_f$] (0,3)
+	  to[american voltage source, label=$V_f$] (0,1);
+	  \node[] at (2, 4.5 cm) {Field};
+	  \end{scope}
+	\end{circuitikz}
+      \end{center}
+   #+end_export
+
+   #+begin_center
+   Newton: \( J\frac{d}{dt}\omega(t) = ki(t) - T_l(t)\)
+   #+end_center
+
+*** Notes                                                          :noexport:
+    To analyze the behavior of th DC motor it is convenient to work with the equivalent circuit.
+
+    The figure shows the case of a DC motor with separate excitation. There is a separate electric circuit for the field windings, and once the current is established, it will not change.
+
+   The armature circuit consists of the inductance of the armature windings, the resistance in the circuit, and an ideal motor element which produces torque, and which will generate a back emf proportional to the angular velocity.
+
+   Kirchoffs voltage law together with the propertis of the different elements give rise to the ODE for the circuit.
+
+   This ODE is coupled to the ODE describing the dynamics of the load that the motor is driving. Moment of inertia times the angular acc equals the net torque. Here we have a positive torque generated by the motor, and a load torque (which also includes friction).
+   
+    
+** Modeling the DC motor
+
+      #+begin_export latex
+      \begin{center}
+	\begin{circuitikz}[yscale = 0.5]
+	  \draw (4,2) node[elmech](motor){M};
+	  \draw (motor.north) to[short] (4,4) to[R=$R$] (2,4) to[L=$L$] (0,4)
+	  to[american voltage source, label=$u$] (0,0) -| (motor.south);
+	  \draw[thick,->>](motor.right)--++(1,0)node[midway,above]{$\omega$};
+
+	  \node[] at (9, 4 cm) {\(L \frac{d}{dt}i(t) +  Ri(t) + k\omega(t) = u\)};
+	  \node[] at (9, 2 cm) {\(\frac{d}{dt}i(t) = \frac{1}{L} \Big(-Ri(t) - k\omega(t) + u\Big)\)};
+	  \end{circuitikz}
+	  \end{center}
+	  \begin{center}
+	  \begin{circuitikz}[yscale = 1]
+	\begin{scope}[xshift=8cm, yshift=-1cm,
+	block/.style={rectangle, draw, minimum width=12mm, minimum height=10mm},
+	amp/.style = {regular polygon, regular polygon sides=3,
+              draw, fill=white, text width=1em,
+              inner sep=1pt, outer sep=0mm,
+              shape border rotate=-90},
+	      summ/.style = {circle, draw, inner sep = 1pt},]
+	 \node[block,] (int) at (0,0) {$\int$};
+	 \node[amp, left of=int, node distance=30mm] (oneoverL) {$\frac{1}{L}$}; 
+	 \draw[->] (oneoverL) -- node[above] {$\frac{d}{dt}i(t)$} (int);
+	 \node[summ, left of=oneoverL, node distance=20mm] (sum) {\small $\Sigma$};
+	 \node[coordinate, left of=sum, node distance=35mm] (Vin) {};
+	 \draw[->] (Vin) -- node[above, very near start] {$u$} node[coordinate, pos=0.6] (mp) {} (sum);
+	 \node[amp, above of=mp, node distance=15mm] (mkonst) {$-k$};
+	 \draw[->] (int) -- node[coordinate] (fb) {} node[above, near end] {$i(t)$} ++(25mm, 0);
+	 \draw[->] (mkonst) ++(-2cm, 0) -- node[above, near start] {$\omega(t)$} (mkonst);
+	 \draw[->] (mkonst) -| (sum);
+	 \draw[->] (sum) -- (oneoverL);
+	 \node[amp, below of =int, node distance=16mm, rotate=180] (RR) {\rotatebox{-180}{$-R$}};
+	 \draw[->] (fb) |- (RR) -| (sum);
+	 
+	 \end{scope}
+	\end{circuitikz}
+	\end{center}
+   #+end_export
+
+   
+*** Notes                                                          :noexport:
+
+    The model of the DC motor can be expresses in a block-diagram as follows by rewriting the ODE.
+
+    It is a first-order system, so the block diagram must have a single integrator. The output of this is the current, and the input is the derivative of the current. As we see from the ODE the derivative is a factor 1/L multiplying the sum of three terms.
+
+    
+** Transmission
+
+** Transmission
+      #+begin_export latex
+	  \begin{center}
+	  \begin{circuitikz}[xscale = 0.8]
+	\begin{scope}[xshift=8cm, yshift=-1cm,
+	block/.style={rectangle, draw, minimum width=12mm, minimum height=10mm},
+	amp/.style = {regular polygon, regular polygon sides=3,
+              draw, fill=white, text width=1em,
+              inner sep=1pt, outer sep=0mm,
+              shape border rotate=-90},
+	      summ/.style = {circle, draw, inner sep = 1pt},]
+	 \node[block,] (int) at (0,0) {$\int$};
+	 \node[amp, left of=int, node distance=25mm] (oneoverL) {$\frac{1}{L}$}; 
+	 \draw[->] (oneoverL) -- node[above] {$\frac{d}{dt}i$} (int);
+	 \node[summ, left of=oneoverL, node distance=15mm] (sum) {\small $\Sigma$};
+	 \node[coordinate, left of=sum, node distance=45mm] (Vin) {};
+	 \draw[->] (Vin) -- node[above, very near start] {$u$} node[coordinate, pos=0.8] (mp) {} (sum);
+	 \node[amp, above of=mp, node distance=15mm] (mkonst) {$-k$};
+	 \node[amp, left of=mkonst, node distance=20mm] (gr) {$g_r$};
+	 \node[amp, right of=int, node distance=25mm] (mk2) {$k$};
+	 \node[amp, right of=mk2, node distance=20mm] (gr2) {$g_r$};
+	 \draw[->] (int) -- node[coordinate, pos=0.5] (meas) {} node[above] {$i$} (mk2);
+	 \draw[->] (mk2) -- node[above] {$T_m$} (gr2);
+	 \draw[->] (gr2) -- node[above] {$T_e$} ++(15mm, 0);
+	 \draw[->] (gr) ++(-2cm, 0) -- node[above, near start] {$\omega_a$} (gr);
+	 \draw[->] (gr) -- node[above, ] {$\omega_m$} (mkonst);
+	 \draw[->] (mkonst) -| (sum);
+	 \draw[->] (sum) -- (oneoverL);
+	 \node[amp, below of =int, node distance=16mm, rotate=180] (fb) {\rotatebox{-180}{$-R$}};
+	 \draw[->] (meas) |- (fb);
+	 \draw[->] (fb) -| (sum);
+	 \end{scope}
+	\end{circuitikz}
+	\end{center}
+   #+end_export
+
+   Ignoring losses in the transmission:
+   \[\underbrace{T_m\omega_m}_{\text{Power in}} = \underbrace{T_a\omega_a}_{\text{Power out}}\]
+   # *Actividad individual* Determine \(T_o(t) = f\big(T_i(t)\big).
+
+   
+*** Notes                                                          :noexport:
+    Often the motor is not driving the load directly, but is connected to the load via a transmission, or a gear box. The transmission is characterized by the gear ratio g_r wchich is the ratio of the speed of the motor to the speed of the load
+    g_r = \frac{\omega_m}{\omega_a}
+    \omega_m = g_r \omega_a
+    Ignoring losses in the transmission, the power at the motor axis entering the gear box must equal the power at the load axis exiting the gearbox. Since power is torque times angular velocity, 
+
+    This gives
+    T_a= \omega_m / \omega_a  T_m = g_r T_m.
+
+    Often the gearbox is used to convert a fast spinning motor axle with low torque to low speed and high torque.
+
+    Note that by straight-forward block-diagram algebra, this part of the diagram can
+    be simplified to one block with the transfer function 1/R / (s L/R + 1)
+    Which is a first-order system.
+    [DRAW mark tau and if]
+
+** DC motor driving a load
+
+     \[ J\frac{d}{dt} \omega_a = T_a - T_l \]
+     
+      #+begin_export latex
+	  \begin{center}
+	  \begin{tikzpicture}[scale = 0.5,
+	block/.style={rectangle, draw, minimum width=12mm, minimum height=10mm},
+	amp/.style = {regular polygon, regular polygon sides=3,
+              draw, fill=white, text width=1em,
+              inner sep=1pt, outer sep=0mm,
+              shape border rotate=-90},
+	      summ/.style = {circle, draw, inner sep = 1pt},]
+	 \node[block,] (dc) at (0,0) {$\frac{1/R}{s\frac{L}{R} + 1}$};
+	 \node[summ, left of=dc, node distance=20mm] (sum) {\small $\Sigma$};
+	 \node[coordinate, left of=sum, node distance=20mm] (Vin) {};
+	 \draw[->] (Vin) -- node[above, very near start] {$u$} node[coordinate, pos=0.8] (mp) {} (sum);
+	 \node[block, below of=sum, node distance=20mm] (mkonst) {$g_rk$};
+	 \node[block, right of=dc, node distance=25mm] (mk2) {$g_rk$};
+	 \node[summ, right of=mk2, node distance=20mm] (sumtorque) {\small $\Sigma$};
+	 \node[block, right of=sumtorque, node distance=20mm] (load) {$\frac{1}{Js}$};
+	 %\node[block, right of=load, node distance=25mm] (int) {$\frac{1}{s}$};
+	 \node[coordinate, right of = load, node distance=25mm] (output) {}; 
+	 \node[coordinate, above of = sumtorque, node distance=20mm] (tload) {}; 
+	 \draw[->] (sum) -- (dc);
+	 \draw[->] (dc) -- node[coordinate, pos=0.5] (meas) {} node[above] {$i$} (mk2);
+	 \draw[->] (mk2) -- node[above] {$T_a$} (sumtorque);
+	 \draw[->] (sumtorque) -- node[above] {} (load);
+	 \draw[->] (load)  -- node[coordinate,] (meas) node[above,] {$\omega_a$} (output);
+	 \draw[->] (mkonst) -- node[pos=0.9, left,] {$-$} (sum);
+	 %\draw[->] (int) --  node[very near end, above] {$\theta_a$} (output);
+	 \draw[->] (meas) |- (mkonst);
+	 \draw[->] (tload) -- node[right, very near start] {$T_l$} node [right, pos=0.9] {$-$} (sumtorque);
+	\end{tikzpicture}
+	\end{center}
+   #+end_export
+
+
+*** Notes                                                          :noexport:
+    In all interesting aplications, the DC motor is driving a load. The behavior is described by Newton's second law.
+
+    Note the negative feedback loop. An increase in the armature voltage will increase the armature current. This in turn increases the the motor torque that tends to accelerate the load. The load angular velocity causes a back emf which opposes the armature voltage.
+
+    The constant blokcs combines the gear ratio and the motor constant.  
+
+    Note that the time constant of the motor equivalent circuit is L/R, which in many cases is very small compared to the time constant of the mechanical side. Especially if the load is heavy.
+    
+** DC motor driving a load
+
+Assuming the inductance to be negligable.
+
+      #+begin_export latex
+	  \begin{center}
+	  \begin{tikzpicture}[scale = 0.5,
+	block/.style={rectangle, draw, minimum width=12mm, minimum height=10mm},
+	amp/.style = {regular polygon, regular polygon sides=3,
+              draw, fill=white, text width=1em,
+              inner sep=1pt, outer sep=0mm,
+              shape border rotate=-90},
+	      summ/.style = {circle, draw, inner sep = 1pt},]
+	 \node[block,] (dc) at (0,0) {$\frac{1}{R}$};
+	 \node[summ, left of=dc, node distance=20mm] (sum) {\small $\Sigma$};
+	 \node[coordinate, left of=sum, node distance=20mm] (Vin) {};
+	 \draw[->] (Vin) -- node[above, very near start] {$u$} node[coordinate, pos=0.8] (mp) {} (sum);
+	 \node[block, below of=sum, node distance=20mm] (mkonst) {$g_rk$};
+	 \node[block, right of=dc, node distance=25mm] (mk2) {$g_rk$};
+	 \node[summ, right of=mk2, node distance=20mm] (sumtorque) {\small $\Sigma$};
+	 \node[block, right of=sumtorque, node distance=20mm] (load) {$\frac{1}{Js}$};
+	 %\node[block, right of=load, node distance=25mm] (int) {$\frac{1}{s}$};
+	 \node[coordinate, right of = load, node distance=25mm] (output) {}; 
+	 \node[coordinate, above of = sumtorque, node distance=20mm] (tload) {}; 
+	 \draw[->] (sum) -- (dc);
+	 \draw[->] (dc) -- node[coordinate, pos=0.5] (meas) {} node[above] {$i$} (mk2);
+	 \draw[->] (mk2) -- node[above] {$T_a$} (sumtorque);
+	 \draw[->] (sumtorque) -- node[above] {} (load);
+	 \draw[->] (load)  -- node[coordinate,] (meas) node[above,] {$\omega_a$} (output);
+	 \draw[->] (mkonst) -- node[pos=0.9, left,] {$-$} (sum);
+	 %\draw[->] (int) --  node[very near end, above] {$\theta_a$} (output);
+	 \draw[->] (meas) |- (mkonst);
+	 \draw[->] (tload) -- node[right, very near start] {$T_l$} node [right, pos=0.9] {$-$} (sumtorque);
+	\end{tikzpicture}
+	\end{center}
+   #+end_export
+
+   
+# *Activity* What is the transfer function from the voltage input $u(t)$ to the angular velocity $\omega_a(t)$?
+
+*** Notes                                                          :noexport:
+
+So ignoring the inductance, will simplify the system.
+
+And making use of the superposition property of linear systems, we can find the transfer function from each of the input signals u and T_l to w_a separately.
+
+So we set T_l=0, then find
+
+G(s) = \frac{W_a(s)}{U(s)}
+
+Straight-forward block-diagram algebra will give the following. Here derived using Mason's rule
+
+  G = (1/R g_r k 1/Js) / ( 1 + (1/R g_r k 1/Js) g_r k)
+    = 1/g_rk / ( RJ/(g_rk)^2) s + 1)
+    
+
+** DC motor driving a load
+
+      #+begin_export latex
+	  \begin{center}
+	  \begin{tikzpicture}[scale = 0.5,
+	block/.style={rectangle, draw, minimum width=12mm, minimum height=10mm},
+	amp/.style = {regular polygon, regular polygon sides=3,
+              draw, fill=white, text width=1em,
+              inner sep=1pt, outer sep=0mm,
+              shape border rotate=-90},
+	      summ/.style = {circle, draw, inner sep = 1pt},]
+	 \node[block,] (dc) at (0,0) {$\frac{k_1}{s\tau + 1}$};
+	 \node[summ, right of=dc, node distance=20mm] (sum) {\small $\Sigma$};
+	 \node[block, above of=sum, node distance=20mm] (loadtrf)  {$-\frac{k_2}{s\tau + 1}$};
+	 \node[coordinate, left of=dc, node distance=20mm] (Vin) {};
+	 \node[coordinate, above of=loadtrf, node distance=20mm] (tload) {};
+	 \node[coordinate, right of=sum, node distance=30mm] (output) {};
+
+	 \draw[->] (Vin) -- node[above, very near start] {$u$} node[coordinate, pos=0.8] (mp) {} (dc);
+	 \draw[->] (tload) -- node[right, very near start] {$T_l$} node [right, pos=0.9] {} (loadtrf);
+	 \draw[->] (dc) to (sum);
+	 \draw[->] (loadtrf) to (sum);
+	 \draw[->] (sum) -- node[above, near end,] {$\omega_a$} (output);
+	 
+	\end{tikzpicture}
+	\end{center}
+   #+end_export
+
+   \[ \tau=\frac{JR}{(g_rk)^2}, \quad k_1= \frac{1}{g_r k}, \quad k_2 = \textcolor{white}{\frac{R}{(g_r k)^2}} \]
+   
+      
+*** Notes                                                          :noexport:
+
+    So, we can conclude that the DC motor driving a load is approximately a first-order system
+
+    [DRAW!]
+    
+    with a time-constant that is proportional to the moment of inertia J and the resistance R. The higher the moment of inertia, the slower the motor will accelerate to reach the final velocity. The armature resistance limits the current and hence the torque for a given input voltage, and therefore also makes the system respond slower.
+
+    The time-constant is inverse proportional to the gear ratio squared. So if the gear ratio is large, the motor will reach the final velocity fast. The motor konstant has the same effect on the time-constant. The higher it is, the faster the motor will reach the final velocity.
+
+    The gain is inverse proportional to the gear ratio and the motor constant. So the higher the gear ratio, the lower the final velocity is. And the higher the motor constant, the lower the final velocity.
+
+    Note that the transfer function from the load torque to the angular velocity is negative. This is to be expected since the torque tends to slow down the motor. The denominator is the same for both transfer functions. Determining the The gain k_2 is left as an exercise for the viewer.
+    
