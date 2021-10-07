@@ -100,7 +100,7 @@
    
    \[ y(t) = \underbrace{|G(i\omega_1)|}_{\text{amplification}} \sin \big( \omega_1 t + \underbrace{\arg G(i\omega_1)}_{\text{phase shift}} \big) \]
 
-   The Bode diagram shows the magnitude and phase of the transfer function evaluated on the positive imaginary axis. It thus contains all information about the steady-state response of the system to input signals of different frequency.
+   The Bode diagram shows the *magnitude* and *phase* of the transfer function evaluated on the positive imaginary axis. It thus contains all information about the steady-state response of the system to input signals of different frequency.
 
 
 ** Specifications on the frequency properties of the closed-loop system
@@ -118,6 +118,11 @@
    #+BEGIN_CENTER 
     \includegraphics[width=\linewidth]{../../figures/example-bode-GC-timeseries}
    #+END_CENTER
+
+*** Notes                                                          :noexport:
+3: 4pi/pis = 4 rad/s, gain \approx 1, phshift \approx -150, not quite completely out of phase. OK
+
+Correct answer 2: Should have had an amplification, but plot shows attenuation.
 
 ** From loop gain to closed-loop gain
    #+begin_export latex
@@ -227,8 +232,8 @@ If the open-loop system (the loop gain) is not unstable, i.e. $G_o(s)$ has no po
 \[G_c(i\omega) = \frac{ G_o(i\omega)}{1 + G_o(i\omega)}\]
 
 *Activity*
-If \(Go(i\omega) = -0.5\) what is \(|G_c(i\omega)|\)?
-If \(Go(i\omega) = -i\) what is \(|G_c(i\omega)|\)?
+1) If \(Go(i\omega_1) = -0.5\) what is \(|G_c(i\omega_1)|\)?
+2) If \(Go(i\omega_1) = -i\) what is \(|G_c(i\omega_1)|\)?
 
     
 ** How to achieve the frequency-domain specifications
@@ -255,11 +260,10 @@ Which of the Bode plots to the right shows the correct loop gain \(G_o(i\omega)\
 
 
 
-** How to achieve the frequency-domain specifications
 
 ** Stability margins excercise
 \begin{center}
-  \includegraphics[width=.8\linewidth]{../../figures/bode-example-margin2.pdf}
+  \includegraphics[width=.6\linewidth]{../../figures/bode-example-margin2.pdf}
 \end{center}
 
 *Activity* Determine the cross-over frequency \(\omega_c\), the phase cross-over frequency \(\omega_p\), the phase margin and the amplitude margin. 

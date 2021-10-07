@@ -1,0 +1,25 @@
+    \begin{center}
+     \def\ggain{1}
+     \def\Tcnst{1}
+     \begin{tikzpicture}
+       \begin{axis}[
+       width=7cm,
+       height=6cm,
+       grid = both,
+       xlabel = {Time [$\tau$]},
+       ylabel = {Angle [20 rad]},
+       title = {$K=1$},
+       %xtick = {0, \tdelay, \tone, \two},
+       %xticklabels = {0, $\theta$, $\theta+\frac{\tau}{3}$, $\theta + \tau$},
+       %ytick = {0, \yone, \ytwo, \uampl, \yfinal},
+       %yticklabels = {0, $0.283y_{f}$, $0.632y_f$, $u_f$, $y_f$},
+       xmin = -2, xmax=20,
+       minor y tick num=4,
+       minor x tick num=4,
+       every major grid/.style={red, opacity=0.5},
+       ]
+	 \addplot [thick, black, no marks, domain=-2:20, samples=200] {x>0};
+	 \addplot [thick, red!60!black, no marks, domain=-0.2:20, samples=100] {(x>0)*(1 - (exp(-x/2)* (sqrt(3)* cos(deg((sqrt(3)* x)/2)) + sin(deg((sqrt(3)* x)/2))))/sqrt(3))};
+       \end{axis}
+     \end{tikzpicture}
+    \end{center}

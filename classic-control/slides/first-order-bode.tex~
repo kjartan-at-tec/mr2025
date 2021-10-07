@@ -1,0 +1,238 @@
+\documentclass[dvisvgm,hypertex,aspectratio=169]{beamer}
+\usefonttheme{serif}
+
+\usepackage{animate}
+\usepackage{ifthen}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PageDown, PageUp key event handling; navigation symbols
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \usepackage[totpages]{zref}
+% \usepackage{atbegshi}
+% \usepackage{fontawesome}
+% \setbeamertemplate{navigation symbols}{}
+% \AtBeginShipout{%
+%   \AtBeginShipoutAddToBox{%
+%     \special{dvisvgm:raw
+%       <defs>
+%       <script type="text/javascript">
+%       <![CDATA[
+%         document.addEventListener('keydown', function(e){
+%           if(e.key=='PageDown'){
+%             \ifnum\thepage<\ztotpages
+%               document.location.replace('\jobname-\the\numexpr\thepage+1\relax.svg');%
+%             \fi
+%           }else if(e.key=='PageUp'){
+%             \ifnum\thepage>1
+%             %document.location.replace('\jobname-\the\numexpr\thepage-1\relax.svg');%
+%               document.location.replace('\jobname-\makeatletter\@anim@pad{2}{\thepage-1}\makeatother\relax.svg');%
+%             \fi%
+%           }
+%         });
+%       ]]>
+%       </script>
+%       </defs>
+%     }%
+%   }%
+%   \AtBeginShipoutUpperLeftForeground{%
+%     \raisebox{-\dimexpr\height+0.5ex\relax}[0pt][0pt]{\makebox[\paperwidth][r]{%
+%       \normalsize\color{structure!40!}%
+%       \ifnum\thepage>1%
+%       \href{\jobname-\the\numexpr\thepage-1\relax.svg}{\faArrowLeft}%
+%       \else%  
+%         \textcolor{lightgray}{\faArrowLeft}%  
+%       \fi\hspace{0.5ex}%
+%       \ifnum\thepage<\ztotpages%
+%       \href{\jobname-\the\numexpr\thepage+1\relax.svg}{\faArrowRight}%
+%       \else%
+%         \textcolor{lightgray}{\faArrowRight}%  
+%       \fi%
+%       \hspace{0.5ex}%
+%     }}%
+%   }%  
+% }%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{animate}
+\usepackage{tikz}
+\usepackage{circuitikz}
+%\usetikzlibrary{external}
+%\tikzexternalize[prefix=tikzfigures/] % activate and define figures/ as cache folder
+
+% ------------------------------------------------
+% Determine which slides to include
+
+\includeonlyframes{%
+P0,% Phasors
+P1A,% Phasor animation
+}
+% ------------------------------------------------
+
+
+% ------------------------------------------------
+% Dimensions
+
+\def\axissize{6}
+% ------------------------------------------------
+
+
+% pu values
+% \phasediagram{iq}{id}{E}{vcolor}{icolor}{fcolor}
+\newcommand{\phasordiagram}[6]{%
+  % Magnet
+  \shade[left color=green!90, right color = red!90, opacity = 0.7]  (-0.3, -0.1) rectangle (0.3, 0.1); 
+  \def\vscale{2}
+  \def\iscale{1}
+  \def\mscale{0.7}
+  \pgfmathsetmacro{\Xr}{0.3*#3} % Reactance
+   \pgfmathsetmacro{\ee}{\vscale*#3}
+    \draw[blue!80,->] (0,0) -- node[right, pos=0.6]{$E=#3$} (0,\ee);
+    \pgfmathsetmacro{\iq}{\iscale*#1}
+    \pgfmathsetmacro{\id}{-\iscale*#2}
+    \pgfmathsetmacro{\idtest}{100**#2}
+    
+    \draw[#5, thin, ->] (0,0) -- node[above, near end] {$I_d$} (\id, 0);
+    \pgfmathsetmacro{\iimag}{sqrt(#2*#2 + #1*#1)}
+
+    \pgfmathsetmacro{\ixmag}{\Xr*\iimag}
+    \draw[#5, thin, ->] (\id,0) --  node[left, near end] {$I_q$} (\id,\iq);
+    \draw[#5, ->] (0,0) -- node[right, near end] {$I=\iimag$} (\id, \iq);
+    \pgfmathsetmacro{\ixx}{\vscale*\Xr*#1}
+    \pgfmathsetmacro{\ixy}{\vscale*\Xr*#2}
+        \pgfmathsetmacro{\vvmag}{sqrt((\Xr*#1)*(\Xr*#1) + (#3-\Xr*#2)*(#3-\Xr*#2))}
+    \draw[#4,->] (0,\ee) --  node[above] {$I(#3X)=\ixmag$} ++(-\ixx,-\ixy);
+    \draw[#4,<-] (0,\ee) ++(-\ixx,-\ixy) -- node[left] {$V$} (0,0);
+    \pgfmathsetmacro{\phimag}{2}
+    \draw[green!80!black, dashed, ->] (0,0) -- node[above] {$\phi_{mag}$} (\phimag,0);
+    \draw[#6, dashed, ->] (\phimag,0) -- node[right] {$\phi_{arm}$} (\phimag+\mscale*\id,\mscale*\iq);
+    \draw[#6, dashed, ->] (0,0) -- node[right] {$\phi_{res}$} (\phimag+\mscale*\id,\mscale*\iq);
+
+    \draw[dotted,] (0, 2.08) arc [start angle=90, end angle=130, radius = 2.08] node[above] {$V_r$};
+    \draw[blue!80,->] (0,0) -- node[right, pos=0.6]{$E=#3$} (0,\ee);
+  }
+
+
+% First argument is time, second is pole number, third is amplitude,
+% fourth is phase shift, fifth is color
+\newcommand*{\drawwave}[5]{%
+  \pgfmathsetmacro{\axl}{12}
+  \draw[#5, domain=0:360, samples=36, smooth, variable=\t]
+  plot ( { \t/360*\axl }, {-#3*(sin(\n)*cos(\t*#2/2 - 90 -#4) } );
+}
+
+
+\author{Kjartan Halvorsen}
+\date{2021-06-01}
+\title{Field-oriented control of permanent magnet synchronous motors}
+
+
+
+\begin{document}
+
+%---------------------------------------------------------
+\begin{frame}[label=P1A]{Phasors}
+
+  \def\vcolor{blue!80!black}
+  \def\icolor{green!80!black}
+
+  \pgfmathsetmacro{\Gcmag}{1.5}
+  \def\phshift{\frac{\pi}{3}}
+  \pgfmathsetmacro{\thetaval}{(60)}
+  \pgfmathsetmacro{\vrms}{1.2}
+  \pgfmathsetmacro{\vmag}{sqrt(2)*\vrms}
+  \pgfmathsetmacro{\irms}{\Gcmag*\vrms}
+  \pgfmathsetmacro{\iimag}{sqrt(2)*\irms}
+  \pgfmathsetmacro{\axl}{4}
+  \pgfmathsetmacro{\ws}{12}
+
+  \[ \textcolor{\vcolor}{r(t) = \sin(\omega_1 t)}, \qquad \textcolor{\icolor}{y(t) = \Gcmag \sin(\omega_1 t - \phshift )} \] 
+
+ \begin{center}
+    \begin{animateinline}[controls,autoplay,loop]{8}
+      \multiframe{120}{n=0+3}{
+        \begin{tikzpicture}[scale=0.6, transform shape]
+          %\useasboundingbox (-4 cm, -4 cm) rectangle (14 cm, 8 cm);
+          \pgfmathsetmacro{\vcy}{\vmag*sin(\n)}
+          \pgfmathsetmacro{\icy}{\iimag*sin(\n-\thetaval)}
+           \begin{scope}[xshift = 2.8cm,]
+             \draw[->, black!50] (0 cm, 0) -- (2*\axl cm, 0);
+             %\foreach \ax in {0, 60, 120, ..., 360} {
+             % \pgfmathsetmacro{\axx}{\ax*\axl/360.0)}
+             % \draw (\axx cm, 0) -- (\axx cm, -0.5) node[below] {\ax};
+             %}
+             \pgfmathsetmacro{\dom}{\n + 360}
+             \pgfmathsetmacro{\nnow}{\dom/360*\axl}
+             \draw[black!30] (\nnow, -3 cm) -- (\nnow cm, 3cm);
+             %\node[black!30] at (2*\axl, -0.5) {$t$};
+             \node[\vcolor, circle, draw, inner sep=1pt] at (\nnow, \vcy) {};
+             \node[\icolor, circle, draw, inner sep=1pt] at (\nnow, \icy) {};
+             \draw[\vcolor, domain=0:\dom, smooth, variable=\t]
+             plot ( { \t/360.0*\axl}, {\vmag*sin(\t)} );
+             %plot ( { \t/360.0*\axl}, {\vmag*sin(\dom -\t)} );
+             \draw[\icolor, domain=0:\dom, smooth, variable=\t]
+             plot ( { \t/360.0*\axl}, {\iimag*sin(\t-\thetaval)} );
+             %plot ( { \t/360.0*\axl}, {\iimag*sin(\dom -\t-\thetaval)} );
+           \end{scope}
+
+          \begin{scope}[xshift=-1cm,]
+
+            \draw[->, thin, black!50] (-3, 0) -- (3, 0);
+            \draw[->, thin, black!50] (0,-3) -- (0, 3);
+            %\node[\vcolor, ] at (\vmag, -0.5)  {$r$}; 
+            %\node[\icolor] at (\irms, -1.6) {$y$}; 
+
+            \pgfmathsetmacro{\iiy}{\iimag*sin(-\thetaval)}
+            \pgfmathsetmacro{\iix}{\iimag*cos(\thetaval)}
+            \draw[\vcolor,thick, ->] (0,0) -- (\vmag, 0) node[right] {$r$};
+            \draw[\icolor,thick, ->] (0,0) -- (\iix, \iiy) node[right] {$y$};
+
+            \pgfmathsetmacro{\vcx}{\vmag*cos(\n)}
+            \draw[\vcolor,  ->] (0,0) -- (\vcx, \vcy); 
+
+            \pgfmathsetmacro{\icx}{\iimag*cos(\n-\thetaval)}
+            \draw[\icolor,  ->] (0,0) -- (\icx, \icy); 
+          \end{scope}
+        \end{tikzpicture}    
+      }
+    \end{animateinline}
+  \end{center}
+\end{frame}
+
+\note{%
+  Whenever you work with sinusoidal signals, it is useful to have this image in mind.
+
+  Think then of the sinusoid as a vector rotating about the origin at a certain constant speed. The speed of this rotation, in rad/s is the angular frequency of the sinusoid. The projection of the tip of the vector onto the vertical axis is the value of the sine function.
+
+  We will mostly work with angular frequencies in this course. And so if the frequency f the sinusod is given in radius per seconds, it means that the angle of that rotating vector to the positive horizontal axis (positive x) increases linearly with time, and is given by \omega t.
+
+  The sinusoid is also represented by a phasor, which shows its magnitude and phase with respect to a reference. This reference is usually taken to be the positive horisontal axis.
+
+  The phase-shift, like in the green sinusoid, is shown by the phasor having an angle to the positive horizontal axis. If the phase shift is zero, the phasor is aligned with the positive horizontal axis.
+
+  
+  The time it takes to complete one revolution of the vector is called the period of the sinusoid, and can be found by solving 2\pi = \omega T => T = (2\pi)/\omega.
+
+  If we measure the period T of a sinusoid, we can find its angular frequency by
+  \omega = (2\pi)/T
+
+  The green signal y is the response of some LTI to the sinusoidal input r. It is amplified by a factor 1.5, and phase-shifted by an angle of negative pi/3, or negative 60 degrees. This means that the output signal is lagging behind the input signal. This is common in physical dynamical systems.
+
+  If we know the angular frequency and the phase lag, we may ask what this lag is in time, \Delta t?
+  It is the time it takes for the green vector to rotate the angle to reach the horizontal axis. So \omega_1 \Delta t = \phi = pi/3
+    In this time interval, the vectors will have rotated through an angle of \omega_1 \Delta t = pi/3, so the lag in time must be \Delta t = (pi/3) / \omega_1.
+
+  If we have measured this lag in time, how do we find the corresponding lag in phase?
+  By multiplying: \phi =  \omega_1 \Delta t. The sign of the phase lag is found by seeing that the output is delayed wrt the input.
+  
+  Since \omega_1 = (2\pi)/T, we get \phi = (2\pi) \Delta T / T. 
+
+  
+
+ 
+
+  
+  }
+
+\end{document}
+

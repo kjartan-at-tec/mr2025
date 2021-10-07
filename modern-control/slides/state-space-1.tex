@@ -1,0 +1,373 @@
+% Created 2021-10-07 Thu 14:11
+% Intended LaTeX compiler: pdflatex
+\documentclass[presentation,aspectratio=1610]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage{khpreamble, euscript}
+\DeclareMathOperator{\atantwo}{atan2}
+\newcommand*{\ctrb}{\EuScript{C}}
+\newcommand*{\obsv}{\EuScript{O}}
+\usetheme{default}
+\author{Kjartan Halvorsen}
+\date{\today}
+\title{Controllability and observability}
+\hypersetup{
+ pdfauthor={Kjartan Halvorsen},
+ pdftitle={Controllability and observability},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 26.3 (Org mode 9.4.6)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+
+\section{Repetition: State space models}
+\label{sec:org53d648f}
+\begin{frame}[label={sec:orge213076}]{The concept of state}
+\begin{description}
+\item[{State}] The information needed about the history of a dynamical system in order to determine the future behaviour of the system given future input signals.
+\end{description}
+\end{frame}
+
+\section{Canonical forms}
+\label{sec:org555dbad}
+
+\begin{frame}[label={sec:org842c38c}]{Formas canonicas}
+\begin{itemize}
+\item Forma controlable
+\item Forma observable
+\end{itemize}
+
+\begin{block}{Recurso}
+\href{https://lpsa.swarthmore.edu/Representations/SysRepTransformations/TF2SS.html}{https://lpsa.swarthmore.edu/Representations/SysRepTransformations/TF2SS.html}
+\end{block}
+\end{frame}
+
+\section{Estabilidad}
+\label{sec:orgc5ad46e}
+
+\begin{frame}[label={sec:orgdec9053}]{Estabilidad}
+La solución homógena de \(\dot{x} = Ax\)  se puede escribir
+\[ x(t) = \mathrm{e}^{\lambda_1 t}\alpha_1v_1 + \mathrm{e}^{\lambda_2 t}\alpha_2v_2 + \cdots + \mathrm{e}^{\lambda_n t}\alpha_nv_n,\]
+donde \(\lambda_1\), \(\lambda_2\), \(\ldots\), \(\lambda_n\) son los \alert{eigenvalores} de \(A\). 
+
+Estabilidad requiere que \alert{cada una} de las funciones exponenciales va hacia cero.
+\[\Rightarrow \qquad \mathrm{Re}\{\lambda_i\} < 0, \; \forall i=1,2,3\ldots, n\]
+
+Los eigenvalores de \(A\) son los \alert{polos} del sistema.
+\end{frame}
+
+\begin{frame}[label={sec:org35dbfa5}]{Los eigenvalores}
+\(\lambda\) y \(v\) es un par de eigenvalor y eigenvector de la matriz \(A\) si
+\[Av = \lambda v\]
+\pause
+\[ \lambda v - Av = 0\]
+\pause
+\[ (\lambda I - A)v = 0\]
+\pause
+Para que la ecuación tenga soluciones no-triviales
+ \[ \det (\lambda I - A) = 0 \quad \leftarrow \text{\alert{Ecuación característica}}\]
+\end{frame}
+
+
+\section{Modelo compartamental}
+\label{sec:org7011124}
+
+\begin{frame}[label={sec:orgf76ba5f}]{De espacio de estados a función de transferencia}
+\end{frame}
+
+\begin{frame}[label={sec:org9e86773}]{Modelo compartimental}
+ \small
+\begin{columns}
+  \begin{column}{0.5\linewidth}
+    \begin{center}
+      \begin{tikzpicture}[scale=0.8, transform shape,
+	compartment/.style={rounded corners=5mm, minimum height=14mm, minimum width=16mm},
+	node distance=46mm,
+	]
+
+	\node[compartment, draw=red, ] (comp1) {$V_1, c_1$};
+	\node[compartment, right of=comp1, draw=olive,] (comp2) {$V_2, c_2$};
+
+	\node[coordinate, above of=comp1, node distance=20mm] (input) {};
+	\node[coordinate, below of=comp1, node distance=20mm] (output) {};
+
+	\draw[->, double] (input) -- node[right]{$c_{i}Q_i$} (comp1);
+	\draw[->, double] (comp1) -- node[right]{$c_{1}Q_o$} (output);
+	\draw[<->, double] (comp1) -- node[above]{$(c_{2}-c_1)Q$} (comp2);
+
+      \end{tikzpicture}
+    \end{center}
+
+  \end{column}
+  \begin{column}{0.5\linewidth}
+    \begin{equation*}
+      \begin{aligned}
+	V_1\frac{dc_1}{dt} &= Q(c_2-c_1) - Q_{o}c_1 + Q_ic_{i}, \quad  & c_1 \geq 0 \\
+	V_2\frac{dc_2}{dt} &= Q(c_1-c_2),  & c_2 \geq 0,
+      \end{aligned}
+    \end{equation*}
+  \end{column}
+\end{columns}
+
+\begin{center}
+\Large
+\begin{align*}
+  \dot{x} &= \overbrace{\begin{bmatrix} \textcolor{red!80!black}{-\frac{Q+Q_o}{V_1}}  & \textcolor{red!80!black}{\frac{Q}{V_1}}\\
+              \textcolor{red!80!black}{\frac{Q}{V_2}}  & \textcolor{red!80!black}{-\frac{Q}{V_2}}\end{bmatrix}}^A \begin{bmatrix} {x_1}\\ {x_2}\end{bmatrix}  + \overbrace{\begin{bmatrix} \textcolor{red!80!black}{\frac{1}{V_1}} \\ \textcolor{red!80!black}{0} \end{bmatrix}}^B  u \\
+       y &=  \underbrace{\begin{bmatrix} \textcolor{red!80!black}{1} &  \textcolor{red!80!black}{0}\end{bmatrix}}_C \begin{bmatrix} x_1\\ x_2\end{bmatrix}
+\end{align*}
+
+\end{center}
+\end{frame}
+
+
+
+
+
+\begin{frame}[label={sec:org7c4bf02}]{De espacio de estados a función de transferencia}
+\footnotesize
+
+\begin{align*}
+  \dot{x} &= \overbrace{\begin{bmatrix} \textcolor{red!80!black}{-\frac{Q+Q_o}{V_1}}  & \textcolor{red!80!black}{\frac{Q}{V_1}}\\
+              \textcolor{red!80!black}{\frac{Q}{V_2}}  & \textcolor{red!80!black}{-\frac{Q}{V_2}}\end{bmatrix}}^A \begin{bmatrix} {x_1}\\ {x_2}\end{bmatrix}  + \overbrace{\begin{bmatrix} \textcolor{red!80!black}{\frac{1}{V_1}} \\ \textcolor{red!80!black}{0} \end{bmatrix}}^B  u  = Ax + Bu\\
+       y &=  \underbrace{\begin{bmatrix} \textcolor{red!80!black}{1} &  \textcolor{red!80!black}{0}\end{bmatrix}}_C \begin{bmatrix} x_1\\ x_2\end{bmatrix} = Cx
+\end{align*}
+
+Aplicando la transformada de Laplace
+\begin{align*}
+sX - x(0) &= AX + BU\\
+Y &= CX
+\end{align*}
+\pause
+Despejando \(X(s)\)
+\begin{align*}
+X(s) &= (sI-A)^{-1}x(0) + (sI-A)^{-1}BU(s)\\
+Y(s) &= C\big((sI-A)^{-1}x(0) + (sI-A)^{-1}BU(s)\big)\\
+     & = \underbrace{C(sI-A)^{-1}x(0)}_{\text{\alert{Respuesta transitoria}}} + \underbrace{C(sI-A)^{-1}B}_{\text{\alert{Función de transf.}}}U(s)
+\end{align*}
+\end{frame}
+
+
+\begin{frame}[label={sec:org44750ec}]{Transformada de Laplace de una función exponencial}
+\[F(s) = \laplace{f(t)} = \int_0^\infty f(t)\mexp{-st}dt\]
+\pause
+\[\laplace{\mexp{pt}} = \int_0^\infty \mexp{pt}\mexp{-st}dt = \int_0^\infty \mexp{-(s-p)t}dt = \frac{1}{s-p} = (s-p)^{-1}, \quad \mathrm{Re}\{s\} > \mathrm{Re}\{p\} \]
+\end{frame}
+
+
+\begin{frame}[label={sec:org390366b}]{Solución homógena de sistemas en espacio de estados}
+\small
+\begin{align*}
+\dot{x} &= Ax, \qquad x(0) = x_0\\
+ sX(s) - x(0) &= AX(s)
+ \end{align*}
+\pause
+
+\begin{columns}
+\begin{column}{0.5\columnwidth}
+\begin{block}{Solución en dominio de Laplace}
+\[X(s) = (sI-A)^{-1}x(0)\]
+
+\pause
+\end{block}
+\end{column}
+
+\begin{column}{0.5\columnwidth}
+\begin{block}{Solución en dominio de tiempo}
+\[ x(t) = \Phi(t)x(0) = \mathrm{e}^{At}x(0)\]
+
+Donde  \(\Phi:\,\mathbb{R} \rightarrow \mathbb{R}^{n\times n}\) \[\Phi(t)=\mathrm{e}^{At} = I + tA + \frac{t^2}{2!}A^2 + \frac{t^3}{3!}A^3 + \cdots\] 
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[label={sec:org7794c26}]{La transformada de Laplace de la exponencial de una matriz}
+\[ f(t)=\mathrm{e}^{At} \qquad \overset{\mathcal{L}}{\longleftrightarrow} \qquad F(s) = (sI-A)^{-1} \]
+
+\pause
+
+\[(sI-A)^{-1} = \frac{1}{\det (sI-A)} \, \text{adj}\, (sI-A) \]
+
+\(\det (sI-A)\) es un polinomio en \(s\), llamado \alert{polinomio característico}. Sus raíces, es decir las soluciones de la \alert{ecuación característica}
+\[ \det(sI-A) = 0\]
+son los \alert{polos} del sistema y los eigenvalores de \(A\).
+\end{frame}
+
+\begin{frame}[label={sec:org9808ef5}]{De espacio de estados a función de transferencia}
+\footnotesize
+
+   \begin{align*}
+     \dot{x} &= \overbrace{\begin{bmatrix} \textcolor{red!80!black}{-\frac{Q+Q_o}{V_1}}  & \textcolor{red!80!black}{\frac{Q}{V_1}} \\
+                 \textcolor{red!80!black}{\frac{Q}{V_2}}  & \textcolor{red!80!black}{-\frac{Q}{V_2}}\end{bmatrix}}^A \begin{bmatrix} {x_1}\\ {x_2}\end{bmatrix}  + \overbrace{\begin{bmatrix} \textcolor{red!80!black}{\frac{1}{V_1}} \\ \textcolor{red!80!black}{0} \end{bmatrix}}^B  u
+= \begin{bmatrix} \textcolor{red!80!black}{a}  & \textcolor{red!80!black}{b} \\
+                 \textcolor{red!80!black}{c}  & \textcolor{red!80!black}{d}\end{bmatrix} x  + \begin{bmatrix} \textcolor{red!80!black}{b_1} \\ \textcolor{red!80!black}{0} \end{bmatrix} u, \qquad
+          y =  \underbrace{\begin{bmatrix} \textcolor{red!80!black}{1} &  \textcolor{red!80!black}{0}\end{bmatrix}}_C x\\
+   X(s) &= (sI-A)^{-1}x(0) + (sI-A)^{-1}BU(s)\\
+   Y(s) &= \underbrace{C(sI-A)^{-1}x(0)}_{\text{\alert{Respuesta transitoria}}} + \underbrace{C(sI-A)^{-1}B}_{\text{\alert{Función de transf.}}}U(s)
+   \end{align*}
+
+\pause
+
+\begin{columns}
+\begin{column}{0.5\columnwidth}
+   \begin{align*}
+    (sI-A)^{-1} &= \begin{bmatrix} s-a & -b\\-c & s-d\end{bmatrix}^{-1}\\
+&=\frac{1}{\det (sI-A)} \, \text{adj}\, (sI-A)\\
+         &= \frac{1}{(s-a)(s-d) - bc} \begin{bmatrix} s-d & b\\c & s-a \end{bmatrix}
+	 \end{align*}
+
+\pause
+\end{column}
+
+\begin{column}{0.5\columnwidth}
+\begin{align*}
+G(s) &= C(sI-A)^{-1}B\\
+     &= \begin{bmatrix} \textcolor{red!80!black}{1} &  \textcolor{red!80!black}{0}\end{bmatrix} \frac{1}{(s-a)(s-d) - bc} \begin{bmatrix} s-d & b\\c & s-a \end{bmatrix} \begin{bmatrix} \textcolor{red!80!black}{b_1} \\ \textcolor{red!80!black}{0} \end{bmatrix}\\
+    &=  \frac{\textcolor{white}{b_1(s-d)}}{\textcolor{white}{(s-a)(s-d) - bc}}
+\end{align*}
+\end{column}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}[label={sec:org1f3246f}]{De espacio de estados a función de transferencia}
+\footnotesize
+
+   \begin{align*}
+     \dot{x} &= \overbrace{\begin{bmatrix} \textcolor{red!80!black}{-\frac{Q+Q_o}{V_1}}  & \textcolor{red!80!black}{\frac{Q}{V_1}} \\
+                 \textcolor{red!80!black}{\frac{Q}{V_2}}  & \textcolor{red!80!black}{-\frac{Q}{V_2}}\end{bmatrix}}^A \begin{bmatrix} {x_1}\\ {x_2}\end{bmatrix}  + \overbrace{\begin{bmatrix} \textcolor{red!80!black}{\frac{1}{V_1}} \\ \textcolor{red!80!black}{0} \end{bmatrix}}^B  u
+= \begin{bmatrix} \textcolor{red!80!black}{a}  & \textcolor{red!80!black}{b} \\
+                 \textcolor{red!80!black}{c}  & \textcolor{red!80!black}{d}\end{bmatrix} x  + \begin{bmatrix} \textcolor{red!80!black}{b_1} \\ \textcolor{red!80!black}{0} \end{bmatrix} u, \qquad
+          y =  \underbrace{\begin{bmatrix} \textcolor{red!80!black}{1} &  \textcolor{red!80!black}{0}\end{bmatrix}}_C x\\
+   X(s) &= (sI-A)^{-1}x(0) + (sI-A)^{-1}BU(s)\\
+   Y(s) &= \underbrace{C(sI-A)^{-1}x(0)}_{\text{\alert{Respuesta transitoria}}} + \underbrace{C(sI-A)^{-1}B}_{\text{\alert{Función de transf.}}}U(s)
+   \end{align*}
+
+
+\begin{columns}
+\begin{column}{0.5\columnwidth}
+   \begin{align*}
+    (sI-A)^{-1} &= \begin{bmatrix} s-a & -b\\-c & s-d\end{bmatrix}^{-1}\\
+&=\frac{1}{\det (sI-A)} \, \text{adj}\, (sI-A)\\
+         &= \frac{1}{(s-a)(s-d) - bc} \begin{bmatrix} s-d & b\\c & s-a \end{bmatrix}
+	 \end{align*}
+\end{column}
+
+
+\begin{column}{0.5\columnwidth}
+\begin{align*}
+G(s) &= C(sI-A)^{-1}B\\
+     &= \begin{bmatrix} \textcolor{red!80!black}{1} &  \textcolor{red!80!black}{0}\end{bmatrix} \frac{1}{(s-a)(s-d) - bc} \begin{bmatrix} s-d & b\\c & s-a \end{bmatrix} \begin{bmatrix} \textcolor{red!80!black}{b_1} \\ \textcolor{red!80!black}{0} \end{bmatrix}\\
+    &=  \frac{\textcolor{black}{b_1(s-d)}}{\textcolor{black}{(s-a)(s-d) - bc}}
+\end{align*}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[label={sec:orgaa1ff81}]{Modelling example}
+\begin{center}
+\includegraphics[width=\linewidth]{../../figures/active-mass-damper-system-horizontal}
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:org82aa529}]{State-space model and transfer function}
+An \(n\)th order system with the state-space representation
+\begin{equation}
+\begin{cases}
+\dot{x}(t)&=Ax(t)+Bu(t)\\ y(t)&=Cx(t)+Du(t)
+\end{cases}\tag{$*$}
+\end{equation}
+has the transfer function
+\begin{equation*}
+G(s)=C(sI-A)^{-1}B+D=\frac{b(s)}{a(s)}
+\end{equation*}
+from the input signal \(u\) to the output signal \(y\). The denominator polynominal is
+\(a(s)=\det(sI-A)\) and is of order \(n\). If \(D\neq0\) then the numerator polynomial \(b(s)\) is of order \(n\), if \(D=0\) then \(b(s)\) is of order \(\le n-1\).
+\end{frame}
+
+\begin{frame}[label={sec:org94244a4}]{The state-space representation is not unique}
+Make a change of state variables in the system \((*)\):
+Let \(x=Tz\) \(\Leftrightarrow\) \(z=T^{-1}x\), where \(T\) is an invertible (non-singular) matrix. Then
+\begin{align*}
+\dot{z}&=T^{-1}ATz+T^{-1}Bu\\ y&=CTz+Du
+\end{align*}
+with transfer function
+\begin{equation*}
+G(s)=CT\left(sI-T^{-1}AT\right)^{-1}T^{-1}B+D=C(sI-A)^{-1}B+D
+\end{equation*}
+This means that a system with transfer function \(G(s)\) has infinitely many different state-space representations.
+\end{frame}
+
+\begin{frame}[label={sec:orgfe0952e}]{Stability}
+A system 
+\begin{equation*}
+\dot{x}=Ax, \ \ x(0)=x_0\ \ (\text{i.e.\ the system }(*) \text{ with } u\equiv 0)
+\end{equation*}
+is \emph{asymptotically stable}  if  \(\underset{t\to\infty}{\lim}x(t)=0\) for all  \(x_0\in\Bbb{R}^n\).\\
+
+A system is asymptotically stable if and only if all eigenvalues of the \(A\)-matrix have strict negative real parts (are strictly in the LHP). 
+\end{frame}
+
+\begin{frame}[label={sec:orgf6d1fc8}]{Different notions of stability}
+\begin{itemize}
+\item BIBO stability (Bounded Input - Bounded Output) refers to the effect of the input signal \(u(t)\) on the output signal \(y(t)\), ignoring the initial state \(x_0\).
+\item Asymptotic stability refers to the effect of  \(x_0\) on the state vector \(x(t)\)
+\end{itemize}
+(it is assumed that \(u(t)\equiv 0\), \(y\) is ignored).
+
+Connections:
+\begin{itemize}
+\item A system is BIBO stable if it is asymptotically stable.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:org7f8cfca}]{Controllable/Reachable canonical form}
+The system with transfer function
+\begin{equation*}
+G(s)=\frac{b_1s^{n-1}+\dots+b_{n-1}s+b_n}{s^n+a_1s^{n-1}+\dots
+  +a_{n-1}s+a_n}
+\end{equation*}
+can be represented on state-space form as
+\begin{align*}
+\dot{x}&=\bbm -a_1& -a_2& \cdots& -a_{n-1}& -a_n\\
+1& 0& \cdots& 0& 0\\
+0& 1& \cdots& 0& 0\\
+\vdots& \vdots& \ddots& \vdots& \vdots\\
+0& 0& \cdots& 1& 0\ebm x+
+\bbm 1\\ 0\\ 0\\ \vdots\\ 0\ebm u\\
+y&=\bbm b_1& b_2& \cdots& b_n\ebm x
+\end{align*}
+\end{frame}
+
+\begin{frame}[label={sec:org2c5442c}]{Controllability/Reachability}
+A state vector \(x^*\in\mathbb{R}^n\) is \emph{reachable} (or \emph{controllable}) if there exists an input signal
+ \(u(t)\) such that \(x(T)=x^*\), for some \(T<\infty\), when \(x(0)=0\). If all \(x^*\in\mathbb{R}^n\) are controllable, then the \emph{system (\(*\))} is controllable.
+\end{frame}
+
+\begin{frame}[label={sec:orga1a2020}]{A system on controllable canonical form is controllable}
+\begin{align*}
+\dot{x}(t)&=\bbm -2& -1\\ 1& 0\ebm x(t)+\bbm 1\\ 0\ebm u(t)\\
+y(t)&=\bbm 1& 1\ebm x(t)
+\end{align*}
+\begin{equation*}
+G(s)=\frac{s+1}{s^2+2s+1}=\frac{s+1}{(s+1)^2}=\frac{1}{s+1}
+\end{equation*}
+\begin{equation*}
+\ctrb=\bbm B & AB \ebm = \bbm 1& -2\\ 0 & 1\ebm \quad \Rightarrow \quad \det\ctrb \neq 0 \quad \Leftrightarrow \quad \text{controllable}
+\end{equation*}
+\end{frame}
+\end{document}

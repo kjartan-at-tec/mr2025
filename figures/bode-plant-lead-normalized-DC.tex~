@@ -1,0 +1,72 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.13}
+
+\begin{document}
+
+% \def\sysCont{tf([1, 2], [1, 1]);}
+\def\Go{tf([1], [1, 1, 0]);}
+\def\wmin{0.1}
+\def\wmax{10}
+
+\def\pw{10cm}
+\def\ph{6cm}
+\begin{tikzpicture}
+  \draw[white] (0,0) to (1,0);
+  \begin{semilogxaxis} [
+      ylabel={$|G(i\omega)|$,  dB},
+      clip=false,
+      yshift = -1cm,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      ymin = -40, ymax=20,
+      minor y tick num=9,
+      %ytick={-10, -3, 0, 8, 10},
+      %yticklabels={-3dB, 0dB, $M_p$}, 
+      %xtick={2.34, 3.72},
+      %xticklabels={$\omega_r$, $\omega_B$},
+      %xticklabel=\empty,
+      %ymin=0.2, ymax=6,
+      xmin=\wmin, xmax=\wmax,
+      %legend entries={Bessel filter, Delay of one},
+      %legend pos={south west},
+  ]
+    \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeGc,] {octave --eval  "pkg load control; G=\Go;  [mag,phi,w]=bode(G,{\wmin, \wmax}); disp(cat(2,w',mag2db(mag)))"};
+  \end{semilogxaxis}
+      \begin{semilogxaxis} [
+      yshift=-\ph,
+      ylabel=$\arg G(i\omega)$,
+      xlabel=$\omega$,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      minor y tick num=9,
+      every major grid/.style={red, opacity=0.5},
+      % ytick={0.7, 1, 1.52},
+      % yticklabels={-3dB, 0dB, $M_p$}, 
+      %xtick={2.34, 3.72},
+      %xticklabels={$\omega_r$, $\omega_B$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+      %xmin=0.1, xmax=6,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeG01P,] {octave --eval  "pkg load control; G0=\Go;   [mag,phi,w]=bode(G0, {\wmin, \wmax}); disp(cat(2,w',phi))"};
+    \end{semilogxaxis}
+
+
+\end{tikzpicture}
+
+\end{document}
+
+% Local Variables:
+% Tex-engine: default-shell-escape
+% End:

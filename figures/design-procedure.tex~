@@ -1,0 +1,19 @@
+   \tikzstyle{decision} = [diamond, draw, fill=blue!20, 
+   text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
+   \tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+   text width=5em, text centered, rounded corners, minimum height=4em]
+   \tikzstyle{line} = [draw, -latex']
+
+   \begin{tikzpicture}[node distance = 2cm, auto]
+   \node[block] (init) {Start with $G(s)$};
+   \node[decision, below of=init] (needlead) {Sufficient phase margin at desired \(\omega_c\)?}
+   \node [block, right of=needlead, node distance=3cm] (lead) {Add lead-compensator $G_1=GF_{lead}$};
+   \node [block, below of=needlead, node distance=3cm] (nolead) {Let $G_1=G$};
+   \node [block, below of=nolead, ] (gain) {Adjust gain so $|KG_1(i\omega_c)| = 1$};
+   \node[decision, below of=gain] (needlag) {Sufficient gain at low frequencies?};
+   \node [block, right of=needlag, node distance=3cm] (lag) {Add lag-compensator $G_2=KG_1F_{lag}$};
+   \node [block, below of=needlag, node distance=3cm] (nolag) {Let $G_2=KG_1$};
+   \node [block, below of=nolag, node distance=3cm] (loopgain) {Let $G_o=G_2$};
+    
+   \end{tikzpicture}
+   

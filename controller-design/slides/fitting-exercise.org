@@ -1,0 +1,103 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169, usenames, dvipsnames]
+#+OPTIONS: H:2
+
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{amssymb}
+#+LaTex_HEADER: \usepgfplotslibrary{groupplots}
+
+#+LaTex_HEADER: \newcommand*{\shift}{\operatorname{q}}
+#+LaTex_HEADER:   \definecolor{ppc}{rgb}{0.1,0.1,0.6}
+#+LaTex_HEADER:   \definecolor{iic}{rgb}{0.6,0.1,0.1}
+#+LaTex_HEADER:   \definecolor{ddc}{rgb}{0.1,0.6,0.1}
+
+
+* Fitting first-order model with delay
+
+** First-order model with delay - example
+   \[  \quad Y(s) = \frac{K\mathrm{e}^{-s\tau}}{sT + 1}U(s) \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad y(t) = u_f K\big( 1 - \mathrm{e}^{-\frac{t-\tau}{T}}\big)u_s(t-\tau)\]
+   #+begin_export latex
+   \def\Tcnst{1.8}
+   \def\tdelay{1.2}
+   \def\ggain{1.5}
+   \def\uampl{0.9}
+   \pgfmathsetmacro{\yfinal}{\uampl*\ggain}
+   \pgfmathsetmacro{\yone}{0.283*\yfinal}
+   \pgfmathsetmacro{\ytwo}{0.632*\yfinal}
+   \pgfmathsetmacro{\tone}{\tdelay + \Tcnst/3}
+   \pgfmathsetmacro{\two}{\tdelay + \Tcnst}
+
+   \begin{center}
+     \begin{tikzpicture}
+       \begin{axis}[
+       width=12cm,
+       height=4cm,
+       grid = both,
+       %xtick = {0, \tdelay, \tone, \two},
+       %xticklabels = {0, $\tau$, $\tau+\frac{T}{3}$, $\tau + T$},
+       %ytick = {0, \yone, \ytwo, \uampl, \yfinal},
+       %yticklabels = {0, $0.283y_{f}$, $0.632y_f$, $u_f$, $y_f$},
+       xmin = -0.2,
+       minor y tick num=9,
+       minor x tick num=9,
+       every major grid/.style={red, opacity=0.5},
+       %xlabel = {$t$},
+       clip = false,
+       ]
+	 \addplot [thick, green!50!black, smooth, no marks, domain=0:10, samples=16] {\uampl*\ggain*(x>\tdelay)*(1 - exp(-(x-\tdelay)/\Tcnst)} node [coordinate, pos=0.9, pin=-90:{$y(t)$}] {};
+	 \addplot [const plot, thick, blue!80!black, no marks, domain=-1:10, samples=100] coordinates {(-1,0) (0,0) (0,\uampl) (10,\uampl)} node [coordinate, pos=0.9, pin=-90:{$u(t)$}] {};
+	 \draw[thick, green!70!black, dashed] (axis cs: 10, \yfinal) -- (axis cs: -1, \yfinal, -0.9) node[left, anchor=east] {$y_f = \yfinal$}; 
+	 \draw[blue!70!black, dashed] (axis cs: 0, \uampl) -- (axis cs: -1, \uampl, -0.9) node[left, anchor=east] {$u_f = \uampl$}; 
+       \end{axis}
+     \end{tikzpicture}
+   \end{center}
+   #+end_export
+
+** First-order model with delay - example
+   \[  \quad Y(s) = \frac{K\mathrm{e}^{-s\tau}}{sT + 1}U(s) \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad y(t) = u_f K\big( 1 - \mathrm{e}^{-\frac{t-\tau}{T}}\big)u_s(t-\tau)\]
+   #+begin_export latex
+   \def\Tcnst{1.8}
+   \def\tdelay{1.2}
+   \def\ggain{1.5}
+   \def\uampl{0.9}
+   \pgfmathsetmacro{\yfinal}{\uampl*\ggain}
+   \pgfmathsetmacro{\yone}{0.283*\yfinal}
+   \pgfmathsetmacro{\ytwo}{0.632*\yfinal}
+   \pgfmathsetmacro{\tone}{\tdelay + \Tcnst/3}
+   \pgfmathsetmacro{\two}{\tdelay + \Tcnst}
+
+   \begin{center}
+     \begin{tikzpicture}
+       \begin{axis}[
+       width=12cm,
+       height=4cm,
+       grid = both,
+       %xtick = {0, \tdelay, \tone, \two},
+       %xticklabels = {0, $\tau$, $\tau+\frac{T}{3}$, $\tau + T$},
+       %ytick = {0, \yone, \ytwo, \uampl, \yfinal},
+       %yticklabels = {0, $0.283y_{f}$, $0.632y_f$, $u_f$, $y_f$},
+       xmin = -0.2,
+       minor y tick num=9,
+       minor x tick num=9,
+       every major grid/.style={red, opacity=0.5},
+       %xlabel = {$t$},
+       clip = false,
+       ]
+	 \addplot [thick, green!50!black, smooth, no marks, domain=0:10, samples=16] {\uampl*\ggain*(x>\tdelay)*(1 - exp(-(x-\tdelay)/\Tcnst)} node [coordinate, pos=0.9, pin=-90:{$y(t)$}] {};
+	 \addplot [const plot, thick, blue!80!black, no marks, domain=-1:10, samples=100] coordinates {(-1,0) (0,0) (0,\uampl) (10,\uampl)} node [coordinate, pos=0.9, pin=-90:{$u(t)$}] {};
+	 \draw[thick, red, dashed] (axis cs: \tone, \yone) -- (axis cs: \tone, -0.45) node[below] {$t_1 = \tone = \tau + \frac{T}{3}$}; 
+	 \draw[thick, red, dashed] (axis cs: \tone, \yone) -- (axis cs: -1,\yone) node[left, anchor=east] {$0.283y_f = \yone$}; 
+	 \draw[thick, orange, dashed] (axis cs: \two, \ytwo) -- (axis cs: \two, -0.9) node[below] {$t_2 = \two = \tau + T$}; 
+	 \draw[thick, orange, dashed] (axis cs: \two, \ytwo) -- (axis cs: -1, \ytwo, -0.9) node[left, anchor=east] {$0.632y_f = \ytwo$}; 
+	 \draw[thick, green!70!black, dashed] (axis cs: 10, \yfinal) -- (axis cs: -1, \yfinal, -0.9) node[left, anchor=east] {$y_f = \yfinal$}; 
+	 \draw[blue!70!black, dashed] (axis cs: 0, \uampl) -- (axis cs: -1, \uampl, -0.9) node[left, anchor=east] {$u_f = \uampl$}; 
+       \end{axis}
+     \end{tikzpicture}
+   \end{center}
+   #+end_export
+   \[ \begin{cases} \tone = \tau + \frac{T}{3}\\ \two = \tau + T \end{cases} \quad \Rightarrow \quad \begin{cases} \tau = \tdelay \\ T = \Tcnst \end{cases}, \qquad  K = \frac{y_f}{u_f} = \frac{\yfinal}{\uampl} = \ggain \]
+
+

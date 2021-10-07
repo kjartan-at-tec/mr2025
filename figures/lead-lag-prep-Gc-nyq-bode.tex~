@@ -1,0 +1,17 @@
+\documentclass{standalone}
+
+\usepackage{amsmath,amssymb,euscript,fancybox,epsfig,latexsym,subfigure,psfrag}
+\usepackage[dvips]{color}
+
+\begin{document}
+
+\begin{tabular}{cc}
+\psfrag{argw}[c][][0.7]{\tiny $-153$}
+\psfrag{Bode Diagram}[c][][1]{\small $G(s)$}
+\includegraphics[width=0.45\linewidth]{lead_lag_prep_bode.eps}
+& 
+\psfrag{Bode Diagram}[c][][1]{\small $F(s)$}
+\includegraphics[width=0.45\linewidth]{lead_lag_prep_PD.eps}
+\end{tabular}
+
+\end{document}

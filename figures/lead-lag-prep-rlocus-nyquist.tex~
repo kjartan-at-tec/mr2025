@@ -1,0 +1,17 @@
+\documentclass{standalone}
+
+\usepackage{amsmath,amssymb,euscript,fancybox,epsfig,latexsym,subfigure,psfrag}
+\usepackage[dvips]{color}
+
+\begin{document}
+
+\begin{center}
+\begin{tabular}{cc}
+\psfrag{wclik1}[c][][1]{$\omega_c = 1$}
+\includegraphics[width=0.45\linewidth]{lead_lag_prep_rotort.eps}
+& 
+\psfrag{wclik1}[r][][1]{\tiny $\omega_c=1$}
+\includegraphics[width=0.45\linewidth]{lead_lag_prep_nyq.eps}
+\end{tabular}
+\end{center}
+\end{document}

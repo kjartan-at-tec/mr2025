@@ -1,0 +1,41 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.13}
+
+\begin{document}
+
+% \def\sysCont{tf([1, 2], [1, 1]);}
+\def\Go{6.1*tf([1], [1, 1, 0]);}
+
+\begin{tikzpicture}
+  \begin{semilogxaxis} [
+      ylabel={$|G_c(i\omega)|$ dB},
+      width=12cm,
+      height=7cm,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      ymin = -10, ymax=10,
+      ytick={-10, -3, 0, 8, 10},
+      %yticklabels={-3dB, 0dB, $M_p$}, 
+      xtick={2.34, 3.72},
+      xticklabels={$\omega_r$, $\omega_B$},
+      %xticklabel=\empty,
+      %ymin=0.2, ymax=6,
+      xmin=0.1, xmax=6,
+      %legend entries={Bessel filter, Delay of one},
+      %legend pos={south west},
+  ]
+    \addplot  shell[thick,black, no marks, prefix=pgfshell_, id=bodeGc,] {octave --eval  "pkg load control; G=\Go; Gc=feedback(G,1); [mag,phi,w]=bode(Gc); disp(cat(2,w',mag2db(mag)))"};
+  \end{semilogxaxis}
+  
+\end{tikzpicture}
+
+\end{document}
+
+% Local Variables:
+% Tex-engine: default-shell-escape
+% End:

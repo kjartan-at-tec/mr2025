@@ -1,0 +1,55 @@
+\setlength{\unitlength}{0.012500in}%
+\begin{picture}(536,171)(60,585)
+\thicklines
+\put(120,690){\circle{30}}
+\put(135,690){\makebox(0.4444,0.6667){\tenrm .}}
+\put( 97,678){\makebox(0,0)[b]{\raisebox{0pt}[0pt][0pt]{\twlrm +}}}
+\put(120,684){\makebox(0,0)[b]{\raisebox{0pt}[0pt][0pt]{\twlrm $\Sigma$}}}
+\put(129,666){\makebox(0,0)[b]{\raisebox{0pt}[0pt][0pt]{\twlrm  --}}}
+\put(240,690){\circle{30}}
+\put(255,690){\makebox(0.4444,0.6667){\tenrm .}}
+\put(217,678){\makebox(0,0)[b]{\raisebox{0pt}[0pt][0pt]{\twlrm +}}}
+\put(240,684){\makebox(0,0)[b]{\raisebox{0pt}[0pt][0pt]{\twlrm $\Sigma$}}}
+\put(249,666){\makebox(0,0)[b]{\raisebox{0pt}[0pt][0pt]{\twlrm  --}}}
+\put(237,745){\makebox(0,0)[lb]{\raisebox{0pt}[0pt][0pt]{\twlrm $d$}}}
+\put(414,745){\makebox(0,0)[lb]{\raisebox{0pt}[0pt][0pt]{\twlrm $v$}}}
+\put(180,720){\makebox(0,0)[b]{\raisebox{0pt}[0pt][0pt]{\twlrm Controler}}}
+\put(321,720){\makebox(0,0)[b]{\raisebox{0pt}[0pt][0pt]{\twlrm AC motor}}}
+\put(501,719){\makebox(0,0)[b]{\raisebox{0pt}[0pt][0pt]{\twlrm Hydraulic motor}}}
+\put(420,690){\circle{30}}
+\put(285,668){\framebox(75,45){}}
+\put(285,608){\framebox(75,45){}}
+\put(435,690){\makebox(0.4444,0.6667){\tenrm .}}
+\put( 75,690){\vector( 1, 0){ 30}}
+\put(135,690){\vector( 1, 0){ 30}}
+\put(195,690){\vector( 1, 0){ 30}}
+\put(240,735){\makebox(0.4444,0.6667){\tenrm .}}
+\put(240,735){\vector( 0,-1){ 30}}
+\put(255,690){\vector( 1, 0){ 30}}
+\put(285,630){\makebox(0.4444,0.6667){\tenrm .}}
+\put(285,630){\line(-1, 0){ 45}}
+\put(240,630){\vector( 0, 1){ 45}}
+\put(360,690){\vector( 1, 0){ 45}}
+\put(381,690){\line( 0,-1){ 60}}
+\put(381,630){\vector(-1, 0){ 21}}
+\put(420,735){\vector( 0,-1){ 30}}
+\put(435,690){\vector( 1, 0){ 30}}
+\put(540,690){\vector( 1, 0){ 45}}
+\put(555,690){\line( 0,-1){105}}
+\put(555,585){\line(-1, 0){435}}
+\put(120,585){\vector( 0, 1){ 90}}
+\put(165,675){\framebox(30,30){}}
+\put(465,668){\framebox(75,45){}}
+\put(397,678){\makebox(0,0)[b]{\raisebox{0pt}[0pt][0pt]{\twlrm +}}}
+\put(420,684){\makebox(0,0)[b]{\raisebox{0pt}[0pt][0pt]{\twlrm $\Sigma$}}}
+\put(405,705){\makebox(0,0)[b]{\raisebox{0pt}[0pt][0pt]{\twlrm +}}}
+\put(225,705){\makebox(0,0)[b]{\raisebox{0pt}[0pt][0pt]{\twlrm +}}}
+\put(180,684){\makebox(0,0)[b]{\raisebox{0pt}[0pt][0pt]{\twlrm $F(s)$}}}
+\put(322,684){\makebox(0,0)[b]{\raisebox{0pt}[0pt][0pt]{\twlrm $\displaystyle{\frac{10}{s(s+1)} }$}}}
+\put(322,624){\makebox(0,0)[b]{\raisebox{0pt}[0pt][0pt]{\twlrm $\displaystyle{\frac{1.2s}{s+8} }$}}}
+\put(502,684){\makebox(0,0)[b]{\raisebox{0pt}[0pt][0pt]{\twlrm $\displaystyle{\frac{10}{s(s+10)} }$}}}
+\put(201,701){\makebox(0,0)[lb]{\raisebox{0pt}[0pt][0pt]{\twlrm $u$}}}
+\put( 60,699){\makebox(0,0)[lb]{\raisebox{0pt}[0pt][0pt]{\twlrm $\theta_d$}}}
+\put(585,700){\makebox(0,0)[lb]{\raisebox{0pt}[0pt][0pt]{\twlrm $\theta$}}}
+\put(324,594){\makebox(0,0)[b]{\raisebox{0pt}[0pt][0pt]{\twlrm Tachometer feedback}}}
+\end{picture}

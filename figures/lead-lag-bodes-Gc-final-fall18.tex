@@ -1,0 +1,86 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=1.13}
+
+\def\plotwidth{85mm}
+\def\plotheight{42mm}
+\def\labelY{34mm}
+\def\plotdist{46mm}
+\def\plotdisth{90mm}
+
+\newcommand*{\bodeplot}[4]{%
+  \begin{semilogxaxis} [
+      xlabel={$\omega$ [rad/s]},
+      ylabel=$\arg G_c(i\omega)$,
+      width=\plotwidth,
+      height=\plotheight,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      ytick={-270, -180,  -90, 0},
+      %yticklabels={$-45^\circ$, $0^\circ$, $45^\circ$}, 
+      %xtick={0.1, 1, 10},
+      %xticklabels={$0.1\omega_0$, $\omega_0$, $10\omega_0$},
+      ymin=-180, 
+      %ymax=-90,
+      xmin=0.1, xmax=10,
+      minor y tick num=8,
+      %legend entries={Bessel filter, Delay of one},
+      %legend pos={south west},
+  ]
+    \addplot[thick,black, no marks, ] table [ x expr=\thisrowno{0}, y expr=\thisrowno{#1} ] {#3};
+  \end{semilogxaxis}
+  \begin{loglogaxis} [
+      xlabel={$\omega$ [rad/s]},
+      ylabel=$|G_c(i\omega)|$,
+      xshift = -\plotdisth, 
+      width=\plotwidth,
+      height=\plotheight,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      %ytick={0.5, 2},
+      %yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      %xticklabel=\empty,
+      ymin=0.01, ymax=10,
+      xmin=0.1, xmax=10,
+      %legend entries={Bessel filter, Delay of one},
+      %legend pos={south west},
+  ]
+    \addplot[thick,black, no marks, ] table [ x expr=\thisrowno{0}, y expr=\thisrowno{#1} ] {#2};
+  \end{loglogaxis}
+
+  \node[red!80!black] at (-1,\labelY) {\Huge #4};
+}
+
+\begin{document}
+
+\pgfplotstableread[col sep=comma]{../matlab/lead-lag-examples-Go-mag-fall18.dta}\Gomagdata
+\pgfplotstableread[col sep=comma]{../matlab/lead-lag-examples-Go-ph-fall18.dta}\Gophdata
+\pgfplotstableread[col sep=comma]{../matlab/lead-lag-examples-Gc-mag-fall18.dta}\Gcmagdata
+\pgfplotstableread[col sep=comma]{../matlab/lead-lag-examples-Gc-ph-fall18.dta}\Gcphdata
+
+
+
+\begin{tikzpicture}
+  \begin{scope}[]
+
+    \bodeplot{1}{\Gcmagdata}{\Gcphdata}{I}
+
+    \begin{scope}[yshift=-\plotdist]
+      \bodeplot{3}{\Gcmagdata}{\Gcphdata}{II}
+
+      \begin{scope}[yshift=-\plotdist]
+        \bodeplot{4}{\Gcmagdata}{\Gcphdata}{III}
+
+        \begin{scope}[yshift=-\plotdist]
+          \bodeplot{2}{\Gcmagdata}{\Gcphdata}{IV}
+        \end{scope}
+      \end{scope}
+    \end{scope}
+  \end{scope}
+\end{tikzpicture}
+\end{document}

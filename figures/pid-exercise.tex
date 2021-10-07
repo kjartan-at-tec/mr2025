@@ -1,0 +1,31 @@
+
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgfplots}
+
+\begin{document}
+
+
+\def\TT{0.5}
+\def\gg{0.5}
+
+      \begin{tikzpicture}
+      \begin{axis}[
+       clip=false,
+       width=14cm,
+       height=4.2cm,
+       ylabel={},
+       xlabel={$t$},
+       ytick={0,0.5},
+       %ymax = 1.6,
+       %ymin = -0.5,
+       ]
+	 \addplot[black, no marks, domain=-0.1:6, samples=200] {(x>0)*\gg*(1 - (1+x/\TT)*exp(-x/\TT)} node[coordinate, pin=-20:{$y(t)$}, pos=0.4] {};
+	 \addplot[magenta!70!black, no marks,] coordinates {(-0.1, 0) (0,0) (0,\gg) (6,\gg)} node[coordinate, pin=90:{$r(t)$}, pos=0.4] {};
+       \end{axis}
+
+    \end{tikzpicture}
+
+  \end{document}
+  

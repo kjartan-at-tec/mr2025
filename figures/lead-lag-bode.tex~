@@ -1,0 +1,16 @@
+\documentclass{standalone}
+
+\usepackage{amsmath,amssymb,euscript,fancybox,epsfig,latexsym,subfigure,psfrag}
+\usepackage[dvips]{color}
+
+\begin{document}
+
+\psfrag{wclik1}[r][][1]{\small $\omega_c=1$}
+\psfrag{leadmx}[r][][1]{\small max lead}
+\psfrag{lagmin}[r][][1]{\small max lag}
+\psfrag{log1divbe}[r][][1]{\small $\log \frac{1}{\alpha_i}$,  $\log \alpha_d$  }
+\psfrag{sqga}[c][][1]{\small $\frac{1}{T_i\sqrt{a_i}}$}
+\psfrag{sqbe}[c][][1]{\small $\frac{1}{T_d\sqrt{a_d}}$}
+\includegraphics[width=\linewidth]{lead_lag_bode.eps}
+
+\end{document}

@@ -1,4 +1,4 @@
-% Created 2021-09-23 Thu 10:58
+% Created 2021-09-28 Tue 08:31
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
@@ -36,9 +36,9 @@
 \maketitle
 
 \section{Bode diagram}
-\label{sec:org7c60a43}
+\label{sec:orge610013}
 
-\begin{frame}[label={sec:org709422e}]{Response of LTI systems to sinusoids}
+\begin{frame}[label={sec:org9d4645e}]{Response of LTI systems to sinusoids}
 \begin{center}
   \begin{tikzpicture}[scale = 0.8, node distance=20mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
 
@@ -56,20 +56,20 @@ Let \(\incolor{u(t) = \sin\omega_1 t}\). Then, after transients have died out,
 \end{frame}
 
 
-\begin{frame}[label={sec:orgb2c740f}]{The Bode diagram}
+\begin{frame}[label={sec:orge87dc8c}]{The Bode diagram}
 \[ y(t) = \underbrace{|G(i\omega_1)|}_{\text{amplification}} \sin \big( \omega_1 t + \underbrace{\arg G(i\omega_1)}_{\text{phase shift}} \big) \]
 
 The Bode diagram shows the magnitude and phase of the transfer function evaluated on the positive imaginary axis. It thus contains all information about the steady-state response of the system to input signals of different frequency.
 \end{frame}
 
 
-\begin{frame}[label={sec:org7501e85}]{Specifications on the frequency properties of the closed-loop system}
+\begin{frame}[label={sec:org401e561}]{Specifications on the frequency properties of the closed-loop system}
 \begin{center}
 \includegraphics[width=0.899\linewidth]{../../figures/spec-bode-closed-loop-new}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org60d1138}]{Exercise: Reading the Bode diagram}
+\begin{frame}[label={sec:org5c47314}]{Exercise: Reading the Bode diagram}
 \begin{center}
 \includegraphics[width=\linewidth]{../../figures/alias-example-bode-GC}
 \end{center}
@@ -80,7 +80,7 @@ which of the below responses \alert{is not} compatible with the Bode diagram?
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orge4afd5a}]{From loop gain to closed-loop gain}
+\begin{frame}[label={sec:orgb8fb17d}]{From loop gain to closed-loop gain}
  \begin{center}
  \begin{tikzpicture}
 \tikzset{node distance=2cm, 
@@ -116,7 +116,7 @@ which of the below responses \alert{is not} compatible with the Bode diagram?
 
 
 
-\begin{frame}[label={sec:org48c2f78}]{If the phase shift is \(\pi\)}
+\begin{frame}[label={sec:orgb64033a}]{If the phase shift is \(\pi\)}
 \(G_o(i\omega_1) = -1\), \(|G_o(i\omega_1)| = 1\), \(\arg G_o(i\omega_1) = -\pi\)
 
 \begin{center}
@@ -145,7 +145,7 @@ If not, then the closed-loop system will have poles on the imaginary axis (in th
 \end{tcolorbox}
 \end{frame}
 
-\begin{frame}[label={sec:orge3c7e52}]{The simplified Nyquist criterion in the s-plane}
+\begin{frame}[label={sec:org974426f}]{The simplified Nyquist criterion in the s-plane}
 \begin{center}
 \includegraphics[width=0.65\linewidth]{../../figures/implane-nyquist-contour-map}
 \end{center}
@@ -154,7 +154,7 @@ If the open-loop system (the loop gain) is not unstable, i.e. $G_o(s)$ has no po
 \end{tcolorbox}
 \end{frame}
 
-\begin{frame}[label={sec:orga4949df}]{Stability margins}
+\begin{frame}[label={sec:org10fa3e8}]{Stability margins}
 \begin{center}
 \includegraphics[width=0.38\linewidth]{../../figures/implane-nyquist-margins}
 \end{center}
@@ -163,7 +163,7 @@ If the open-loop system (the loop gain) is not unstable, i.e. $G_o(s)$ has no po
 \item Phase margin: The angle \(\varphi_m\) to the negative real axis for the point where the Nyquist curve intersects the unit circle. \[\varphi_m = \arg G_o(i\omega_c) - (-180\degree) = \arg G_o(i\omega_c) + 180\degree\]
 \end{itemize}
 \end{frame}
-\begin{frame}[label={sec:org74f00e7}]{Stability margins}
+\begin{frame}[label={sec:orgdc39f48}]{Stability margins}
 \begin{center}
 \includegraphics[width=0.38\linewidth]{../../figures/implane-nyquist-margins}
 \end{center}
@@ -177,8 +177,19 @@ If the open-loop system (the loop gain) is not unstable, i.e. $G_o(s)$ has no po
 
 
 \section{Freq-domain specs}
-\label{sec:org8b97e80}
-\begin{frame}[label={sec:orgdb42907}]{How to achieve the frequency-domain specifications}
+\label{sec:org3149e0b}
+\begin{frame}[label={sec:org2589bb8}]{How to achieve the frequency-domain specifications}
+\[G_c(i\omega) = \frac{ G_o(i\omega)}{1 + G_o(i\omega)}\]
+
+\alert{Activity}
+\begin{enumerate}
+\item If \(Go(i\omega) = -0.5\) what is \(|G_c(i\omega)|\)?
+\item If \(Go(i\omega) = -i\) what is \(|G_c(i\omega)|\)?
+\end{enumerate}
+\end{frame}
+
+
+\begin{frame}[label={sec:org457f5f7}]{How to achieve the frequency-domain specifications}
 \begin{columns}
 \begin{column}{0.28\columnwidth}
 \[G_c(i\omega) = \frac{ G_o(i\omega)}{1 + G_o(i\omega)}\]
@@ -199,10 +210,10 @@ Which of the Bode plots to the right shows the correct loop gain \(G_o(i\omega)\
 
 
 
-\begin{frame}[label={sec:orgf6f2127}]{How to achieve the frequency-domain specifications}
+\begin{frame}[label={sec:org2a4a969}]{How to achieve the frequency-domain specifications}
 \end{frame}
 
-\begin{frame}[label={sec:org4348201}]{Stability margins excercise}
+\begin{frame}[label={sec:org3d0c084}]{Stability margins excercise}
 \begin{center}
   \includegraphics[width=.6\linewidth]{../../figures/bode-example-margin2.pdf}
 \end{center}

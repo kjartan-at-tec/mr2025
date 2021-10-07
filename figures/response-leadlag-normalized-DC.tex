@@ -1,0 +1,45 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+
+\begin{document}
+\def\Go{tf([1], [1, 1, 0]);}
+     \def\ggain{1}
+     \def\Tcnst{1}
+     \def\alphad{4}
+     \pgfmathsetmacro{\phmax}{asin((\alphad-1)/(\alphad+1))}
+     \def\Td{0.25}
+     \def\KK{2.24}
+     \def\alphai{0.1}
+     \def\Ti{16}
+     \begin{tikzpicture}
+       \begin{axis}[
+       width=9cm,
+       height=8cm,
+       grid = both,
+       xlabel = {Time [$\tau$]},
+       ylabel = {Angle [20 rad]},
+       title = {\textcolor{blue!60!black}{Response to reference}, \textcolor{orange!60!black}{Response to disturbance}},
+       %xtick = {0, \tdelay, \tone, \two},
+       %xticklabels = {0, $\theta$, $\theta+\frac{\tau}{3}$, $\theta + \tau$},
+       %ytick = {0, \yone, \ytwo, \uampl, \yfinal},
+       %yticklabels = {0, $0.283y_{f}$, $0.632y_f$, $u_f$, $y_f$},
+       xmin = -2, xmax=20,
+       minor y tick num=4,
+       minor x tick num=4,
+       every major grid/.style={red, opacity=0.5},
+       ]
+	 \addplot [thick, black, no marks, domain=-2:20, samples=200] {x>0};
+         \addplot  shell[thick, dashed, blue!60!black, no marks, prefix=pgfshell_, id=bodeGc,] {octave --eval  "pkg load control; G=\Go; F=\KK*tf([\alphad*\Td, 1],[\Td, 1]); Gc=feedback(G*F, 1); [y, t]=step(Gc,20); disp(cat(2,t(:),y))"} node[coordinate, pos=0.06, pin=0:{Lead compensator}] {};
+         \addplot  shell[thick, solid, blue!60!black, no marks, prefix=pgfshell_, id=bodeGc,] {octave --eval  "pkg load control; G=\Go; Flag=1/\alphai*tf([\alphai*\Ti, 1],[\Ti, 1]); F=\KK*tf([\alphad*\Td, 1],[\Td, 1]); Gc=feedback(G*F*Flag, 1); [y, t]=step(Gc,20); disp(cat(2,t(:),y))"} node[coordinate, pos=0.09, pin=0:{Lead-lag compensator}] {};
+         \addplot  shell[thick, dashed, orange!60!black, no marks, prefix=pgfshell_, id=bodeGc,] {octave --eval  "pkg load control; G=\Go; F=\KK*tf([\alphad*\Td, 1],[\Td, 1]); Gc=feedback(G, F); [y, t]=step(Gc,20); disp(cat(2,t(:),y))"} node[coordinate, pos=0.2, pin=20:{Lead compensator}] {};
+         \addplot  shell[thick, solid, orange!60!black, no marks, prefix=pgfshell_, id=bodeGc,] {octave --eval  "pkg load control; G=\Go; Flag=1/\alphai*tf([\alphai*\Ti, 1],[\Ti, 1]); F=\KK*tf([\alphad*\Td, 1],[\Td, 1]); Gc=feedback(G, F*Flag); [y, t]=step(Gc,20); disp(cat(2,t(:),y))"} node[coordinate, pos=0.2, pin=20:{Lead-lag compensator}] {};
+
+       \end{axis}
+     \end{tikzpicture}
+   \end{document}
+   

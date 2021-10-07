@@ -1,4 +1,4 @@
-% Created 2021-09-23 Thu 12:39
+% Created 2021-10-01 Fri 08:17
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169, usenames, dvipsnames]{beamer}
 \usepackage[utf8]{inputenc}
@@ -37,186 +37,306 @@
 \maketitle
 
 \section{Intro}
-\label{sec:org3c4ee42}
+\label{sec:org6a26085}
+
+\section{Preparation: The proportional control of the normalized DC-motor}
+\label{sec:orgd313728}
+\begin{frame}[label={sec:orgf09ed94}]{Proportional control of the normalized DC motor}
+\begin{columns}
+\begin{column}{0.5\columnwidth}
+\begin{center}
+ \includegraphics[width=1.0\linewidth]{../../figures/block-DC-feedback}
+\end{center}
+\end{column}
+
+\begin{column}{0.5\columnwidth}
+\begin{center}
+ \def\ggain{1}
+ \def\Tcnst{1}
+ \begin{tikzpicture}
+   \begin{axis}[
+   width=7cm,
+   height=6cm,
+   grid = both,
+   xlabel = {Time [$\tau$]},
+   ylabel = {Angle [20 rad]},
+   title = {$K=1$},
+   %xtick = {0, \tdelay, \tone, \two},
+   %xticklabels = {0, $\theta$, $\theta+\frac{\tau}{3}$, $\theta + \tau$},
+   %ytick = {0, \yone, \ytwo, \uampl, \yfinal},
+   %yticklabels = {0, $0.283y_{f}$, $0.632y_f$, $u_f$, $y_f$},
+   xmin = -2, xmax=20,
+   minor y tick num=4,
+   minor x tick num=4,
+   every major grid/.style={red, opacity=0.5},
+   ]
+     \addplot [thick, black, no marks, domain=-2:20, samples=200] {x>0};
+     \addplot [thick, red!60!black, no marks, domain=-0.2:20, samples=100] {(x>0)*(1 - (exp(-x/2)* (sqrt(3)* cos(deg((sqrt(3)* x)/2)) + sin(deg((sqrt(3)* x)/2))))/sqrt(3))};
+   \end{axis}
+ \end{tikzpicture}
+\end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}[label={sec:org59e34d1}]{Proportional control of the normalized DC motor}
+\begin{columns}
+\begin{column}{0.5\columnwidth}
+\begin{center}
+ \includegraphics[width=1.0\linewidth]{../../figures/block-DC-feedback}
+\end{center}
+\end{column}
+
+\begin{column}{0.5\columnwidth}
+\begin{center}
+ \includegraphics[width=1.0\linewidth]{../../figures/bode-closed-loop-normalized-DC}
+\end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[label={sec:org03211af}]{Proportional control of the normalized DC motor}
+\begin{columns}
+\begin{column}{0.5\columnwidth}
+\begin{center}
+ \includegraphics[width=1.0\linewidth]{../../figures/block-DC-feedback}
+\end{center}
+
+\alert{Activity} Determine the cross-over frequency and the phase margin.
+\end{column}
+\begin{column}{0.5\columnwidth}
+\begin{center}
+ \includegraphics[width=1.0\linewidth]{../../figures/bode-loop-gain-normalized-DC}
+\end{center}
+\end{column}
+\end{columns}
+\end{frame}
 
 \section{Lead-lag design}
-\label{sec:org86be95f}
+\label{sec:orga4976bd}
 
-\begin{frame}[label={sec:org8d54ba2}]{Specifications on the frequency properties of the closed-loop system}
+\begin{frame}[label={sec:org78174fb}]{Specifications on the frequency properties of the closed-loop system}
 \begin{center}
-\includegraphics[width=0.999\linewidth]{../figures/spec-bode-closed-loop}
+\includegraphics[width=0.999\linewidth]{../../figures/spec-bode-closed-loop-new}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org6ae2acf}]{The design procedure - overview}
+\begin{frame}[label={sec:org1d4dd73}]{How to achieve the frequency-domain specifications}
+\begin{columns}
+\begin{column}{0.28\columnwidth}
+\[G_c(i\omega) = \frac{ G_o(i\omega)}{1 + G_o(i\omega)}\]
+
+\includegraphics[width=1.1\linewidth]{../../figures/spec-bode-closed-loop-new}
+
+\alert{Activity} Which of the Bode plots to the right shows the correct loop gain \(G_o(i\omega)\)?
+\end{column}
+
+\begin{column}{0.72\columnwidth}
 \begin{center}
-\fbox{Specifications on the closed-loop system \(G_c(i\omega)\)}\\
-\(\downarrow\)\\
-\fbox{Specifications on the loop gain \(G_o(i\omega)\)}\\
-\(\downarrow\)\\
-\fbox{Determine \(F(i\omega)\) in \(G_o(i\omega) = G(i\omega)F(i\omega)\)}\\
+\includegraphics[width=1.02\linewidth]{../../figures/spec-bode-open-loop-new}
 \end{center}
+\end{column}
+\end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:orgb445bfc}]{From specifications on \(G_c\) to specifications on \(G_o\)}
+\begin{frame}[label={sec:org158f16a}]{From specifications on \(G_c\) to specifications on \(G_o\)}
 \begin{center}
 \begin{center}
 \begin{tabular}{ll}
 Closed-loop specifications & Loop gain specifications\\
 \hline
-Bandwidth \(\omega_B\) & cross-over frequency \(\omega_c\)\\
-Resonance peak \(M_p\) & phase margin \(\varphi_m\)\\
+High bandwidth \(\omega_B\) & High cross-over frequency \(\omega_c\)\\
+Low resonance peak \(M_p\) & Large phase margin \(\varphi_m\)\\
 Static gain \(G_c(0) \approx 1\) & static gain \(G_o(0)\) high\\
 \hline
 \end{tabular}
 \end{center}
 \end{center}
-
-
-\[ e_0 = |G_c(0)-1| = \left|\frac{G_o(0)}{1+G_o(0)}-1\right| = \left|\frac{1}{1+G_o(0)}\right| < \epsilon\] \[\Rightarrow\]  \[G_o(0) > ?\]
-\end{frame}
-
-\begin{frame}[label={sec:org2d3fd3d}]{From specifications on \(G_c\) to specifications on \(G_o\)}
-\begin{center}
-\begin{center}
-\begin{tabular}{ll}
-Closed-loop specifications & Loop gain specifications\\
-\hline
-Bandwidth \(\omega_B\) & cross-over frequency \(\omega_c\)\\
-Resonance peak \(M_p\) & phase margin \(\varphi_m\)\\
-Static gain \(G_c(0) \approx 1\) & static gain \(G_o(0)\) high\\
-\hline
-\end{tabular}
-\end{center}
-\end{center}
-
-\[ e_0 = |G_c(0)-1| = \left|\frac{G_o(0)}{1+G_o(0)}-1\right| = \left|\frac{1}{1+G_o(0)}\right| < \epsilon\] \[\Rightarrow\]  \[G_o(0) > \frac{1}{\epsilon} - 1\]
 \end{frame}
 
 
-\begin{frame}[label={sec:org97e3f19}]{Design procedure in detail}
-Given \(G(i\omega)\) and specifications on \(G_o(i\omega)\): \(\omega_c\), \(\varphi_m\), steady-state error \(e_0\).
-
+\section{Design example - DC motor}
+\label{sec:org7e1749b}
+\begin{frame}[label={sec:org53595e0}]{Position control of the DC motor}
+\begin{columns}
+\begin{column}{0.7\columnwidth}
 \begin{center}
-\includegraphics[width=1.02\linewidth]{../figures/design-procedure}
+  \includegraphics[width=0.9\linewidth]{../../figures/block-DC-lead-compensator}
 \end{center}
+\end{column}
+\begin{column}{0.3\columnwidth}
+Specifications:
+\begin{enumerate}
+\item \(\omega_B \approx \omega_c = \unit{2}{\rad\per\second}\)
+\item \(\varphi_m > \unit{60}{\degree}\)
+\end{enumerate}
+\end{column}
+\end{columns}
 \end{frame}
 
 
-\section{Why lead filter instead of PD controller}
-\label{sec:orgde25b4d}
-\begin{frame}[label={sec:org1367a19}]{The problem with a PD-controller}
+\begin{frame}[label={sec:org125fb39}]{Position control of the DC motor}
+\begin{columns}
+\begin{column}{0.6\columnwidth}
 \begin{center}
-\begin{tikzpicture}
-    \node[anchor=south west,inner sep=0] at (0,0) {\includegraphics[width=0.9\linewidth]{../figures/lead-lag-prep-bode-bode-crop}};
-\draw[red,ultra thick,rounded corners] (9.7,2.8) rectangle (12.3,4.5);
-\end{tikzpicture} 
+  \includegraphics[width=0.9\linewidth]{../../figures/bode-plant-normalized-DC}
+\end{center}
+\end{column}
+
+\begin{column}{0.4\columnwidth}
+Specifications:
+\begin{enumerate}
+\item \(\omega_B \approx \omega_c = \unit{2}{\rad\per\second}\)
+\item \(\varphi_m = \arg G_o(i\omega_c) - (-\unit{180}{\degree}) > \unit{60}{\degree}\)
+\end{enumerate}
+
+
+\alert{Activity}
+\begin{enumerate}
+\item What is \(|G (i\omega_c)|\)?
+\item What is  \(\arg G(i\omega_c)\)?
+\item What should \(\arg G_o(i\omega_c)\) be to satisfy the phase margin requirement?
+\item How much phase advance is needed at the desired cross-over frequency?
+\end{enumerate}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[label={sec:orgc83f7a6}]{Position control of the DC motor - obtaining the phase advance}
+\[F_{lead}(s) = \frac{\alpha_d T_d s + 1}{T_d s + 1}\]
+
+\begin{center}
+  \includegraphics[width=0.9\linewidth]{../../figures/bode-lead-compensator}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org4291cdf}]{The problem with a PD-controller, contd}
+\begin{frame}[label={sec:org3110031}]{The maximum phase advance of the lead compensator}
+\begin{columns}
+\begin{column}{0.4\columnwidth}
+\[F_{lead}(s) = \frac{\alpha_d T_d s + 1}{T_d s + 1}\]
+
+\[ \phi = \max \arg F_{lead}(i\omega)\]
+\[ \sin\phi = \frac{\alpha_d -1}{\alpha_d + 1}\quad \Leftrightarrow \quad \alpha_d = \frac{1 + \sin\phi}{1-\sin\phi} \]
+
+\alert{Activity} Find the value of \(\alpha_d\) that gives the necessary maximum positive phase \(\arg F_{lead}(i\omega_c) = \unit{34}{\degree}\).
+\end{column}
+
+
+\begin{column}{0.6\columnwidth}
 \begin{center}
-  \begin{tikzpicture}[scale = 0.8, node distance=20mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
-
-  \node[coordinate] (refinput) {};
-  \node[sumnode, right of=refinput, node distance=20mm] (sumerr) {\tiny $\sum$};
-  \node[block, right of=sumerr] (controller) {$F(s)$};
-  \node[block, right of=controller, node distance=24mm] (valve) {$G(s)$};
-  \node[coordinate, right of=valve, node distance=30mm] (output) {};
-  \draw[->] (valve) -- node[coordinate] (measure) {} node[above, pos=0.8] {$y(t)$} (output);
-  \node[sumnode, below of=measure, node distance=16mm] (sumnoise) {\tiny $\sum$};
-  \node[coordinate, right of=sumnoise, node distance=12mm] (noise) {};
-
-  \draw[->] (refinput) -- node[above, pos=0.3] {$y_{ref}(t)$} (sumerr);
-  \draw[->] (sumerr) -- node[above] {$e(t)$} (controller);
-  \draw[->] (controller) -- node[above] {$u(t)$} (valve);
-  \draw[->] (measure) -- node[above] {} (sumnoise);
-  \draw[->] (sumnoise) -| node[above, pos=0.3]{$y_m(t)$} node[right, pos=0.95] {$-$} (sumerr);
-  \draw[->] (noise) -- node[above] {$n(t)$} (sumnoise);
+  \begin{tikzpicture}
+    \begin{axis}[xlabel=$\alpha_d$, ylabel=$\phi$,
+    grid=both,
+    minor x tick num=9,
+    minor y tick num=9,
+      every major grid/.style={red, opacity=0.5},
+]
+    \addplot[black, thick, smooth, no marks, domain=1:40, samples=300] {asin((\x-1)/(\x+1))};
+    \end{axis}
   \end{tikzpicture}
 \end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[label={sec:org5942659}]{Position control of the DC motor - placing the phase peak}
+\[F_{lead}(s) = \frac{\alpha_d T_d s + 1}{T_d s + 1}\]
+
+\begin{center}
+  \includegraphics[width=0.9\linewidth]{../../figures/bode-lead-compensator}
+\end{center}
+
+\alert{Activity} Determine the time constant \(T_d\) that will place the peak of the phase curve at the desired cross-over frequency \(\omega_c = 2\).
 \end{frame}
 
 
+\begin{frame}[label={sec:org9334971}]{Position control of the DC motor - The resulting lead compensator}
+\[F_{lead}(s) = \frac{\alpha_d T_d s + 1}{T_d s + 1} = \frac{s + 1}{0.25s + 1}\]
 
-
-\begin{frame}[label={sec:org8ec2e32}]{The problem with a PD-controller, contd}
 \begin{center}
-  \begin{tikzpicture}[scale = 0.8, node distance=20mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
-
-  \node[coordinate] (refinput) {};
-  \node[sumnode, right of=refinput, node distance=20mm] (sumerr) {\tiny $\sum$};
-  \node[block, right of=sumerr] (controller) {$F(s)$};
-  \node[block, right of=controller, node distance=24mm] (valve) {$G(s)$};
-  \node[coordinate, right of=valve, node distance=30mm] (output) {};
-  \draw[->] (valve) -- node[coordinate] (measure) {} node[above, pos=0.8] {$y(t)$} (output);
-  \node[sumnode, below of=measure, node distance=16mm] (sumnoise) {\tiny $\sum$};
-  \node[coordinate, right of=sumnoise, node distance=12mm] (noise) {};
-
-  \draw[->] (refinput) -- node[above, pos=0.3] {$y_{ref}(t)$} (sumerr);
-  \draw[->] (sumerr) -- node[above] {$e(t)$} (controller);
-  \draw[->] (controller) -- node[above] {$u(t)$} (valve);
-  \draw[->] (measure) -- node[above] {} (sumnoise);
-  \draw[->] (sumnoise) -| node[above, pos=0.3]{$y_m(t)$} node[right, pos=0.95] {$-$} (sumerr);
-  \draw[->] (noise) -- node[above] {$n(t)$} (sumnoise);
-  \end{tikzpicture}
-\end{center}
-
-\alert{High frequency measurement noise entering the system is amplified in the PD-controller \(F(s)\)}
-\end{frame}
-
-
-
-\begin{frame}[label={sec:org040c259}]{PD-controller + Low-pass filter = lead compensator + gain}
-\begin{center}
-  \begin{tikzpicture}[scale = 0.8, node distance=20mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
-
-  \node[coordinate] (refinput) {};
-  \node[sumnode, right of=refinput, node distance=12mm] (sumerr) {\tiny $\sum$};
-  \node[block, right of=sumerr, node distance=30mm] (controller) {$F_{PD}=K(\alpha_dT_ds + 1)$};
-  \node[block, right of=controller, node distance=40mm] (lowpass) {$F_{LP} = \frac{1}{T_ds + 1}$};
-  \node[block, right of=lowpass, node distance=30mm] (valve) {$G(s)$};
-  \node[coordinate, right of=valve, node distance=25mm] (output) {};
-  \draw[->] (valve) -- node[coordinate] (measure) {} node[above, pos=0.8] {$y(t)$} (output);
-  \node[sumnode, below of=measure, node distance=16mm] (sumnoise) {\tiny $\sum$};
-  \node[coordinate, right of=sumnoise, node distance=12mm] (noise) {};
-
-  \draw[->] (refinput) -- node[above, pos=0.3] {$y_{ref}(t)$} (sumerr);
-  \draw[->] (sumerr) -- node[above] {$e(t)$} (controller);
-  \draw[->] (controller) -- node[above] {} (lowpass);
-  \draw[->] (lowpass) -- node[above] {$u(t)$} (valve);
-  \draw[->] (measure) -- node[above] {} (sumnoise);
-  \draw[->] (sumnoise) -| node[above, pos=0.3]{$y_m(t)$} node[right, pos=0.95] {$-$} (sumerr);
-  \draw[->] (noise) -- node[above] {$n(t)$} (sumnoise);
-  \end{tikzpicture}
-\end{center}
-
-\(F(s) = KF_{lead} = K \frac{\alpha T_d s + 1}{T_ds + 1}\)
-\end{frame}
-
-\begin{frame}[label={sec:org2a0b0e3}]{The lead- and lag filters/compensators}
-\begin{center}
-\includegraphics[width=0.68\linewidth]{../figures/lead-lag-bode-crop}
-\end{center}
-
-\(F_{lead} = \frac{\alpha_d T_d s + 1}{T_ds + 1}, \; \alpha_d > 1  \qquad F_{lag} = \frac{1}{\alpha_i} \cdot \frac{\alpha_i T_i s + 1}{T_is + 1}, \; \alpha_i < 1 \; \text{or}\; F_{lag} = \frac{T_is + 1}{T_is}\)
-\end{frame}
-
-
-\section{Design example}
-\label{sec:org6556d7a}
-
-\begin{frame}[label={sec:org485dbfd}]{Position control of a radar antenna}
-\begin{center}
-\includegraphics[width=0.5\linewidth]{../figures/fig5_1a-crop}
+  \includegraphics[width=0.9\linewidth]{../../figures/bode-lead-compensator-numerical}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orga7c00b7}]{Nyquist plot of the plant}
+
+\begin{frame}[label={sec:org924cc32}]{Position control of the DC motor - Getting the gain right}
+\begin{columns}
+\begin{column}{0.5\columnwidth}
 \begin{center}
-\includegraphics[width=0.4\linewidth]{../matlab/5_1-nyqlog-crop}
+  \includegraphics[width=1.0\linewidth]{../../figures/bode-plant-lead-normalized-DC}
+\end{center}
+\end{column}
+
+\begin{column}{0.4\columnwidth}
+Specifications
+
+\begin{enumerate}
+\item \(\omega_B =\approx \omega_c = \unit{2}{\rad\per\second}\)
+\item \(\varphi_m = \arg G_o(i\omega_c) - (-\unit{180}{\degree}) > \unit{60}{\degree}\)
+\end{enumerate}
+
+\alert{Activity}
+\begin{align*}
+20\log G_o(i\omega) &= 20\log K F(i\omega)G(i\omega)\\
+ &= 20\log K + 20\log F(i\omega) + 20\log G(i\omega)
+ \end{align*}
+so, what should the gain \(K\) be to obtain
+\[  |G_o(i2)| = 1 = 0\text{dB}?\]
+\end{column}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}[label={sec:orgab0d24b}]{Position control of the DC motor - Results}
+\begin{columns}
+\begin{column}{0.5\columnwidth}
+\begin{center}
+  \includegraphics[width=1.0\linewidth]{../../figures/bode-loop-gain-lead-normalized-DC-crop}
+\end{center}
+\end{column}
+
+
+\begin{column}{0.4\columnwidth}
+\begin{center}
+ \includegraphics[width=1.0\linewidth]{../../figures/block-DC-lead-compensator-numerical}
 \end{center}
 
-Will proportional control work? (The open-loop system is stable)
+\alert{Activity} Identify the frequency responses of: 1) The plant, 2) The compensator, 3) The loop gain, and 4) The closed-loop system.
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[label={sec:org503ab47}]{Position control of the DC motor - Results}
+\begin{columns}
+\begin{column}{0.5\columnwidth}
+\begin{center}
+ \includegraphics[width=\linewidth]{../../figures/nyquist-loop-gain-lead-normalized-DC}
+\end{center}
+\end{column}
+
+\begin{column}{0.5\columnwidth}
+    \begin{center}
+  \includegraphics[width=1.0\linewidth]{../../figures/step-response-lead-normalized-DC}
+\end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}[label={sec:orgfe7b476}]{Applying the compensator design to a particular motor}
+\begin{center}
+ \includegraphics[width=.7\linewidth]{../../figures/block-DC-lead-compensator-numerical}
+\end{center}
+
+\pause
+\begin{center}
+ \includegraphics[width=.7\linewidth]{../../figures/block-DC-lead-compensator-particular-sol}
+\end{center}
+
+\pause
+\begin{center}
+ \includegraphics[width=.7\linewidth]{../../figures/block-DC-lead-compensator-particular-sol-white}
+\end{center}
 \end{frame}
 \end{document}

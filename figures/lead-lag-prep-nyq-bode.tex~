@@ -1,0 +1,11 @@
+\documentclass{standalone}
+
+\usepackage{amsmath,amssymb,euscript,fancybox,epsfig,latexsym,subfigure,psfrag}
+\usepackage[dvips]{color}
+
+\begin{document}
+
+\psfrag{wclik1}[c][][1]{$\omega_c = 1$}
+\includegraphics[width=0.45\linewidth]{lead_lag_prep_rotort.eps}
+
+\end{document}

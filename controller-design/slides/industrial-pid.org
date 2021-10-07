@@ -1,0 +1,599 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169, usenames, dvipsnames]
+#+OPTIONS: H:2
+
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage{amssymb}
+#+LaTex_HEADER: \usepgfplotslibrary{groupplots}
+
+#+LaTex_HEADER: \newcommand*{\shift}{\operatorname{q}}
+#+LaTex_HEADER:   \definecolor{ppc}{rgb}{0.1,0.1,0.6}
+#+LaTex_HEADER:   \definecolor{iic}{rgb}{0.6,0.1,0.1}
+#+LaTex_HEADER:   \definecolor{ddc}{rgb}{0.1,0.6,0.1}
+
+#+LaTex_HEADER: \def\ucolor{blue!80!black}
+#+LaTex_HEADER: \def\ycolor{green!60!black}
+#+LaTex_HEADER: \newcommand*{\incolor}[1]{\textcolor{\ucolor}{#1}}
+#+LaTex_HEADER: \newcommand*{\outcolor}[1]{\textcolor{\ycolor}{#1}}
+
+#+title:  PID for industrial control
+
+
+# #+date: 2021-03-03
+
+* What do I want the students to understand?			   :noexport:
+  - Deviation variables
+  - First and second order system modeling
+
+* Which activities will the students do?			   :noexport:
+  - Intuition about heat echange
+  - Work with deviation variables
+  - Assignment
+
+
+
+* PID tuning - (Smith and Corripio) Ziegler Nichols
+** The PID - practical form
+   \definecolor{ppc}{rgb}{0.1,0.1,0.6}
+   \definecolor{iic}{rgb}{0.6,0.1,0.1}
+   \definecolor{ddc}{rgb}{0.1,0.5,0.1}
+   
+   #+begin_export latex
+   \begin{center}
+     \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+    
+       \node[coordinate] (input) {};
+       \node[sumnode, right of=input, node distance=16mm] (sum) {\tiny $\Sigma$};
+       \node[color=iic,block, right of=sum, node distance=28mm] (ii)  {$\frac{1}{\tau_is}$};
+       \node[color=ppc, coordinate, above of=ii, node distance=10mm] (pp)  {};
+       \node[color=ddc,block, below of=ii, node distance=13mm] (dd)  {$\frac{-\tau_ds}{\frac{\tau_d}{N}s + 1}$};
+       \node[sumnode, right of=ii, node distance=20mm] (sum2) {\tiny $\Sigma$};
+       \node[block, right of=sum2, node distance=20mm] (gain)  {$k_c$};
+       \node[coordinate, below of=sum, node distance=18mm] (feedback) {};
+       \node[coordinate, right of=gain, node distance=20mm] (output) {};
+
+       \draw[->] (input) -- node[above, pos=0.3] {$r(t)$} (sum);
+       \draw[->] (sum) -- node[above, pos=0.2] {$e(t)$} node[coordinate] (mm) {}  (ii);
+       \draw[->] (gain) -- node[above, near end] {$u(t)$} (output);
+       \draw[->] (feedback) -- node[left, near start] {$y(t)$} node[right, pos=0.95] {-} (sum);
+       \draw[->, color=ppc] (mm) |- (pp) -| node[right,] {$u_P(t)$} (sum2);
+       \draw[->, color=ddc] (feedback |- dd) -- node[above, pos=0.95] {} (dd);
+       \draw[->, color=ddc] (dd) -| node[right,] {$u_D(t)$} (sum2)  ;
+       \draw[->, color=iic] (ii)  -- node[above,] {$u_I(t)$} (sum2);
+       \draw[->] (sum2) -- node[above, near end] {} (gain);
+
+     \end{tikzpicture}
+   \end{center}
+   #+end_export
+
+   The parameter \(N\) is chosen to limit the influence of noisy measurements. Typically,
+   \[  3 < N < 20 \]
+** PID tuning
+** Method by Smith & Corripio using table by Ziegler-Nichols
+
+\small
+
+Given process model (fitted to response of the system) \[ G(s) = K \frac{\mathrm{e}^{-s\theta}}{\tau s + 1} \] and PID controller
+   \[ F(s) = k_c\left( 1 + \frac{1}{\tau_i s} + \tau_d s\right) \]
+   Choose the PID parameters according to the following table (Ziegler-Nichols, 1943)
+   #+begin_export latex
+      \begin{center}
+      \setlength{\tabcolsep}{20pt}
+      \renewcommand{\arraystretch}{1.5}
+      \begin{tabular}{llll}
+      Controller & \(k_c\) & \(\tau_i\) & \(\tau_d\)\\
+     \hline\hline
+     P & \(\frac{\tau}{\theta K}\) &  & \\
+     PI & \(\frac{0.9\tau}{\theta K}\) & \(\frac{\theta}{0.3}\) & \\
+     PID & \(\frac{1.2\tau}{\theta K}\) & \(2\theta\) & \(\frac{\theta}{2}\)\\
+     \hline
+   \end{tabular}
+   \end{center}
+
+   #+end_export
+
+   Gives good control for \[0.1 < \frac{\theta}{\tau} < 0.6.\]
+
+
+* The delay transfer function
+
+** The delay
+
+   \begin{center}
+     \begin{tikzpicture}[scale = 0.8, node distance=20mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+     
+     \node[coordinate] (refinput) {};
+     \node[block, right of=refinput] (motor) {$G(s)$};
+     \node[coordinate, right of=motor, node distance=20mm] (output) {};
+
+     \draw[\ucolor, ->] (refinput) -- node[above, pos=0.3] (voltsignal) {$u$} (motor);
+     \draw[\ycolor, ->] (motor) -- node[above, pos=0.5] (velsignal) {$y$} (output);
+     \end{tikzpicture}
+   \end{center}
+
+   Let $\incolor{u(t) = \sin\omega_1 t}$. Then, after transients have died out,
+   \[ \outcolor{y(t)}= \outcolor{|G(\omega_1)| \sin \big( \omega_1 t + \arg G(i\omega_1)\big)}. \]
+
+   #+BEAMER: \pause
+   *If ouput is simply a delayed input* \( \outcolor{y(t)}= \outcolor{ \sin \big( \omega_1 (t - \theta) \big)} \)
+
+   #+BEAMER: \pause
+*Activity* 
+Identify \(|G(i\omega)|\) and \(\arg G(i\omega) \) for the pure delay.
+   
+
+* REPETITION: Fitting first-order model with delay                 :noexport:
+
+** Fitting first-order model with delay
+   Assuming a plant model of first-order with time constant \(\tau\) and delay \(\theta\)
+   \[  \quad \textcolor{green!50!black}{Y(s)} = \frac{K\mathrm{e}^{-s\theta}}{s\tau + 1}\textcolor{blue!80!black}{U(s)} \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad \textcolor{green!50!black}{y(t)} = u_f K\big( 1 - \mathrm{e}^{-\frac{t-\theta}{\tau}}\big)u_H(t-\theta)\]
+   #+begin_export latex
+   \def\Tcnst{3}
+   \def\tdelay{0.6}
+   \def\ggain{2}
+   \def\uampl{0.8}
+   \pgfmathsetmacro{\yfinal}{\uampl*\ggain}
+   \pgfmathsetmacro{\yone}{0.283*\yfinal}
+   \pgfmathsetmacro{\ytwo}{0.632*\yfinal}
+   \pgfmathsetmacro{\tone}{\tdelay + \Tcnst/3}
+   \pgfmathsetmacro{\two}{\tdelay + \Tcnst}
+
+   \begin{center}
+     \begin{tikzpicture}
+       \begin{axis}[
+       width=14cm,
+       height=4.5cm,
+       grid = both,
+       xtick = {0, \tdelay, \tone, \two},
+       xticklabels = {0, $\theta$, $\theta+\frac{\tau}{3}$, $\theta + \tau$},
+       ytick = {0, \yone, \ytwo, \uampl, \yfinal},
+       yticklabels = {0, $ $, $ $, $u_f$, $y_f$},
+       xmin = -0.2,
+       %minor y tick num=9,
+       %minor x tick num=9,
+       %every major grid/.style={red, opacity=0.5},
+       xlabel = {$t$},
+       ]
+	 \addplot [thick, green!50!black, no marks, domain=0:10, samples=100] {\uampl*\ggain*(x>\tdelay)*(1 - exp(-(x-\tdelay)/\Tcnst)} node [coordinate, pos=0.9, pin=-90:{$y(t)$}] {};
+	 \addplot [const plot, thick, blue!80!black, no marks, domain=-1:10, samples=100] coordinates {(-1,0) (0,0) (0,\uampl) (10,\uampl)} node [coordinate, pos=0.9, pin=-90:{$u(t)$}] {};
+       \end{axis}
+     \end{tikzpicture}
+   \end{center}
+   #+end_export
+
+   *Individual activity* Evaluate the response $y(t)$ at the two time instants $t=\theta + \frac{\tau}{3}$ and $t=\theta + \tau$!
+
+
+** Fitting first-order model with delay
+   Assuming a plant model of first-order with time constant \(\tau\) and delay \(\theta\)
+   \[  \quad \textcolor{green!50!black}{Y(s)} = \frac{K\mathrm{e}^{-s\theta}}{s\tau + 1}\textcolor{blue!80!black}{U(s)} \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad \textcolor{green!50!black}{y(t)} = u_f K\big( 1 - \mathrm{e}^{-\frac{t-\theta}{\tau}}\big)u_H(t-\theta)\]
+   #+begin_export latex
+   \def\Tcnst{3}
+   \def\tdelay{0.6}
+   \def\ggain{2}
+   \def\uampl{0.8}
+   \pgfmathsetmacro{\yfinal}{\uampl*\ggain}
+   \pgfmathsetmacro{\yone}{0.283*\yfinal}
+   \pgfmathsetmacro{\ytwo}{0.632*\yfinal}
+   \pgfmathsetmacro{\tone}{\tdelay + \Tcnst/3}
+   \pgfmathsetmacro{\two}{\tdelay + \Tcnst}
+
+   \begin{center}
+     \begin{tikzpicture}
+       \begin{axis}[
+       width=14cm,
+       height=4.5cm,
+       grid = both,
+       xtick = {0, \tdelay, \tone, \two},
+       xticklabels = {0, $\theta$, $\theta+\frac{\tau}{3}$, $\theta + \tau$},
+       ytick = {0, \yone, \ytwo, \uampl, \yfinal},
+       yticklabels = {0, $0.283y_{f}$, $0.632y_f$, $u_f$, $y_f$},
+       xmin = -0.2,
+       %minor y tick num=9,
+       %minor x tick num=9,
+       %every major grid/.style={red, opacity=0.5},
+       xlabel = {$t$},
+       ]
+	 \addplot [thick, green!50!black, no marks, domain=0:10, samples=100] {\uampl*\ggain*(x>\tdelay)*(1 - exp(-(x-\tdelay)/\Tcnst)} node [coordinate, pos=0.9, pin=-90:{$y(t)$}] {};
+	 \addplot [const plot, thick, blue!80!black, no marks, domain=-1:10, samples=100] coordinates {(-1,0) (0,0) (0,\uampl) (10,\uampl)} node [coordinate, pos=0.9, pin=-90:{$u(t)$}] {};
+       \end{axis}
+     \end{tikzpicture}
+   \end{center}
+   #+end_export
+
+   \[ y_f = \lim_{t\to\infty} y(t) = u_f K \quad \Rightarrow \quad K = \frac{y_f}{u_f}. \]
+
+** First-order model with delay - example
+   \[  \quad Y(s) = \frac{K\mathrm{e}^{-s\theta}}{s\tau + 1}U(s) \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad y(t) = u_f K\big( 1 - \mathrm{e}^{-\frac{t-\theta}{\tau}}\big)u_s(t-\theta)\]
+   #+begin_export latex
+   \def\Tcnst{2.1}
+   \def\tdelay{1}
+   \def\ggain{2}
+   \def\uampl{0.8}
+   \pgfmathsetmacro{\yfinal}{\uampl*\ggain}
+   \pgfmathsetmacro{\yone}{0.283*\yfinal}
+   \pgfmathsetmacro{\ytwo}{0.632*\yfinal}
+   \pgfmathsetmacro{\tone}{\tdelay + \Tcnst/3}
+   \pgfmathsetmacro{\two}{\tdelay + \Tcnst}
+
+   \begin{center}
+     \begin{tikzpicture}
+       \begin{axis}[
+       width=12cm,
+       height=4cm,
+       grid = both,
+       %xtick = {0, \tdelay, \tone, \two},
+       %xticklabels = {0, $\theta$, $\theta+\frac{\tau}{3}$, $\theta + \tau$},
+       %ytick = {0, \yone, \ytwo, \uampl, \yfinal},
+       %yticklabels = {0, $0.283y_{f}$, $0.632y_f$, $u_f$, $y_f$},
+       xmin = -0.2,
+       minor y tick num=9,
+       minor x tick num=9,
+       every major grid/.style={red, opacity=0.5},
+       %xlabel = {$t$},
+       clip = false,
+       ]
+	 \addplot [thick, green!50!black, smooth, no marks, domain=0:10, samples=16] {\uampl*\ggain*(x>\tdelay)*(1 - exp(-(x-\tdelay)/\Tcnst)} node [coordinate, pos=0.9, pin=-90:{$y(t)$}] {};
+	 \addplot [const plot, thick, blue!80!black, no marks, domain=-1:10, samples=100] coordinates {(-1,0) (0,0) (0,\uampl) (10,\uampl)} node [coordinate, pos=0.9, pin=-90:{$u(t)$}] {};
+	 \draw[thick, green!70!black, dashed] (axis cs: 10, \yfinal) -- (axis cs: -1, \yfinal, -0.9) node[left, anchor=east] {$y_f = \yfinal$}; 
+	 \draw[blue!70!black, dashed] (axis cs: 0, \uampl) -- (axis cs: -1, \uampl, -0.9) node[left, anchor=east] {$u_f = \uampl$}; 
+       \end{axis}
+     \end{tikzpicture}
+   \end{center}
+   #+end_export
+
+** First-order model with delay - example
+   \[  \quad Y(s) = \frac{K\mathrm{e}^{-s\theta}}{s\tau + 1}U(s) \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad y(t) = u_f K\big( 1 - \mathrm{e}^{-\frac{t-\theta}{\tau}}\big)u_s(t-\theta)\]
+   #+begin_export latex
+   \def\Tcnst{2.1}
+   \def\tdelay{1}
+   \def\ggain{2}
+   \def\uampl{0.8}
+   \pgfmathsetmacro{\yfinal}{\uampl*\ggain}
+   \pgfmathsetmacro{\yone}{0.283*\yfinal}
+   \pgfmathsetmacro{\ytwo}{0.632*\yfinal}
+   \pgfmathsetmacro{\tone}{\tdelay + \Tcnst/3}
+   \pgfmathsetmacro{\two}{\tdelay + \Tcnst}
+
+   \begin{center}
+     \begin{tikzpicture}
+       \begin{axis}[
+       width=12cm,
+       height=4cm,
+       grid = both,
+       %xtick = {0, \tdelay, \tone, \two},
+       %xticklabels = {0, $\theta$, $\theta+\frac{T}{3}$, $\theta + T$},
+       %ytick = {0, \yone, \ytwo, \uampl, \yfinal},
+       %yticklabels = {0, $0.283y_{f}$, $0.632y_f$, $u_f$, $y_f$},
+       xmin = -0.2,
+       minor y tick num=9,
+       minor x tick num=9,
+       every major grid/.style={red, opacity=0.5},
+       %xlabel = {$t$},
+       clip = false,
+       ]
+	 \addplot [thick, green!50!black, smooth, no marks, domain=0:10, samples=16] {\uampl*\ggain*(x>\tdelay)*(1 - exp(-(x-\tdelay)/\Tcnst)} node [coordinate, pos=0.9, pin=-90:{$y(t)$}] {};
+	 \addplot [const plot, thick, blue!80!black, no marks, domain=-1:10, samples=100] coordinates {(-1,0) (0,0) (0,\uampl) (10,\uampl)} node [coordinate, pos=0.9, pin=-90:{$u(t)$}] {};
+	 \draw[thick, orange, dashed] (axis cs: \two, \ytwo) -- (axis cs: \two, -0.9) node[below] {$t_2 = \two = \theta + \tau$}; 
+	 \draw[thick, orange, dashed] (axis cs: \two, \ytwo) -- (axis cs: -1, \ytwo, -0.9) node[left, anchor=east] {$0.632y_f = \ytwo$}; 
+	 \draw[thick, green!70!black, dashed] (axis cs: 10, \yfinal) -- (axis cs: -1, \yfinal, -0.9) node[left, anchor=east] {$y_f = \yfinal$}; 
+	 \draw[blue!70!black, dashed] (axis cs: 0, \uampl) -- (axis cs: -1, \uampl, -0.9) node[left, anchor=east] {$u_f = \uampl$}; 
+       \end{axis}
+     \end{tikzpicture}
+   \end{center}
+   #+end_export
+   
+** First-order model with delay - example
+   \[  \quad Y(s) = \frac{K\mathrm{e}^{-s\theta}}{s\tau + 1}U(s) \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad y(t) = u_f K\big( 1 - \mathrm{e}^{-\frac{t-\theta}{\tau}}\big)u_s(t-\theta)\]
+   #+begin_export latex
+   \def\Tcnst{2.1}
+   \def\tdelay{1}
+   \def\ggain{2}
+   \def\uampl{0.8}
+   \pgfmathsetmacro{\yfinal}{\uampl*\ggain}
+   \pgfmathsetmacro{\yone}{0.283*\yfinal}
+   \pgfmathsetmacro{\ytwo}{0.632*\yfinal}
+   \pgfmathsetmacro{\tone}{\tdelay + \Tcnst/3}
+   \pgfmathsetmacro{\two}{\tdelay + \Tcnst}
+
+   \begin{center}
+     \begin{tikzpicture}
+       \begin{axis}[
+       width=12cm,
+       height=4cm,
+       grid = both,
+       %xtick = {0, \tdelay, \tone, \two},
+       %xticklabels = {0, $\theta$, $\theta+\frac{T}{3}$, $\theta + T$},
+       %ytick = {0, \yone, \ytwo, \uampl, \yfinal},
+       %yticklabels = {0, $0.283y_{f}$, $0.632y_f$, $u_f$, $y_f$},
+       xmin = -0.2,
+       minor y tick num=9,
+       minor x tick num=9,
+       every major grid/.style={red, opacity=0.5},
+       %xlabel = {$t$},
+       clip = false,
+       ]
+	 \addplot [thick, green!50!black, smooth, no marks, domain=0:10, samples=16] {\uampl*\ggain*(x>\tdelay)*(1 - exp(-(x-\tdelay)/\Tcnst)} node [coordinate, pos=0.9, pin=-90:{$y(t)$}] {};
+	 \addplot [const plot, thick, blue!80!black, no marks, domain=-1:10, samples=100] coordinates {(-1,0) (0,0) (0,\uampl) (10,\uampl)} node [coordinate, pos=0.9, pin=-90:{$u(t)$}] {};
+	 \draw[thick, red, dashed] (axis cs: \tone, \yone) -- (axis cs: \tone, -0.45) node[below] {$t_1 = \tone = \theta + \frac{\tau}{3}$}; 
+	 \draw[thick, red, dashed] (axis cs: \tone, \yone) -- (axis cs: -1,\yone) node[left, anchor=east] {$0.283y_f = \yone$}; 
+	 \draw[thick, orange, dashed] (axis cs: \two, \ytwo) -- (axis cs: \two, -0.9) node[below] {$t_2 = \two = \theta + \tau$}; 
+	 \draw[thick, orange, dashed] (axis cs: \two, \ytwo) -- (axis cs: -1, \ytwo, -0.9) node[left, anchor=east] {$0.632y_f = \ytwo$}; 
+	 \draw[thick, green!70!black, dashed] (axis cs: 10, \yfinal) -- (axis cs: -1, \yfinal, -0.9) node[left, anchor=east] {$y_f = \yfinal$}; 
+	 \draw[blue!70!black, dashed] (axis cs: 0, \uampl) -- (axis cs: -1, \uampl, -0.9) node[left, anchor=east] {$u_f = \uampl$}; 
+       \end{axis}
+     \end{tikzpicture}
+   \end{center}
+   #+end_export
+
+** First-order model with delay - example
+   \[  \quad Y(s) = \frac{K\mathrm{e}^{-s\theta}}{s\tau + 1}U(s) \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad y(t) = u_f K\big( 1 - \mathrm{e}^{-\frac{t-\theta}{\tau}}\big)u_s(t-\theta)\]
+   #+begin_export latex
+   \def\Tcnst{2.1}
+   \def\tdelay{1}
+   \def\ggain{2}
+   \def\uampl{0.8}
+   \pgfmathsetmacro{\yfinal}{\uampl*\ggain}
+   \pgfmathsetmacro{\yone}{0.283*\yfinal}
+   \pgfmathsetmacro{\ytwo}{0.632*\yfinal}
+   \pgfmathsetmacro{\tone}{\tdelay + \Tcnst/3}
+   \pgfmathsetmacro{\two}{\tdelay + \Tcnst}
+
+   \begin{center}
+     \begin{tikzpicture}
+       \begin{axis}[
+       width=12cm,
+       height=4cm,
+       grid = both,
+       %xtick = {0, \tdelay, \tone, \two},
+       %xticklabels = {0, $\theta$, $\theta+\frac{T}{3}$, $\theta + T$},
+       %ytick = {0, \yone, \ytwo, \uampl, \yfinal},
+       %yticklabels = {0, $0.283y_{f}$, $0.632y_f$, $u_f$, $y_f$},
+       xmin = -0.2,
+       minor y tick num=9,
+       minor x tick num=9,
+       every major grid/.style={red, opacity=0.5},
+       %xlabel = {$t$},
+       clip = false,
+       ]
+	 \addplot [thick, green!50!black, smooth, no marks, domain=0:10, samples=16] {\uampl*\ggain*(x>\tdelay)*(1 - exp(-(x-\tdelay)/\Tcnst)} node [coordinate, pos=0.9, pin=-90:{$y(t)$}] {};
+	 \addplot [const plot, thick, blue!80!black, no marks, domain=-1:10, samples=100] coordinates {(-1,0) (0,0) (0,\uampl) (10,\uampl)} node [coordinate, pos=0.9, pin=-90:{$u(t)$}] {};
+	 \draw[thick, red, dashed] (axis cs: \tone, \yone) -- (axis cs: \tone, -0.45) node[below] {$t_1 = \tone = \theta + \frac{\tau}{3}$}; 
+	 \draw[thick, red, dashed] (axis cs: \tone, \yone) -- (axis cs: -1,\yone) node[left, anchor=east] {$0.283y_f = \yone$}; 
+	 \draw[thick, orange, dashed] (axis cs: \two, \ytwo) -- (axis cs: \two, -0.9) node[below] {$t_2 = \two = \theta + \tau$}; 
+	 \draw[thick, orange, dashed] (axis cs: \two, \ytwo) -- (axis cs: -1, \ytwo, -0.9) node[left, anchor=east] {$0.632y_f = \ytwo$}; 
+	 \draw[thick, green!70!black, dashed] (axis cs: 10, \yfinal) -- (axis cs: -1, \yfinal, -0.9) node[left, anchor=east] {$y_f = \yfinal$}; 
+	 \draw[blue!70!black, dashed] (axis cs: 0, \uampl) -- (axis cs: -1, \uampl, -0.9) node[left, anchor=east] {$u_f = \uampl$}; 
+       \end{axis}
+     \end{tikzpicture}
+   \end{center}
+   #+end_export
+   \[ \begin{cases} \tone = \theta + \frac{\tau}{3}\\ \two = \theta + \tau \end{cases} \quad \Rightarrow \quad \begin{cases} \theta = \tdelay \\ \tau = \Tcnst \end{cases}, \qquad  K = \frac{y_f}{u_f} = \frac{\yfinal}{\uampl} = \ggain \]
+
+
+
+* Analytical PID design
+
+** Analytical PID design
+** Analytical PID design
+   #+begin_export latex
+   \begin{center}
+   \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+  { 
+  \node[coordinate] (input) {};
+  \node[sumnode, right of=input] (sum) {\tiny $\sum$};
+  \node[block, right of=sum, node distance=2.6cm] (reg) {$F(s)$};
+  \node[block, right of=reg, node distance=2.6cm] (plant) {$G(s)$};
+  \node[coordinate, right of=plant, node distance=2cm] (output) {};
+  \node[coordinate, below of=plant, node distance=12mm] (feedback) {};
+ 
+  \draw[->] (plant) -- node[coordinate, inner sep=0pt] (meas) {} node[near end, above] {$y(t)$} (output);
+  \draw[->] (meas) |- (feedback) -| node[very near end, left] {$-$} (sum);
+  \draw[->] (input) -- node[very near start, above] {$r(t)$} (sum);
+  \draw[->] (sum) -- node[above] {$e(t)$} (reg);
+  \draw[->] (reg) -- node[above] {$u(t)$}(plant);
+}
+\end{tikzpicture}
+\end{center}
+   #+end_export
+
+*Activity*  Solve for \(F(s)\) in the closed-loop transfer function \[G_c(s) = \frac{G(s)F(s)}{1 + G(s)F(s)}\] 
+
+** Analytical PID design - Solution
+** Analytical PID design - Solution
+Solving for \(F(s)\) in the closed-loop transfer function \(G_c(s) = \frac{G(s)F(s)}{1 + G(s)F(s)}\) 
+
+\[ \big(1 + G(s)F(s)\big) G_c(s) = G(s)F(s)\]
+\[ G_c(s) = \big( 1 - G_c(s)\big) G(s)F(s)\]
+\[F(s) = \frac{\frac{G_c(s)}{G(s)}}{1 - G_c(s)}\]
+
+** Analytic PID tuning - first-order with delay
+   #+begin_export latex
+   \begin{center}
+   \begin{tikzpicture}[scale=0.7, transform shape, node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+  { 
+  \node[coordinate] (input) {};
+  \node[sumnode, right of=input] (sum) {\tiny $\sum$};
+  \node[block, right of=sum, node distance=2.6cm] (reg) {$F(s)$};
+  \node[block, right of=reg, node distance=2.6cm] (plant) {$G(s)$};
+  \node[coordinate, right of=plant, node distance=2cm] (output) {};
+  \node[coordinate, below of=plant, node distance=12mm] (feedback) {};
+ 
+  \draw[->] (plant) -- node[coordinate, inner sep=0pt] (meas) {} node[near end, above] {$y(t)$} (output);
+  \draw[->] (meas) |- (feedback) -| node[very near end, left] {$-$} (sum);
+  \draw[->] (input) -- node[very near start, above] {$r(t)$} (sum);
+  \draw[->] (sum) -- node[above] {$e(t)$} (reg);
+  \draw[->] (reg) -- node[above] {$u(t)$}(plant);
+}
+\end{tikzpicture}
+\end{center}
+   #+end_export
+
+Given model \(G(s) = K \frac{\mathrm{e}^{-s\theta}}{\tau s + 1}\) of the process and desired closed-loop transfer function \(G_c(s) = \frac{\mathrm{e}^{-s\theta}}{\tau_c s + 1}\)
+
+\begin{align*}
+F(s) &=  \frac{ \frac{G_c(s)}{G(s)}}{1 - G_c(s)} = \frac{ \frac{\mathrm{e}^{-s\theta}}{\tau_cs + 1} \frac{\tau s + 1}{K \mathrm{e}^{-s\theta}} }{1 - \frac{\mathrm{e}^{-s\theta}}{\tau_cs + 1}} = \frac{1}{K} \left( \frac{\tau s + 1}{\tau_c s + 1 - \mathrm{e}^{-s\theta}} \right) \\
+&\approx \frac{1}{K} \left( \frac{\tau s + 1}{(\tau_c+\theta) s}\right)
+%  = \underbrace{\frac{\tau}{K(\tau_c+\theta)}}_{k_c} \left( 1 + \frac{1}{\underbrace{\tau}_{\tau_i} s} \right).
+\end{align*}
+
+#+BEAMER: \pause
+*Activity*  A PI-controller can be written \(F(s) = k_c\frac{\tau_is + 1}{\tau_i s}\). Determine \(k_c\) and \(\tau_i\) in terms of the parameters \(K\), \(\theta\), \(\tau\) and \(\tau_c\). 
+
+# Which is a PI-controller with \(k_c = \frac{\tau}{K(\tau_c+\theta)}\) and \(\tau_i = \tau\).
+
+** Example
+
+# \small
+
+   #+begin_export latex
+   \begin{center}
+   \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+  { 
+  \node[coordinate] (input) {};
+  \node[sumnode, right of=input] (sum) {\tiny $\sum$};
+  \node[block, right of=sum, node distance=2.6cm] (reg) {$k_c\frac{\tau_i s + 1}{\tau_i s}$};
+  \node[block, right of=reg, node distance=2.6cm] (plant) {$\frac{200 \mathrm{e}^{-0.1s}}{0.1s + 1}$};
+  \node[coordinate, right of=plant, node distance=2cm] (output) {};
+  \node[coordinate, below of=plant, node distance=12mm] (feedback) {};
+ 
+  \draw[->] (plant) -- node[coordinate, inner sep=0pt] (meas) {} node[near end, above] {$y(t)$} (output);
+  \draw[->] (meas) |- (feedback) -| node[very near end, left] {$-$} (sum);
+  \draw[->] (input) -- node[very near start, above] {$r(t)$} (sum);
+  \draw[->] (sum) -- node[above] {$e(t)$} (reg);
+  \draw[->] (reg) -- node[above] {$u(t)$}(plant);
+}
+\end{tikzpicture}
+\end{center}
+   #+end_export
+
+   \(k_c = \frac{\tau}{K(\tau_c+\theta)}\) and \(\tau_i = \tau\).
+
+   *Activity* Determine the controller for the choice \(\tau_c = \tau\)
+   
+*** Notes                                                          :noexport:
+
+   \tau_i = 0.1
+   k_c = 0.1/(200(0.1+0.1)) = 1/400.
+   
+
+   
+** The PID - practical aspects
+
+   #+begin_export latex
+   {\footnotesize Åström \& Hägglund (1988) \emph{PID controllers: Theory, design and tuning, 2nd ed} Instrument Society of America.}
+   #+end_export
+
+*** Approximating nonlinear systems with linear models
+    - Model is accurate only in neighborhood of operating point for which the system is approximated.
+    - Solution: Divide operating range into many regions, with separate PID parameters for each region
+    
+*** Approximating high-order systems with low-order models
+    - Only accurate for low frequencies
+    - Beware of behavior for high-frequency input to the closed-loop system
+
+** The PID - practical aspects, contd
+*** When do PID controllers work well?
+    - The plant dynamics can be well approximated with low-order model
+    - Demands on performance not too high
+*** More sophisticated control needed when
+    - Higher order dynamics
+    - Oscillatory modes
+    - Long deadtime
+    
+** The PID - practical aspects, contd
+*** Choice of controller
+
+    1. P-controller if damping and steady-state error satisfied
+    2. PI-controller if steady-state error must be zero (often 1st order dynamics)
+    3. PID-controller if PI does not give sufficient damping (often 2nd order dynamics)
+    4. Tuning parameter \(\tau_c\) for SIMC tuning method: 
+       - Smaller (=faster) than \(\tau\) if sufficiently damped and limitations on input signal not violated.
+       - larger (=slower) than \(\tau\) if more damping required or smaller input signal required.
+
+
+
+* Windup
+
+** Integral windup
+   
+   
+   [[https://tecdemonterrey.instructuremedia.com/embed/6fb197b1-38a6-4938-b622-b25d4a45efcc][Video by Tomás Alejandro Lugo Salinas (MTY)]] 
+
+* Anti-windup
+
+** Anti-windup using back-calculation 
+   #+begin_center
+   \includegraphics[width=.7\linewidth]{/home/kjartan/tec/mr2025/figures/Simulink-backtracking.png}
+   #+end_center
+
+** Anti-windup using back-calculation 
+
+      #+begin_export latex
+   \begin{center}
+ 	  \begin{tikzpicture}[every node/.append style={transform shape}, scale = 0.7, font=\footnotesize,
+	block/.style={rectangle, draw, minimum width=12mm, minimum height=10mm, inner sep=4pt},
+	amp/.style = {regular polygon, regular polygon sides=3,
+              draw, fill=white, text width=1em,
+              inner sep=1pt, outer sep=0mm,
+              shape border rotate=-90},
+	      summ/.style = {circle, draw, inner sep = 1pt},]
+	 \node[block, align=center] (motor) at (0,0) {Cart and \\pendulum};
+	 \node[coordinate, right of=motor, node distance = 26mm,] (output) {};
+	 \node[block, left of=motor, node distance=26mm] (saturation) {};
+
+	 \node[block, left of=saturation, node distance=26mm] (gain)  {$k_{c}$};
+	 
+	 \node[summ, left of=gain, node distance=16mm] (sum2) {};
+	 \node[color=iic,block, left of=sum2, node distance=18mm] (int)  {$\frac{1}{s}$};
+	 \node[summ, left of=int, node distance=16mm] (sumint) {};
+	 \node[color=iic,block, left of=sumint, node distance=18mm] (ii)  {$\frac{1}{\tau_{i}}$};
+	 \node[color=ppc, coordinate, above of=ii, node distance=10mm] (pp)  {};
+	 \node[summ, left of=ii, node distance=16mm] (sumsp) {};
+	 \node[coordinate, left of=sumsp, node distance = 10mm,] (setpoint) {};
+
+       \draw[->] (sumsp) -- node[above, pos=0.2] {$e(t)$} node[coordinate] (mm) {}  (ii);
+       \draw[->] (gain) -- node[coordinate] (idmeas) {} node[above, ] {$u(t)$} (saturation);
+       \draw[->, color=ppc] (mm) |- (pp) -| node[right,] {$u_P(t)$} (sum2);
+       \draw[->, color=iic] (int)  -- node[above,] {$u_I(t)$} (sum2);
+       \draw[->] (sum2) -- node[above, near end] {} (gain);
+
+
+
+	 \draw[->] (setpoint) -- node[above, very near start ] {$x_{ref}$} (sumsp);
+	 \draw[->] (saturation) -- node[coordinate, ] (satmeas) {} node[above,] {$u_s(t)$} (motor);
+	 \draw[->] (motor) -- node[coordinate] (meas) {} node[above, very near end] {$x$} (output);
+	 \draw[->] (meas) -- node[right] {} ++(0,-28mm) -| node[pos=0.95, left] {$-$} (sumsp);
+
+	 % Anti-windup
+	 \draw ($ (saturation.south west) + (2mm, 2mm) $) -- ++(3mm, 0) -- ++(3mm, 5mm) -- ++(3mm, 0);
+	 \node[block, below of=sumint, node distance=16mm] (back) {$\frac{1}{k_{c}\tau_t}$};
+	 \node[summ, below of=saturation, node distance=12mm] (sumsat) {};
+	 \draw[->] (satmeas) |- node[above, pos=0.8] {} (sumsat);
+	 \draw[->] (idmeas) |- node[above, pos=0.8] {$-$} (sumsat);
+	 \draw[->] (sumsat) |- (back);
+	 \draw[->] (back) -- (sumint);
+	 \draw[->] (ii) -- (sumint);
+	 \draw[->] (sumint) -- (int);
+	 
+
+	 \node[coordinate, right of=back, node distance=2cm] (sat) {};
+  
+\end{tikzpicture}
+\end{center}
+   #+end_export
+
+*Activity* Assume $e(t)=0$ and determine the transfer function from $u_s(t)$ to $u(t)$.
+ 
+   
+
+*** Notes                                                          :noexport:
+
+Mason's gain formula.
+Loop gain: L(s) = \frac{1}{\tau_t s}
+Direct gain: L(s).
+
+U(s) / U_s(s) = \frac{ L(s) }{ 1 + L(s) } = \frac{1}{\tau_t s + 1} 
