@@ -1,6 +1,6 @@
-% Created 2021-10-12 Tue 12:29
+% Created 2021-10-12 Tue 08:39
 % Intended LaTeX compiler: pdflatex
-\documentclass[presentation,aspectratio=169]{beamer}
+\documentclass[presentation,aspectratio=1610]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
@@ -34,12 +34,12 @@
 \maketitle
 
 \section{Repetition: State space models}
-\label{sec:orgfa57760}
+\label{sec:org986ab30}
 
 \section{Mobile robot unicycle model}
-\label{sec:org684bf07}
+\label{sec:org792e88c}
 
-\begin{frame}[label={sec:org8194325}]{Example: Mobile robot}
+\begin{frame}[label={sec:org136da87}]{Example: Mobile robot}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 \begin{center}
@@ -66,7 +66,7 @@ Called uni-cycle model.
 \end{column}
 \end{columns}
 \end{frame}
-\begin{frame}[label={sec:orgbb3a664}]{Example: Mobile robot}
+\begin{frame}[label={sec:org2d8ef13}]{Example: Mobile robot}
 \small 
 \begin{columns}
 \begin{column}{0.4\columnwidth}
@@ -96,7 +96,7 @@ Linearized model using deviation variables
 \end{frame}
 
 
-\begin{frame}[label={sec:org554dd27}]{Example: Mobile robot}
+\begin{frame}[label={sec:org51f89d0}]{Example: Mobile robot}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 Single bearing measurement.
@@ -116,7 +116,7 @@ Single bearing measurement.
 \end{frame}
 
 
-\begin{frame}[label={sec:org23594f7}]{Example: Mobile robot}
+\begin{frame}[label={sec:orga6b6eee}]{Example: Mobile robot}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 Bearing and distance measurement.

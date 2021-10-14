@@ -1,4 +1,4 @@
-% Created 2021-10-06 Wed 13:20
+% Created 2021-10-08 Fri 08:57
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169, usenames, dvipsnames]{beamer}
 \usepackage[utf8]{inputenc}
@@ -41,8 +41,8 @@
 \maketitle
 
 \section{PID tuning - (Smith and Corripio) Ziegler Nichols}
-\label{sec:org2835578}
-\begin{frame}[label={sec:orge770e99}]{The PID - practical form}
+\label{sec:org7d5d788}
+\begin{frame}[label={sec:orgb4c1428}]{The PID - practical form}
 \definecolor{ppc}{rgb}{0.1,0.1,0.6}
 \definecolor{iic}{rgb}{0.6,0.1,0.1}
 \definecolor{ddc}{rgb}{0.1,0.5,0.1}
@@ -73,12 +73,12 @@
   \end{tikzpicture}
 \end{center}
 
-The parameter \(N\) is chosen to limit the influence of noisy measurements. Typically,
-\[  3 < N < 20 \]
+\alert{Activity} What are the modifications and why are they introduced, comparing to the controller \(F(s) = k_c\left(1 + \frac{1}{\tau_i s} + \tau_d s\right)\)?
 \end{frame}
-\begin{frame}[label={sec:orga627a77}]{PID tuning}
+
+\begin{frame}[label={sec:org168e46f}]{PID tuning}
 \end{frame}
-\begin{frame}[label={sec:org563c1a5}]{Method by Smith \& Corripio using table by Ziegler-Nichols}
+\begin{frame}[label={sec:org974319e}]{Method by Smith \& Corripio using table by Ziegler-Nichols}
 \small
 
 Given process model (fitted to response of the system) \[ G(s) = K \frac{\mathrm{e}^{-s\theta}}{\tau s + 1} \] and PID controller
@@ -102,9 +102,9 @@ Gives good control for \[0.1 < \frac{\theta}{\tau} < 0.6.\]
 
 
 \section{The delay transfer function}
-\label{sec:org7b18888}
+\label{sec:org13c8ece}
 
-\begin{frame}[label={sec:orgbba4a3d}]{The delay}
+\begin{frame}[label={sec:org4fe7098}]{The delay}
 \begin{center}
   \begin{tikzpicture}[scale = 0.8, node distance=20mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
 
@@ -128,13 +128,30 @@ Let \(\incolor{u(t) = \sin\omega_1 t}\). Then, after transients have died out,
 Identify \(|G(i\omega)|\) and \(\arg G(i\omega)\) for the pure delay.
 \end{frame}
 
+\begin{frame}[label={sec:org3ad6758}]{The Bode-plot of the delay}
+\begin{columns}
+\begin{column}{0.7\columnwidth}
+\begin{center}
+  \includegraphics[width=.8\linewidth]{../../figures/bode-delay}
+\end{center}
+\end{column}
+
+\begin{column}{0.6\columnwidth}
+\pause
+
+\alert{Review of Excercises for Session 3}
+
+What is the time-delay \(\theta\)?
+\end{column}
+\end{columns}
+\end{frame}
 
 \section{Analytical PID design}
-\label{sec:orgaf85b07}
+\label{sec:org90ed2bc}
 
-\begin{frame}[label={sec:orgc99c6a6}]{Analytical PID design}
+\begin{frame}[label={sec:org5b54ab8}]{Analytical PID design}
 \end{frame}
-\begin{frame}[label={sec:org91487d1}]{Analytical PID design}
+\begin{frame}[label={sec:org3701623}]{Analytical PID design}
    \begin{center}
    \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
   { 
@@ -157,9 +174,9 @@ Identify \(|G(i\omega)|\) and \(\arg G(i\omega)\) for the pure delay.
 \alert{Activity}  Solve for \(F(s)\) in the closed-loop transfer function \[G_c(s) = \frac{G(s)F(s)}{1 + G(s)F(s)}\] 
 \end{frame}
 
-\begin{frame}[label={sec:org0c6e943}]{Analytical PID design - Solution}
+\begin{frame}[label={sec:orga5c28fe}]{Analytical PID design - Solution}
 \end{frame}
-\begin{frame}[label={sec:orga47f82d}]{Analytical PID design - Solution}
+\begin{frame}[label={sec:org99ec3bb}]{Analytical PID design - Solution}
 Solving for \(F(s)\) in the closed-loop transfer function \(G_c(s) = \frac{G(s)F(s)}{1 + G(s)F(s)}\) 
 
 \[ \big(1 + G(s)F(s)\big) G_c(s) = G(s)F(s)\]
@@ -167,7 +184,7 @@ Solving for \(F(s)\) in the closed-loop transfer function \(G_c(s) = \frac{G(s)F
 \[F(s) = \frac{\frac{G_c(s)}{G(s)}}{1 - G_c(s)}\]
 \end{frame}
 
-\begin{frame}[label={sec:orgf1b7cf8}]{Analytic PID tuning - first-order with delay}
+\begin{frame}[label={sec:orgb8e67b6}]{Analytic PID tuning - first-order with delay}
    \begin{center}
    \begin{tikzpicture}[scale=0.7, transform shape, node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
   { 
@@ -199,7 +216,7 @@ F(s) &=  \frac{ \frac{G_c(s)}{G(s)}}{1 - G_c(s)} = \frac{ \frac{\mathrm{e}^{-s\t
 \alert{Activity}  A PI-controller can be written \(F(s) = k_c\frac{\tau_is + 1}{\tau_i s}\). Determine \(k_c\) and \(\tau_i\) in terms of the parameters \(K\), \(\theta\), \(\tau\) and \(\tau_c\). 
 \end{frame}
 
-\begin{frame}[label={sec:org0dcae0c}]{Example}
+\begin{frame}[label={sec:org9f32e07}]{Example}
    \begin{center}
    \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
   { 
@@ -226,7 +243,7 @@ F(s) &=  \frac{ \frac{G_c(s)}{G(s)}}{1 - G_c(s)} = \frac{ \frac{\mathrm{e}^{-s\t
 
 
 
-\begin{frame}[label={sec:orga5b4797}]{The PID - practical aspects}
+\begin{frame}[label={sec:org7cb52e1}]{The PID - practical aspects}
 {\footnotesize Åström \& Hägglund (1988) \emph{PID controllers: Theory, design and tuning, 2nd ed} Instrument Society of America.}
 
 \begin{block}{Approximating nonlinear systems with linear models}
@@ -244,7 +261,7 @@ F(s) &=  \frac{ \frac{G_c(s)}{G(s)}}{1 - G_c(s)} = \frac{ \frac{\mathrm{e}^{-s\t
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:org1c251d6}]{The PID - practical aspects, contd}
+\begin{frame}[label={sec:org348d7d8}]{The PID - practical aspects, contd}
 \begin{block}{When do PID controllers work well?}
 \begin{itemize}
 \item The plant dynamics can be well approximated with low-order model
@@ -260,7 +277,7 @@ F(s) &=  \frac{ \frac{G_c(s)}{G(s)}}{1 - G_c(s)} = \frac{ \frac{\mathrm{e}^{-s\t
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:org08e8600}]{The PID - practical aspects, contd}
+\begin{frame}[label={sec:org8734794}]{The PID - practical aspects, contd}
 \begin{block}{Choice of controller}
 \begin{enumerate}
 \item P-controller if damping and steady-state error satisfied
@@ -278,22 +295,21 @@ F(s) &=  \frac{ \frac{G_c(s)}{G(s)}}{1 - G_c(s)} = \frac{ \frac{\mathrm{e}^{-s\t
 
 
 \section{Windup}
-\label{sec:orgf647507}
+\label{sec:orgcbf51b3}
 
-\begin{frame}[label={sec:org80a68be}]{Integral windup}
-\href{https://tecdemonterrey.instructuremedia.com/embed/6fb197b1-38a6-4938-b622-b25d4a45efcc}{Video by Tomás Alejandro Lugo Salinas (MTY)} 
+\begin{frame}[label={sec:org74f2e63}]{Integral windup}
 \end{frame}
 
 \section{Anti-windup}
-\label{sec:orgd42714a}
+\label{sec:orgc2e60f9}
 
-\begin{frame}[label={sec:org2f303b6}]{Anti-windup using back-calculation}
+\begin{frame}[label={sec:org9814f48}]{Anti-windup using back-calculation}
 \begin{center}
 \includegraphics[width=.7\linewidth]{/home/kjartan/tec/mr2025/figures/Simulink-backtracking.png}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgf3973e5}]{Anti-windup using back-calculation}
+\begin{frame}[label={sec:org251c356}]{Anti-windup using back-calculation}
    \begin{center}
  	  \begin{tikzpicture}[every node/.append style={transform shape}, scale = 0.7, font=\footnotesize,
 	block/.style={rectangle, draw, minimum width=12mm, minimum height=10mm, inner sep=4pt},
@@ -302,7 +318,7 @@ F(s) &=  \frac{ \frac{G_c(s)}{G(s)}}{1 - G_c(s)} = \frac{ \frac{\mathrm{e}^{-s\t
               inner sep=1pt, outer sep=0mm,
               shape border rotate=-90},
 	      summ/.style = {circle, draw, inner sep = 1pt},]
-	 \node[block, align=center] (motor) at (0,0) {Cart and \\pendulum};
+	 \node[block, align=center] (motor) at (0,0) {Plant};
 	 \node[coordinate, right of=motor, node distance = 26mm,] (output) {};
 	 \node[block, left of=motor, node distance=26mm] (saturation) {};
 
@@ -324,9 +340,9 @@ F(s) &=  \frac{ \frac{G_c(s)}{G(s)}}{1 - G_c(s)} = \frac{ \frac{\mathrm{e}^{-s\t
 
 
 
-	 \draw[->] (setpoint) -- node[above, very near start ] {$x_{ref}$} (sumsp);
+	 \draw[->] (setpoint) -- node[above, very near start ] {$y_{ref}$} (sumsp);
 	 \draw[->] (saturation) -- node[coordinate, ] (satmeas) {} node[above,] {$u_s(t)$} (motor);
-	 \draw[->] (motor) -- node[coordinate] (meas) {} node[above, very near end] {$x$} (output);
+	 \draw[->] (motor) -- node[coordinate] (meas) {} node[above, very near end] {$y$} (output);
 	 \draw[->] (meas) -- node[right] {} ++(0,-28mm) -| node[pos=0.95, left] {$-$} (sumsp);
 
 	 % Anti-windup
@@ -346,6 +362,6 @@ F(s) &=  \frac{ \frac{G_c(s)}{G(s)}}{1 - G_c(s)} = \frac{ \frac{\mathrm{e}^{-s\t
 \end{tikzpicture}
 \end{center}
 
-\alert{Activity} Assume \(e(t)=0\) and determine the transfer function from \(u_s(t)\) to \(u(t)\).
+\alert{Activity} Assume that the actuator is saturated. determine the transfer function from \(u_s(t)\) to \(u(t)\).
 \end{frame}
 \end{document}

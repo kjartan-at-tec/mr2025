@@ -37,17 +37,12 @@ D = [0];
 plant_ss = ss(A, B, C, D);
 
 % Desired poles
-pd = 1/tauc * [-1 + 1j; -1 - 1j]
+pd = [pole_one, pole_two] % Your choice of closed-loop poles goes here
 
 Lv = place(A, B, pd)
 cl_ss = ss(A-B*Lv, B, C, D);
 
-l_0 = 1.0/dcgain(cl_ss)
+l_0 = 1.0/dcgain(cl_ss) % This will make sure the static gain is 1.
 
 
-PO = 5;
-ts = 0.6;
-zeta = sqrt(log(PO/100)^2/(pi^2 + log(PO/100)^2))
-zetawn = 4/ts
-wn = zetawn/zeta
-wd = wn*sqrt(1-zeta^2)
+

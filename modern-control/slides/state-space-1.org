@@ -2,7 +2,7 @@
 # #+LaTeX_CLASS: koma-article 
 
 #+LATEX_CLASS: beamer
-#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=1610]
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169]
 #+OPTIONS: H:2
 # #+BEAMER_THEME: Madrid
 #+COLUMNS: %45ITEM %10BEAMER_ENV(Env) %10BEAMER_ACT(Act) %4BEAMER_COL(Col) %8BEAMER_OPT(Opt)
@@ -21,11 +21,125 @@
   - Understand controllability/reachability
 
 * Repetition: State space models
-** The concept of state
+** The concept of state                                            :noexport:
 
    - State :: The information needed about the history of a dynamical system in order to determine the future behaviour of the system given future input signals.
 
-* Canonical forms
+* Mobile robot unicycle model
+
+** Example: Mobile robot
+*** Graphics
+:PROPERTIES:
+:BEAMER_col: 0.4
+:END:
+
+    \begin{center}
+     \includegraphics[width=.3\linewidth]{../../figures/x80pro.jpg}
+    \end{center}
+    \begin{center}
+     \includegraphics[width=1.0\linewidth]{../../figures/unicycle-model}
+    \end{center}
+
+*** Text
+:PROPERTIES:
+:BEAMER_col: 0.6
+:END:
+
+#+BEAMER: \pause
+
+    \[ \xi = \begin{bmatrix} \theta\\x\\y \end{bmatrix},   \quad u = \begin{bmatrix} \omega\\v \end{bmatrix}\]
+
+
+
+    \[\frac{d}{dt} \xi = \begin{bmatrix} \dot{\theta}\\\dot{x}\\\dot{y} \end{bmatrix} = \begin{bmatrix} \omega\\ v\cos\theta\\v\sin\theta\end{bmatrix} \]
+
+    Called uni-cycle model.
+#+BEAMER: \pause
+
+*Activity* Can we reach any point in state space \(\begin{bmatrix} x &  y & \theta \end{bmatrix}^T\) by a suitably designed input signal sequence $u(t)$?
+** Example: Mobile robot
+
+\small 
+*** Graphics
+:PROPERTIES:
+:BEAMER_col: 0.4
+:END:
+
+    \begin{center}
+     \includegraphics[width=1.0\linewidth]{../../figures/unicycle-model-op}
+    \end{center}
+
+    \[\frac{d}{dt} \xi = \begin{bmatrix} \dot{\theta}\\\dot{x}\\\dot{y} \end{bmatrix} = \begin{bmatrix} \omega\\ v\cos\theta\\v\sin\theta\end{bmatrix} \]
+*** Text
+:PROPERTIES:
+:BEAMER_col: 0.6
+:END:
+
+Linearized model using deviation variables
+\[ \xi(t) = \xi_0 + z(t), \quad \frac{d}{dt} \xi = \frac{d}{dt} z\]
+\[ \frac{d}{dt} z = \begin{bmatrix} \omega\\ v\cos\theta_0 \\ v\sin\theta_0 \end{bmatrix}
+= \underbrace{0}_{A} z + \underbrace{\begin{bmatrix} 1 & 0 \\ 0 & 0\\ 0 & 1\end{bmatrix}}_{B} \begin{bmatrix}\omega\\v\end{bmatrix} \]
+
+#+BEAMER: \pause
+
+\begin{align*} \mathcal{C} &= \begin{bmatrix} B & AB & A^2B \end{bmatrix}\\
+&= \begin{bmatrix} 1 & 0 & 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 & 0 & 0\\ 0 & 1 & 0 & 0 & 0 & 0\end{bmatrix}
+\end{align*}
+
+#+BEAMER: \pause
+
+*Activity* Is the linearized model controllable? (Hint: What is \(\text{rank}\, \mathcal{C}\)?)
+
+
+** Example: Mobile robot
+
+*** Graphics
+:PROPERTIES:
+:BEAMER_col: 0.4
+:END:
+
+Single bearing measurement.
+
+    \begin{center}
+     \includegraphics[width=1.0\linewidth]{../../figures/unicycle-model-bearing}
+    \end{center}
+*** Text
+:PROPERTIES:
+:BEAMER_col: 0.6
+:END:
+
+\[ \xi = \begin{bmatrix} \theta\\x\\y \end{bmatrix}\]
+
+#+BEAMER: \pause
+
+*Activity* Is the system observable with one bearing-only measurement?
+
+
+** Example: Mobile robot
+
+*** Graphics
+:PROPERTIES:
+:BEAMER_col: 0.4
+:END:
+
+Bearing and distance measurement.
+
+    \begin{center}
+     \includegraphics[width=1.0\linewidth]{../../figures/unicycle-model-bearing-distance}
+    \end{center}
+*** Text
+:PROPERTIES:
+:BEAMER_col: 0.6
+:END:
+
+\[ \xi = \begin{bmatrix} \theta\\x\\y \end{bmatrix}\]
+
+#+BEAMER: \pause
+
+
+*Activity* Is the system observable with one bearing and one distance measurement?
+
+* Canonical forms                                                  :noexport:
 
 ** Formas canonicas
 
@@ -35,7 +149,7 @@
 *** Recurso 
 [[https://lpsa.swarthmore.edu/Representations/SysRepTransformations/TF2SS.html][https://lpsa.swarthmore.edu/Representations/SysRepTransformations/TF2SS.html]]
     
-* Estabilidad
+* Estabilidad                                                      :noexport:
 
 ** Estabilidad
    
@@ -60,7 +174,7 @@ Los eigenvalores de $A$ son los *polos* del sistema.
     \[ \det (\lambda I - A) = 0 \quad \leftarrow \text{\alert{Ecuación característica}}\]
     
    
-* Modelo compartamental
+* Modelo compartamental                                            :noexport:
 
 ** De espacio de estados a función de transferencia
 
@@ -392,7 +506,7 @@ y(t)&=x(t)
 where the state vector has dimension one, i.e. $x(t)$ is a scalar.
 
 
-* State space models
+* State space models                                               :noexport:
 
 ** State-space model and transfer function
 

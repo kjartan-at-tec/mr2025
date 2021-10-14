@@ -1,0 +1,70 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+
+\pgfplotsset{compat=1.12}
+
+% Style to select only points from #1 to #2 (inclusive)
+\pgfplotsset{select coords between index/.style 2 args={
+    x filter/.code={
+        \ifnum\coordindex<#1\def\pgfmathresult{}\fi
+        \ifnum\coordindex>#2\def\pgfmathresult{}\fi
+    }
+}}
+
+
+\def\axlim{20}
+\begin{document}
+
+  \begin{tikzpicture}[node distance=2cm]
+
+
+  \begin{groupplot} [
+    group style={
+      group name=poles,
+      group size=2 by 2,
+      xlabels at=all}, 
+      height=5.3cm, width=5.3cm,
+      axis lines=middle,
+  %ytick=\empty,
+  ytick={-8, 8}, 
+  xtick={-8, 2},
+  %xtick=\empty,
+  %xticklabel=$a$,
+  xlabel=Re,
+  ylabel=Im,
+  xmin=-\axlim, xmax=\axlim,
+  ymin=-\axlim, ymax=\axlim,
+  %only marks,
+  ]
+    
+ \nextgroupplot   
+  \addplot[thick, mark=x, mark size=4pt, only marks,select coords between index={0}{1}]  table {apollo-lead-poles-case1.txt};
+  %\addplot[mark=o, mark size=4pt, only marks, select coords between index={0}{0}]  table {apollo-lead-zeros-case1.txt};
+
+ \nextgroupplot   
+  \addplot[thick, mark=x, mark size=4pt, only marks, select coords between index={0}{1}]  table {apollo-lead-poles-case2.txt};
+  %\addplot[mark=o, mark size=4pt, only marks]  table {apollo-lead-zeros-case2.txt};
+
+ \nextgroupplot   
+  \addplot[thick, mark=x, mark size=4pt, only marks, select coords between index={0}{1}]  table {apollo-lead-poles-case3.txt};
+  %\addplot[mark=o, mark size=4pt, only marks]  table {apollo-lead-zeros-case3.txt};
+
+ \nextgroupplot   
+  \addplot[thick, mark=x, mark size=4pt, only marks, select coords between index={0}{1}]  table {apollo-lead-poles-case4.txt};
+  %\addplot[mark=o, mark size=4pt, only marks]  table {apollo-lead-zeros-case4.txt};
+
+\end{groupplot}
+
+
+\node at ($ (poles c1r1.west) + (5mm, 5mm) $) {\large A};
+\node at ($ (poles c1r2.west) + (5mm, 5mm) $) {\large B};
+\node at ($ (poles c2r1.west) + (5mm, 5mm) $) {\large C};
+\node at ($ (poles c2r2.west) + (5mm, 5mm) $) {\large D};
+
+  \end{tikzpicture}
+\end{document}

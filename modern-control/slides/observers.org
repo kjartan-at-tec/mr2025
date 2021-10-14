@@ -1,0 +1,131 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169]
+#+OPTIONS: H:2
+# #+BEAMER_THEME: Madrid
+#+COLUMNS: %45ITEM %10BEAMER_ENV(Env) %10BEAMER_ACT(Act) %4BEAMER_COL(Col) %8BEAMER_OPT(Opt)
+     
+#+LaTex_HEADER: \usepackage{pifont}
+#+LaTex_HEADER: \newcommand{\cmark}{\textcolor{green!80!black}{\ding{51}}}
+
+#+LaTex_HEADER: \usepackage{amssymb}
+#+LaTex_HEADER: \usepackage{pgfplotstable}
+#+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
+#+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
+
+#+LaTex_HEADER: \usepackage{khpreamble, euscript, mathtools}
+#+LaTex_HEADER: \DeclareMathOperator{\atantwo}{atan2}
+#+LaTex_HEADER: \newcommand*{\ctrb}{\EuScript{C}}
+#+LaTex_HEADER: \newcommand*{\obsv}{\EuScript{O}}
+
+
+#+title: State feedback with observer
+
+
+
+* Promise                                                          :noexport:
+  
+  After this lecture you will understand how to design an observer to estimate
+  the state of a system, and to use this for feedback control
+
+* State feedback with observer
+** State feedback with reconstructed states
+
+** State feedback with reconstructed states
+   #+begin_export latex
+   \begin{center}
+   \includegraphics[width=0.9\linewidth]{../../figures/fig-apollo}
+   \end{center}
+   #+end_export
+
+** State feedback
+   Given
+   \begin{equation}
+   \begin{split}
+    \dot{x} &= A x + B u\\
+    y &= C x
+   \end{split}
+   \label{eq:ssmodel}
+  \end{equation}
+  and measurements (or estimates) of the state vector \(x\). 
+
+  *Linear state feedback* is the control law
+  \begin{equation*}
+  \begin{split}
+   u &= f\big((x, u_c\big) = -l_1x_1 - l_2x_2 - \cdots - l_n x_n + l_0u_c\\
+        &= -\textcolor{morange}{L}x + l_0u_c, 
+  \end{split}
+  \end{equation*}
+  where \[ \textcolor{morange}{L} = \bbm l_1 & l_2 & \cdots & l_n \ebm. \]
+  Substituting the control law in the state space model \eqref{eq:ssmodel} gives
+   \begin{equation}
+   \begin{split}
+    \dot{x} &= \left(A -B \textcolor{morange}{L} \right) x + l_0B r\\
+    y(k) &= C x
+   \end{split}
+   \label{eq:closedloop}
+  \end{equation}
+
+
+
+** Observer design
+   Given model
+   \begin{equation*}
+   \begin{split}
+    \dot{x} &= A x + B u\\
+    y &= C x
+   \end{split}
+   \label{eq:ssmodel}
+  \end{equation*}
+  and measurements of the output signal \(y\). 
+
+  The observer is given by
+      \begin{equation*}
+      \begin{split}
+      \dot{\hat{x}} &= \underbrace{A \hat{x} + B u{}}_{\text{simulation}} + \underbrace{\textcolor{mred}{K}\big(y - C\hat{x}\big)}_{\text{correction}} = \left(A - \textcolor{mred}{K}C\right)\hat{x} +  B u{} + \textcolor{mred}{K}y
+      \end{split}
+      \end{equation*}
+  with poles given by the eigenvalues of the matrix \(A_o = A - \textcolor{mred}{K}C\)
+
+  *Rule-of-thumb* Choose the poles of the observer (eigenvalues of \(A-\textcolor{mred}{K}C\)) at least twice as fast as the poles (eigenvalues) of \(A-B \textcolor{morange}{L}\).
+
+** Observer design
+  *Rule-of-thumb* Choose the poles of the observer (eigenvalues of \(A-\textcolor{vmermillion}{K}C\)) at least twice as fast as the poles (eigenvalues) of \(A-B \textcolor{morange}{L}\).
+
+
+** Control by feedback from reconstructed states
+   The design problem can be separates into two problems
+   1. Determine the gain vector \(\textcolor{orange!80!black}{L}\) and the gain \(l_0\) of the control law
+      \[ u{} = -\textcolor{orange!80!black}{L} \hat{x} + l_0 r\]
+      so that the closed-loop system has good reference tracking.
+   2. Determine the gain vector \(\textcolor{mred}{K}\) of the observer
+      \begin{equation*}
+      \begin{split}
+      \dot{\hat{x}} &= A \hat{x} + B u{} + \textcolor{mred}{K} \big(y - C\hat{x}\big)
+      \end{split}
+      \end{equation*}
+      to get a good balance between disturbance rejection and noise attenuation.
+
+** Computing the observer gain
+   A matrix $M$ and its transpose $M\transp$ have the same eigenvalues. Hence, the problem of determining the gain $K$ to obtain desired eigenvalues of 
+   \[A- \textcolor{mred}{K}C\] is equivalent to determining the gain $\textcolor{mred}{K}$ in 
+   \[(A-\textcolor{mred}{K}C)\transp = A\transp - C\transp \textcolor{mred}{K}\transp.\]
+   The last problem has the exact same form as the problem of determining $\textcolor{morange}{L}$ to obtain desired eigenvalues of 
+   \[A - B \textcolor{morange}{L}\]
+   
+   So, the same matlab function can be used for both problems.
+
+** Computing the observer gain
+   
+  1. *Ackerman's method* 
+     #+begin_src octave
+	K = acker(Phi', C', po)'
+     #+end_src
+  1. *More numerically stable method* 
+     #+begin_src octave
+	K = place(Phi', C', pd)'
+     #+end_src
+
+

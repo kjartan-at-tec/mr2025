@@ -1,0 +1,74 @@
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+\definecolor{morange}{RGB}{220,150,0}
+\definecolor{mblue}{RGB}{0,114,178}
+
+\begin{document}
+
+\def\ttheta{0.1}
+\def\wmin{0.1}
+\def\wmax{100}
+
+\def\pw{10cm}
+\def\ph{6cm}
+\begin{tikzpicture}
+%  \draw[white] (0,0) to (1,0);
+  \begin{semilogxaxis} [
+      ylabel={Magnitude,  dB},
+      clip=false,
+      yshift = -1cm,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      every major grid/.style={red, opacity=0.5},
+      ymin = -20, ymax=10,
+      minor y tick num=9,
+      %ytick={-10, -3, 0, 8, 10},
+      %yticklabels={-3dB, 0dB, $M_p$}, 
+      %xtick={2.34, 3.72},
+      %xticklabels={$\omega_r$, $\omega_B$},
+      %xticklabel=\empty,
+      %ymin=0.2, ymax=6,
+      xmin=\wmin, xmax=\wmax,
+      %legend entries={Bessel filter, Delay of one},
+      %legend pos={south west},
+  ]
+    \addplot[ultra thick, morange, no marks, domain=\wmin:\wmax] {0};
+  \end{semilogxaxis}
+  \begin{semilogxaxis} [
+      yshift=-\ph,
+      ylabel={Phase, degrees},
+      xlabel=$\omega$,
+      width=\pw,
+      height=\ph,
+      grid=both,
+      minor y tick num=8,
+      every major grid/.style={red, opacity=0.5},
+      ytick={0, -90, -180, -270, -360},
+      ymin=-360, ymax=0,
+      xmin=\wmin, xmax=\wmax,
+      % yticklabels={-3dB, 0dB, $M_p$}, 
+      %xtick={2.34, 3.72},
+      %xticklabels={$\omega_r$, $\omega_B$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+      %xmin=0.1, xmax=6,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot[thick, morange, no marks, domain=\wmin:\wmax, samples=100] {-\ttheta*\x*180/pi};
+%      \addplot[thick, morange, no marks, domain=\wmin:\wmax, samples=100] {-2};
+
+      \node[mblue] at (axis cs: 0.5, -135) {\(\arg \mathrm{e}^{-i\theta \omega} = -\theta\omega\)};
+
+    \end{semilogxaxis}
+\end{tikzpicture}
+
+\end{document}
+

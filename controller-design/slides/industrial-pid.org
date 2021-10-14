@@ -25,14 +25,10 @@
 # #+date: 2021-03-03
 
 * What do I want the students to understand?			   :noexport:
-  - Deviation variables
-  - First and second order system modeling
+  - PID tuning
+  - Anti-windup
 
 * Which activities will the students do?			   :noexport:
-  - Intuition about heat echange
-  - Work with deviation variables
-  - Assignment
-
 
 
 * PID tuning - (Smith and Corripio) Ziegler Nichols
@@ -69,8 +65,11 @@
    \end{center}
    #+end_export
 
-   The parameter \(N\) is chosen to limit the influence of noisy measurements. Typically,
-   \[  3 < N < 20 \]
+#   The parameter \(N\) is chosen to limit the influence of noisy measurements. Typically,
+#   \[  3 < N < 20 \]
+
+*Activity* What are the modifications and why are they introduced, comparing to the controller \(F(s) = k_c\left(1 + \frac{1}{\tau_i s} + \tau_d s\right)\)?
+
 ** PID tuning
 ** Method by Smith & Corripio using table by Ziegler-Nichols
 
@@ -123,7 +122,29 @@ Given process model (fitted to response of the system) \[ G(s) = K \frac{\mathrm
    #+BEAMER: \pause
 *Activity* 
 Identify \(|G(i\omega)|\) and \(\arg G(i\omega) \) for the pure delay.
-   
+
+** The Bode-plot of the delay
+
+*** Graphics
+:PROPERTIES:
+:BEAMER_col: 0.7
+:END:
+
+
+\begin{center}
+  \includegraphics[width=.8\linewidth]{../../figures/bode-delay}
+\end{center}
+
+*** Text
+:PROPERTIES:
+:BEAMER_col: 0.6
+:END:
+
+#+BEAMER: \pause
+
+*Review of Excercises for Session 3*
+
+What is the time-delay \(\theta\)?
 
 * REPETITION: Fitting first-order model with delay                 :noexport:
 
@@ -521,7 +542,7 @@ F(s) &=  \frac{ \frac{G_c(s)}{G(s)}}{1 - G_c(s)} = \frac{ \frac{\mathrm{e}^{-s\t
 ** Integral windup
    
    
-   [[https://tecdemonterrey.instructuremedia.com/embed/6fb197b1-38a6-4938-b622-b25d4a45efcc][Video by Tomás Alejandro Lugo Salinas (MTY)]] 
+#   [[https://tecdemonterrey.instructuremedia.com/embed/6fb197b1-38a6-4938-b622-b25d4a45efcc][Video by Tomás Alejandro Lugo Salinas (MTY)]] 
 
 * Anti-windup
 
@@ -541,7 +562,7 @@ F(s) &=  \frac{ \frac{G_c(s)}{G(s)}}{1 - G_c(s)} = \frac{ \frac{\mathrm{e}^{-s\t
               inner sep=1pt, outer sep=0mm,
               shape border rotate=-90},
 	      summ/.style = {circle, draw, inner sep = 1pt},]
-	 \node[block, align=center] (motor) at (0,0) {Cart and \\pendulum};
+	 \node[block, align=center] (motor) at (0,0) {Plant};
 	 \node[coordinate, right of=motor, node distance = 26mm,] (output) {};
 	 \node[block, left of=motor, node distance=26mm] (saturation) {};
 
@@ -563,9 +584,9 @@ F(s) &=  \frac{ \frac{G_c(s)}{G(s)}}{1 - G_c(s)} = \frac{ \frac{\mathrm{e}^{-s\t
 
 
 
-	 \draw[->] (setpoint) -- node[above, very near start ] {$x_{ref}$} (sumsp);
+	 \draw[->] (setpoint) -- node[above, very near start ] {$y_{ref}$} (sumsp);
 	 \draw[->] (saturation) -- node[coordinate, ] (satmeas) {} node[above,] {$u_s(t)$} (motor);
-	 \draw[->] (motor) -- node[coordinate] (meas) {} node[above, very near end] {$x$} (output);
+	 \draw[->] (motor) -- node[coordinate] (meas) {} node[above, very near end] {$y$} (output);
 	 \draw[->] (meas) -- node[right] {} ++(0,-28mm) -| node[pos=0.95, left] {$-$} (sumsp);
 
 	 % Anti-windup
@@ -586,7 +607,7 @@ F(s) &=  \frac{ \frac{G_c(s)}{G(s)}}{1 - G_c(s)} = \frac{ \frac{\mathrm{e}^{-s\t
 \end{center}
    #+end_export
 
-*Activity* Assume $e(t)=0$ and determine the transfer function from $u_s(t)$ to $u(t)$.
+*Activity* Assume that the actuator is saturated. determine the transfer function from $u_s(t)$ to $u(t)$.
  
    
 
