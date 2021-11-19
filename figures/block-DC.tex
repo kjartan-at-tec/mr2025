@@ -1,0 +1,18 @@
+
+\documentclass{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+
+\begin{document}
+
+\begin{tikzpicture}[node distance=28mm, anchor=north]
+  \node[coordinate] (input) {};
+   \node[rectangle, draw, right of=input, inner sep=3mm] (lti2) {$\frac{k}{\tau s+1}$};
+   \node[rectangle, draw, right of=lti2, inner sep=3mm] (lti3) {$\frac{1}{s}$};
+   \node[coordinate, right of=lti3, node distance=26mm] (output) {};
+   \draw[->] (input) -- node[ above] {\textcolor{blue!80!black}{$u(t)$}}  (lti2);
+   \draw[->] (lti2) -- node[ above] {\textcolor{green!50!black}{$\omega(t)$}}  (lti3);
+   \draw[->] (lti3) -- node[coordinate] (meas) {} node[near end, above] {\textcolor{red!60!black}{$\theta(t)$}} (output);
+ \end{tikzpicture}
+\end{document}

@@ -104,18 +104,20 @@ State variables: \( x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \begin
    \includegraphics[width=0.8\linewidth]{../../figures/fig-apollo}
    \end{center}
    #+end_export
-   *Activity* What sensors are needed for state feedback?
+   *Activity* What type of sensors are needed for state feedback?
 
 ** Controllability
 
    \[ \dot{x} = \begin{bmatrix} \dot{x}_1\\\dot{x}_2\\\dot{x}_3\end{bmatrix} = \underbrace{\begin{bmatrix} \textcolor{black!60!black}{0} & \textcolor{black!60!black}{0} &\textcolor{black!60!black}{0} \\\textcolor{black!60!black}{1} & \textcolor{black!60!black}{0}& \textcolor{black!60!black}{0}\\ \textcolor{black!60!black}{0}& \textcolor{black!60!black}{g} &\textcolor{black!60!black}{0} \end{bmatrix}}_{A} \begin{bmatrix} x_1\\x_2\\x_3\end{bmatrix} + \underbrace{\begin{bmatrix} \textcolor{black!60!black}{\frac{1}{J}} \\ \textcolor{black!60!black}{0} \\\textcolor{black!60!black}{0}  \end{bmatrix}}_{B} u \]
 
-   Forming the controllability matrix
+   Forming the controllability matrix. Note that
+   \[ A^2 = \begin{bmatrix} 0 &  0 & 0\\ 0 & 0 & 0\\ g & 0 & 0 \end{bmatrix} \]
    \[ \mathcal{C} = \begin{bmatrix} B & AB & A^2B\end{bmatrix}
-   = \begin{bmatrix} \frac{1}{J} & 0 & 0\\0 & \frac{1}{J} & 0 \\0 & 0 & \frac{1}{J}g \end{bmatrix} \]
+   = \begin{bmatrix} \frac{1}{J} & 0 & \textcolor{white}{0}\\0 & \frac{1}{J} & \textcolor{white}{0} \\0 & 0 & \textcolor{white}{\frac{1}{J}g} \end{bmatrix} \]
    
 #+BEAMER: \pause
 *Activity* Is the system controllable?
+
 
 ** Linear state feedback
 

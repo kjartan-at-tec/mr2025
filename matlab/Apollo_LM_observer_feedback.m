@@ -23,7 +23,7 @@ L = [l1, l2, l3];
 
 %% Observer
 % Separation between poles 
-n = 2; % Between 2-10
+n = 10; % Between 2-10
 
 % Observer gains
 k1 = n^3/tauc^3/gM;

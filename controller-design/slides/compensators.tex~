@@ -1,4 +1,4 @@
-% Created 2021-09-30 Thu 13:27
+% Created 2021-10-01 Fri 08:17
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169, usenames, dvipsnames]{beamer}
 \usepackage[utf8]{inputenc}
@@ -37,11 +37,11 @@
 \maketitle
 
 \section{Intro}
-\label{sec:org93653a8}
+\label{sec:org6a26085}
 
 \section{Preparation: The proportional control of the normalized DC-motor}
-\label{sec:org0d6f069}
-\begin{frame}[label={sec:org30cf34c}]{Proportional control of the normalized DC motor}
+\label{sec:orgd313728}
+\begin{frame}[label={sec:orgf09ed94}]{Proportional control of the normalized DC motor}
 \begin{columns}
 \begin{column}{0.5\columnwidth}
 \begin{center}
@@ -80,7 +80,7 @@
 \end{frame}
 
 
-\begin{frame}[label={sec:org12192cf}]{Proportional control of the normalized DC motor}
+\begin{frame}[label={sec:org59e34d1}]{Proportional control of the normalized DC motor}
 \begin{columns}
 \begin{column}{0.5\columnwidth}
 \begin{center}
@@ -96,7 +96,7 @@
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:orgcda1391}]{Proportional control of the normalized DC motor}
+\begin{frame}[label={sec:org03211af}]{Proportional control of the normalized DC motor}
 \begin{columns}
 \begin{column}{0.5\columnwidth}
 \begin{center}
@@ -114,15 +114,15 @@
 \end{frame}
 
 \section{Lead-lag design}
-\label{sec:org88af930}
+\label{sec:orga4976bd}
 
-\begin{frame}[label={sec:orgfd33e63}]{Specifications on the frequency properties of the closed-loop system}
+\begin{frame}[label={sec:org78174fb}]{Specifications on the frequency properties of the closed-loop system}
 \begin{center}
 \includegraphics[width=0.999\linewidth]{../../figures/spec-bode-closed-loop-new}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org56140ce}]{How to achieve the frequency-domain specifications}
+\begin{frame}[label={sec:org1d4dd73}]{How to achieve the frequency-domain specifications}
 \begin{columns}
 \begin{column}{0.28\columnwidth}
 \[G_c(i\omega) = \frac{ G_o(i\omega)}{1 + G_o(i\omega)}\]
@@ -140,7 +140,7 @@
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:orgfe84479}]{From specifications on \(G_c\) to specifications on \(G_o\)}
+\begin{frame}[label={sec:org158f16a}]{From specifications on \(G_c\) to specifications on \(G_o\)}
 \begin{center}
 \begin{center}
 \begin{tabular}{ll}
@@ -157,8 +157,8 @@ Static gain \(G_c(0) \approx 1\) & static gain \(G_o(0)\) high\\
 
 
 \section{Design example - DC motor}
-\label{sec:orgda243df}
-\begin{frame}[label={sec:org7e8f33c}]{Position control of the DC motor}
+\label{sec:org7e1749b}
+\begin{frame}[label={sec:org53595e0}]{Position control of the DC motor}
 \begin{columns}
 \begin{column}{0.7\columnwidth}
 \begin{center}
@@ -176,7 +176,7 @@ Specifications:
 \end{frame}
 
 
-\begin{frame}[label={sec:orgd14a39f}]{Position control of the DC motor}
+\begin{frame}[label={sec:org125fb39}]{Position control of the DC motor}
 \begin{columns}
 \begin{column}{0.6\columnwidth}
 \begin{center}
@@ -203,7 +203,7 @@ Specifications:
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:orgd12c950}]{Position control of the DC motor - obtaining the phase advance}
+\begin{frame}[label={sec:orgc83f7a6}]{Position control of the DC motor - obtaining the phase advance}
 \[F_{lead}(s) = \frac{\alpha_d T_d s + 1}{T_d s + 1}\]
 
 \begin{center}
@@ -211,7 +211,7 @@ Specifications:
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org3681f17}]{The maximum phase advance of the lead compensator}
+\begin{frame}[label={sec:org3110031}]{The maximum phase advance of the lead compensator}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 \[F_{lead}(s) = \frac{\alpha_d T_d s + 1}{T_d s + 1}\]
@@ -240,7 +240,7 @@ Specifications:
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org1a3e17a}]{Position control of the DC motor - placing the phase peak}
+\begin{frame}[label={sec:org5942659}]{Position control of the DC motor - placing the phase peak}
 \[F_{lead}(s) = \frac{\alpha_d T_d s + 1}{T_d s + 1}\]
 
 \begin{center}
@@ -251,7 +251,7 @@ Specifications:
 \end{frame}
 
 
-\begin{frame}[label={sec:org0aa5263}]{Position control of the DC motor - The resulting lead compensator}
+\begin{frame}[label={sec:org9334971}]{Position control of the DC motor - The resulting lead compensator}
 \[F_{lead}(s) = \frac{\alpha_d T_d s + 1}{T_d s + 1} = \frac{s + 1}{0.25s + 1}\]
 
 \begin{center}
@@ -260,7 +260,7 @@ Specifications:
 \end{frame}
 
 
-\begin{frame}[label={sec:orgc0993b7}]{Position control of the DC motor - Getting the gain right}
+\begin{frame}[label={sec:org924cc32}]{Position control of the DC motor - Getting the gain right}
 \begin{columns}
 \begin{column}{0.5\columnwidth}
 \begin{center}
@@ -288,7 +288,7 @@ so, what should the gain \(K\) be to obtain
 \end{frame}
 
 
-\begin{frame}[label={sec:org56ee6c5}]{Position control of the DC motor - Results}
+\begin{frame}[label={sec:orgab0d24b}]{Position control of the DC motor - Results}
 \begin{columns}
 \begin{column}{0.5\columnwidth}
 \begin{center}
@@ -307,7 +307,7 @@ so, what should the gain \(K\) be to obtain
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:orgc8b022b}]{Position control of the DC motor - Results}
+\begin{frame}[label={sec:org503ab47}]{Position control of the DC motor - Results}
 \begin{columns}
 \begin{column}{0.5\columnwidth}
 \begin{center}
@@ -324,7 +324,7 @@ so, what should the gain \(K\) be to obtain
 \end{frame}
 
 
-\begin{frame}[label={sec:org236922b}]{Applying the compensator design to a particular motor}
+\begin{frame}[label={sec:orgfe7b476}]{Applying the compensator design to a particular motor}
 \begin{center}
  \includegraphics[width=.7\linewidth]{../../figures/block-DC-lead-compensator-numerical}
 \end{center}
