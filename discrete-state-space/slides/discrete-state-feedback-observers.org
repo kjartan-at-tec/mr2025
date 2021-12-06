@@ -1,0 +1,332 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=1610]
+#+OPTIONS: H:2
+# #+BEAMER_THEME: Madrid
+#+COLUMNS: %45ITEM %10BEAMER_ENV(Env) %10BEAMER_ACT(Act) %4BEAMER_COL(Col) %8BEAMER_OPT(Opt)
+     
+#+LaTex_HEADER: \usepackage{khpreamble, euscript}
+#+LaTex_HEADER: \DeclareMathOperator{\atantwo}{atan2}
+#+LaTex_HEADER: \newcommand*{\ctrb}{\EuScript{C}}
+#+LaTex_HEADER: \newcommand*{\obsv}{\EuScript{O}}
+
+#+title: Discrete-time Ouput feedback (state feedback with observer)
+
+* What do I want the students to understand?			   :noexport:
+  - Understand state feedback design
+
+* Which activities will the students do?			   :noexport:
+  1. Calculate characteristic equation feedback for double integrator
+  2. Write pseudo code to compute control signal
+
+* Discret-time state space model
+** The discrete-time state-space model
+
+** The discrete-time state-space model
+   #+begin_export latex
+   \begin{center}
+     \begin{tikzpicture}[node distance=42mm, block/.style={inner sep=6pt, rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+       \node[coordinate] (input) {};
+       \node[block, right of=input, align=center] (plant)  {$x(k+1) = \Phi x(k) + \Gamma u(k)$\\$y(k) = C x(k)$};
+       \node[coordinate, right of=plant] (output) {};
+
+       \draw[->] (input) -- node[above, pos=0.3] {$u(k)$} (plant);
+       \draw[->] (plant) -- node[above, near end] {$y(k)$} (output);
+     \end{tikzpicture}
+   \end{center}
+
+   #+end_export
+
+
+** Stability
+** Eigenvalues and eigenvectors
+   *Definition* The eigenvalues \(\lambda_i  \in \mathbb{R} \) and eigenvectors \(v_i \in \mathbb{R}^n\) of a matrix \(\Phi \in \mathbb{R}^{n\times{}n}\) are the \(n\) pairs \((\lambda_i, v_i \neq 0 ), \; i=1,2,\ldots,n\) that satisfy
+   \[ \Phi v_i = \lambda_i v_i \]
+
+** Stability
+   The system
+   \begin{equation*}
+   x(k+1)=\Phi x(k), \ \ x(0)=x_0
+   \end{equation*}
+   is *stable* if  $\underset{t\to\infty}{\lim}x(kh)=0, \quad \forall\;  x_0\in\Bbb{R}^n$.
+
+   A necessary and sufficient requirement for stability is that *all the eigenvalues of \(\Phi\) are inside the unit circle.*
+   
+   The *eigenvalues* of \(\Phi\) are the  *poles* of the system.
+
+** Eigenvalues and eigenvectors - exercise                         :noexport:
+   *Activity* Verify that the vector
+   \[ v = \begin{bmatrix}1\\0\end{bmatrix}\]
+   is an eigenvector of
+   \[ \Phi = \begin{bmatrix} 2 & 0\\0 & \frac{1}{2} \end{bmatrix}. \]
+   What is the corresponding eigenvalue?
+
+* State feedback
+** State feedback control
+** State feedback control
+
+Given
+   \begin{equation}
+   \begin{split}
+    x(k+1) &= \Phi x(k) + \Gamma u(k)\\
+    y(k) &= C x(k)
+   \end{split}
+   \label{eq:ssmodel}
+  \end{equation}
+  and measurements (or an estimate) of the state vector \(x(k)\). 
+
+  *Linear state feedback* is the control law
+  \begin{equation*}
+  \begin{split}
+   u(k) &= f\big((x(k), u_c(k)\big) = -\textcolor{morange}{l_1}x_1(k) - \textcolor{morange}{l_2}x_2(k) - \cdots - \textcolor{morange}{l_n} x_n(k) + \textcolor{mbluegreen}{l_0}u_c(k)\\
+        &= -\textcolor{morange}{L}x(k) + \textcolor{mbluegreen}{l_0}u_c(k), 
+  \end{split}
+  \end{equation*}
+  where \[ \textcolor{morange}{L} = \bbm \textcolor{morange}{l_1} & \textcolor{morange}{l_2} & \cdots & \textcolor{morange}{l_n} \ebm. \]
+  Substituting this in the state-space model \eqref{eq:ssmodel} gives
+   \begin{equation}
+   \begin{split}
+    x(k+1) &= \left(\Phi -\Gamma \textcolor{morange}{L} \right) x(k) + \textcolor{mbluegreen}{l_0}\Gamma u_c(k)\\
+    y(k) &= C x(k)
+   \end{split}
+   \label{eq:closedloop}
+  \end{equation}
+
+** Pole placement by state feedback
+   Given (or choosing) a desired placement of the closed-loop poles \(p_1, p_2, \ldots, p_n\), being roots of the desired characteristic polynomial
+   \begin{equation}
+   a_c(z) = (z-p_1)(z-p_2)\cdots(z-p_n) = z^n + \alpha_1 z^{n-1} + \cdots \alpha_n.
+   \label{eq:desiredpoles}
+   \end{equation}
+
+   #+BEAMER:\pause
+   
+   Linear state feedback gives the system
+   \begin{equation}
+   \begin{split}
+    x(k+1) &= \left(\Phi -\Gamma \textcolor{morange}{L} \right) x(k) + \textcolor{mbluegreen}{l_0}\Gamma u_c(k)
+   \end{split}
+   \label{eq:closedloop}
+  \end{equation}
+ with characteristic polynomial
+   \begin{equation}
+   \det\left(zI - (\Phi - \Gamma \textcolor{morange}{L})\right) = z^n + \beta_1(\textcolor{morange}{l_1},\ldots,\textcolor{morange}{l_n}) z^{n-1} + \cdots \beta_n(\textcolor{morange}{l_1}, \ldots, \textcolor{morange}{l_n}).
+   \label{eq:poles}
+   \end{equation}
+  
+   #+BEAMER:\pause
+
+Set the coefficients of the desired characteristic polynomial \eqref{eq:desiredpoles} equal to the coefficients of \eqref{eq:poles} to obtain the system of equations
+   \begin{equation*}
+   \begin{split}
+   \beta_1(\textcolor{morange}{l_1}, \ldots, \textcolor{morange}{l_n}) &= \alpha_1\\
+   \beta_2(\textcolor{morange}{l_1}, \ldots, \textcolor{morange}{l_n}) &= \alpha_2\\
+   &\vdots\\
+   \beta_n(\textcolor{morange}{l_1}, \ldots, \textcolor{morange}{l_n}) &= \alpha_n
+   \end{split}
+   \label{eq:coeffs}
+   \end{equation*}
+
+** Pole placement by state feedback
+   The system of equations
+   \begin{equation*}
+   \begin{split}
+   \beta_1(\textcolor{morange}{l_1}, \ldots, \textcolor{morange}{l_n}) &= \alpha_1\\
+   \beta_2(\textcolor{morange}{l_1}, \ldots, \textcolor{morange}{l_n}) &= \alpha_2\\
+   &\vdots\\
+   \beta_n(\textcolor{morange}{l_1}, \ldots, \textcolor{morange}{l_n}) &= \alpha_n
+   \end{split}
+   \label{eq:coeffs}
+   \end{equation*}
+
+   is always linear in the parameters of the controller, hence
+   \begin{equation*}
+   M \textcolor{morange}{L}\transp = \alpha,
+   \end{equation*}
+   where \(\alpha\transp = \bbm \alpha_1 & \alpha_2 & \cdots & \alpha_n \ebm.\)
+
+** Pole placement and controllability                              :noexport:
+   It can be shown that the controllability matrix
+   \[W_c = \bbm \Gamma & \Phi\Gamma & \cdots & \Phi^{n-1}\Gamma\ebm\]
+   is a factor of the matrix \(M\)
+   \[ M = \bar{M} W_c. \] Hence, in general, the equations
+   \begin{equation}
+   \bar{M}W_c L\transp = \alpha \qquad \Rightarrow \qquad L\transp = W_c^{-1}\bar{M}^{-1}\alpha
+   \label{eq:poleplace}
+   \end{equation}
+   only has a solution if \(W_c\) is invertible, that is when the system is /controllable/.
+
+   Note that the equations \eqref{eq:poleplace} may also have solutions when the system is not controllable, if  *\(\alpha\) is in the column space of \(M\)*. That is 
+  \[ \alpha = b_1 M_{:,1} + b_2M_{:,2} + \cdots + b_M_{:,m}, \; m < n \]
+ 
+** Pole placement by state feedback
+   Given a desired placement of the closed-loop poles \(p_1, p_2, \ldots, p_n\), being roots of the desired characteristic polynomial
+   \begin{equation*}
+   a_c(z) = (z-p_1)(z-p_2)\cdots(z-p_n) = z^n + \alpha_1 z^{n-1} + \cdots \alpha_n.
+   \label{eq:desiredpoles}
+   \end{equation*}
+   and closed-loop system
+   \begin{equation*}
+   \begin{split}
+    x(k+1) &= \left(\Phi -\Gamma \textcolor{morange}{L} \right) x(k) + \textcolor{mbluegreen}{l_0}\Gamma u_c(k)\\
+    y(k) &= C x(k)
+   \end{split}
+   \label{eq:closedloop}
+  \end{equation*}
+
+  The Matlab (/control systems toolbox/) has methods for computing the gain vector $L$
+
+  1. *Ackerman's method* 
+     #+begin_src octave
+	L = acker(Phi, Gamma, pd)
+     #+end_src
+  1. *Numerically more stable method* 
+     #+begin_src octave
+	L = place(Phi, Gamma, pd)
+     #+end_src
+
+** The reference input gain \(l_0\)
+
+   The closed-loop state space system
+   \begin{equation*}
+   \begin{split}
+    x(k+1) &= \underbrace{\left(\Phi -\Gamma \textcolor{morange}{L} \right)}_{\Phi_c} x(k) + \textcolor{mbluegreen}{l_0}\Gamma u_c(k)\\
+    y(k) &= C x(k)
+   \end{split}
+   \end{equation*}
+   with constant reference signal \(u_c(k) = u_{c,f}\) has the steady-state solution (\(x(k+1)=x(k)\))
+   #+BEAMER: \pause
+   \[ x_f =  \textcolor{mbluegreen}{l_0} (I - \Phi_c)^{-1}\Gamma u_{c,f}\]
+   \[ y_f = Cx_f = \textcolor{mbluegreen}{l_0} C(I - \Phi_c)^{-1}\Gamma u_{c,f}.\]
+   We want \(y_f =  u_{c,f}\),
+   \[ \Rightarrow \qquad \textcolor{mbluegreen}{l_0} = \frac{1}{C(I-\Phi_c)^{-1}\Gamma}\]
+
+* State feedback with observer
+** State feedback with reconstructed states
+
+** Observer design
+   Given model
+   \begin{equation*}
+   \begin{split}
+    x(k+1) &= \Phi x(k) + \Gamma u(k)\\
+    y(k) &= C x(k)
+   \end{split}
+   \label{eq:ssmodel}
+  \end{equation*}
+  and measurements of the output signal \(y(k)\). 
+
+  The observer is given by
+      \begin{equation*}
+      \begin{split}
+      \hat{x}(k+1) &= \underbrace{\Phi \hat{x}(k) + \Gamma u(k)}_{\text{simulation}} + \underbrace{\textcolor{mred}{K}\big(y(k) - C\hat{x}(k)\big)}_{\text{correction}} = \left(\Phi - \textcolor{mred}{K}C\right)\hat{x}(k) +  \Gamma u(k) + \textcolor{mred}{K}y(k)
+      \end{split}
+      \end{equation*}
+  with poles given by the eigenvalues of the matrix \(\Phi_o = \Phi - \textcolor{mred}{K}C\)
+
+  *Rule-of-thumb* (From continous-time state-space theory) Choose the poles of the observer (eigenvalues of \(\Phi-\textcolor{mred}{K}C\)) at least twice as fast as the poles (eigenvalues) of \(\Phi-\Gamma L\). In discrete-time place the observer-poles closer to the origin.  
+
+  
+** Control by feedback from reconstructed states
+   The design problem can be separates into two problems
+   1. Determine the gain vector \(\textcolor{orange!80!black}{L}\) and the gain \(l_0\) of the control law
+      \[ u(k) = -\textcolor{orange!80!black}{L} \hat{x}(k) + l_0 u_c(k)\]
+      so that the closed-loop system has good reference tracking.
+   2. Determine the gain vector \(\textcolor{mred}{K}\) of the observer
+      \begin{equation*}
+      \begin{split}
+      \hat{x}(k+1) &= \Phi \hat{x}(k) + \Gamma u(k) + \textcolor{mred}{K} \big(y(k) - C\hat{x}(k)\big)
+      \end{split}
+      \end{equation*}
+      to get a good balance between disturbance rejection and noise attenuation.
+
+** Computing the observer gain
+   A matrix $M$ and its transpose $M\transp$ have the same eigenvalues. Hence, the problem of determining the gain $K$ to obtain desired eigenvalues of 
+   \[\Phi- \textcolor{mred}{K}C\] is equivalent to determining the gain $K$ in 
+   \[(\Phi-KC)\transp = \Phi\transp - C\transp \textcolor{mred}{K}\transp.\]
+   The last problem has the exact same form as the problem of determining $L$ to obtain desired eigenvalues of 
+   \[\Phi - \Gamma L\]
+   
+   So, the same matlab function can be used for both problems.
+
+** Computing the observer gain
+   
+  1. *Ackerman's method* 
+     #+begin_src octave
+	K = acker(Phi', C', po)'
+     #+end_src
+  1. *More numerically stable method* 
+     #+begin_src octave
+	K = place(Phi', C', pd)'
+     #+end_src
+
+
+
+* Where to choose the poles
+** Where to place the closed-loop poles?
+** Where to place the closed-loop poles?
+
+If the system is controllable we can place the closed-loop poles freely.
+
+#+BEAMER: \pause
+
+But not all placements are good choices
+
+#+BEAMER: \pause
+
+Take into account
+- Desired speed
+- Desired damping
+- *Poles and zeros of the plant*
+
+** Placing for desired speed and damping
+*** Graphics
+:PROPERTIES:
+:BEAMER_col: 0.4
+:END:
+
+*s-plane*
+
+    \begin{center}
+     \includegraphics[height=.6\textheight]{../../figures/sgrid-crop}
+    \end{center}
+*** Text
+:PROPERTIES:
+:BEAMER_col: 0.6
+:END:
+
+*z-plane*
+    \begin{center}
+     \includegraphics[height=.59\textheight]{../../figures/zgrid-crop}
+    \end{center}
+
+** The effect of plant zeros and poles
+
+*** Graphics
+:PROPERTIES:
+:BEAMER_col: 0.4
+:END:
+
+    \begin{center}
+     \includegraphics[width=1.0\linewidth]{../../figures/AM-portal.png}
+    \end{center}
+
+#+BEAMER: \pause
+
+*** Text
+:PROPERTIES:
+:BEAMER_col: 0.6
+:END:
+
+    \begin{center}
+     \includegraphics[width=1.0\linewidth]{../../figures/AM-ch12.4.png}
+    \end{center}
+
+
+** Placing w.r.t plant zeros and poles
+
+- Cancel slow plant zeros
+- Place fast closed-loop poles near fast plant poles
+  
+  

@@ -1,0 +1,118 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169]
+#+OPTIONS: H:2
+# #+BEAMER_THEME: Madrid
+#+COLUMNS: %45ITEM %10BEAMER_ENV(Env) %10BEAMER_ACT(Act) %4BEAMER_COL(Col) %8BEAMER_OPT(Opt)
+     
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \DeclareMathOperator{\atantwo}{atan2}
+#+title: Sensitivity and robustness
+# #+date: 2021-11-30
+
+* What do I want the students to understand?			   :noexport:
+  - Understand the importance and meaning of the sensitivity function
+
+* Which activities will the students do?			   :noexport:
+  1. In solution of 6.7: Draw root locus
+  2. Sketch f(\omega)
+
+* Intro
+
+
+* The sensitivity function
+
+
+** Sensitivity and complementary sensitivity
+
+\small
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.8\linewidth]{../../figures/2dof-block-complete}
+#+END_CENTER
+#+BEAMER: \pause
+ 1. Determine the closed-loop transfer function $G_v(s)$ from \(v(t)\) to \(y(t)\) and the transfer function $G_n(t)$ from \(n(t)\) to \(y(t)\). 
+#+BEAMER: \pause
+ 2. [@2] Show that if \(F_{fb}(s)\) and/or \(G(s)\) contains an integrator (pole in the origin), then \(G_v(0) = 0\) and \(G_n(0) = -1\). This means that constant disturbances are completely eliminated, but a constant measurement error (sensor bias) is passed unattenuated to the output. 
+
+** The Nyquist plot and stability margins
+#+BEGIN_CENTER 
+ \includegraphics[width=0.4\linewidth]{../../figures/implane-nyquist-margins}
+#+END_CENTER
+
+
+** The sensitivity function
+#+BEGIN_CENTER 
+\includegraphics[width=0.4\linewidth]{../../figures/implane-sensitivity}
+#+END_CENTER   
+
+\[ S(i\omega) = G_v(i\omega) = \frac{1}{ 1 + G_o(i\omega)} = \frac{1}{1 + G(i\omega)F_{fb}(i\omega)} \]
+
+
+
+
+** The sensitivity function
+
+#+BEGIN_CENTER 
+\includegraphics[width=0.7\linewidth]{../../figures/sensitivity-example}
+#+END_CENTER   
+
+
+* Propagation of modelling errors                                  :noexport:
+
+** Propagation of modelling errors / model variations
+   Our model of the plant \(G(s)\) is never exact. Consider the true system written as
+   \[ G^0(s) = G(s) + \textcolor{red!80!black}{\Delta G(s)}. \]
+   It is of interest to know how the modelling error \(\textcolor{red!80!black}{\Delta G(s)}\) propagates in our closed-loop system to give an error \(\textcolor{red!80!black}{\Delta G_c(s)}\)
+   \[ G_c^0(s) = G_c(s) + \textcolor{red!80!black}{\Delta G_c(s)}. \]
+
+** Propagation of modelling errors, contd
+   The closed-loop system is given by
+   \[ G_c = \frac{GF_{ff}}{ 1 + G F_{fb}} \]
+   and so the propagation of the modelling error is
+   \[ \Delta G_c = \frac{\partial G_c}{\partial G} \Delta G. \]
+   We can show that 
+   \[ \frac{\partial G_c}{\partial G} = S(s)\frac{G_c(s)}{G(s)} \] so
+   \[ \frac{\textcolor{red!80!black}{\Delta G_c(s)}}{G_c(s)} =  S(s) \frac{\textcolor{red!80!black}{\Delta G(s)}}{G(s)}. \]
+
+** Propagation of modelling errors, contd
+   Important conclusions from 
+   \[ \frac{\textcolor{red!80!black}{\Delta G_c(s)}}{G_c(s)} =  S(s) \frac{\textcolor{red!80!black}{\Delta G(s)}}{G(s)}. \]
+   1. For (low) frequencies where \(S(i\omega)\) (typically) is small, modelling errors or model variations have little effect on the closed-loop system.  
+   2. The sensitivity \(S(i\omega)\) is typically designed to be small for low frequencies, but it should not be too large for frequencies where there are non-negligable modelling errors.
+
+
+#   3. The modelling error is typically worse for higher frequencies, so \(\Delta G(i\omega)\) is small for low freqencies and larger for higher frequencies.
+
+* Stein
+
+** Interpretations of the sensitivity function
+   Several important interpretations of the sensitivity function \(S(s)\)
+   1. \(S(i\omega)\) tells us how well our closed-loop system attenuates disturbances of different frequencies
+   2. Its maximum value is a measure of how close the closed-loop system is to being unstable.
+   3. \(S(i\omega)\) tells us how modelling errors or modelling variations of the plant influences the closed-loop system
+
+
+
+** An important limitation 
+#+BEGIN_CENTER 
+ \includegraphics[width=0.5\linewidth]{../../figures/Stein-title.png}
+#+END_CENTER
+
+
+** An important limitation 
+#+BEGIN_CENTER 
+ \includegraphics[width=0.5\linewidth]{../../figures/stein-serious-design.png}
+#+END_CENTER
+
+\[ \int _{0}^{\infty }\ln |S(i\omega )|d\omega =\int _{0}^{\infty }\ln \left|{\frac {1}{1+G_o(i\omega )}}\right|d\omega =\pi \sum Re(p_{k}) \]
+
+** An important limitation 
+#+BEGIN_CENTER 
+ \includegraphics[width=0.6\linewidth]{../../figures/sensitivity-linear.png}
+#+END_CENTER
+* Robustness
+ 
+
