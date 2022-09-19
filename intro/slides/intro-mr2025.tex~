@@ -1,4 +1,4 @@
-% Created 2021-09-21 Tue 08:38
+% Created 2022-09-14 Wed 15:27
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169, usenames, dvipsnames]{beamer}
 \usepackage[utf8]{inputenc}
@@ -37,15 +37,15 @@
 \maketitle
 
 \section{Course content}
-\label{sec:org6b552f8}
+\label{sec:org5000c51}
 
-\begin{frame}[label={sec:orgb48c01f}]{Feedback control systems are ubiquitous}
+\begin{frame}[label={sec:orgf7b0052}]{Feedback control systems are ubiquitous}
 \begin{center}
   \includegraphics[width=.6\linewidth]{../../figures/PnID-ex.png}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgdcb3193}]{Feedback control systems}
+\begin{frame}[label={sec:org181757f}]{Feedback control systems}
 The problem situation
 
 \begin{center}
@@ -54,7 +54,7 @@ The problem situation
 \end{frame}
 
 
-\begin{frame}[label={sec:orgb5f5c3e}]{Feedback control system}
+\begin{frame}[label={sec:org7edc729}]{Feedback control system}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 \begin{center}
@@ -76,15 +76,15 @@ The problem situation
 
 
 \section{Control systems specifications}
-\label{sec:org3032ee4}
+\label{sec:orgc0fc7c2}
 
-\begin{frame}[label={sec:orgd4f3d46}]{Performance requirements - time domain}
+\begin{frame}[label={sec:orge6739cc}]{Performance requirements - time domain}
 \begin{center}
   \includegraphics[width=.8\linewidth]{../../figures/step-response-specifications}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org32fbceb}]{Performance requirements - time domain}
+\begin{frame}[label={sec:org74f382d}]{Performance requirements - time domain}
 \alert{Activity} Does the system satisfy the requirements?
 
 \begin{columns}
@@ -105,14 +105,14 @@ Overshoot & < 18\%\\
 \end{column}
 \end{columns}
 \end{frame}
-\begin{frame}[label={sec:org5599207}]{Performance requirements - frequency domain}
+\begin{frame}[label={sec:org373384e}]{Performance requirements - frequency domain}
 \begin{center}
   \includegraphics[width=.8\linewidth]{../../figures/spec-bode-closed-loop-new}
 \end{center}
 \end{frame}
 
 
-\begin{frame}[label={sec:org726f777}]{Performance requirements - frequency domain}
+\begin{frame}[label={sec:orgd33a327}]{Performance requirements - frequency domain}
 \begin{center}
   \includegraphics[width=1.0\linewidth]{../../figures/bode-closed-loop-example-responses}
 \end{center}
@@ -122,14 +122,14 @@ Overshoot & < 18\%\\
 \alert{Activity} What is the gain and phase shift at \(\omega = 2\) rad/s?
 \end{frame}
 
-\begin{frame}[label={sec:orge858aa8}]{Performance requirements - frequency domain}
+\begin{frame}[label={sec:orgc1bad71}]{Performance requirements - frequency domain}
 \begin{center}
   \includegraphics[width=.8\linewidth]{../../figures/spec-bode-closed-loop-new}
 \end{center}
 \end{frame}
 
 
-\begin{frame}[label={sec:org2779455}]{Performance requirements - frequency domain}
+\begin{frame}[label={sec:org155d311}]{Performance requirements - frequency domain}
 \alert{Activity} Does the system satisfy the requirements?
 
 
@@ -154,9 +154,9 @@ Resonance peak & <9dB\\
 
 
 \section{Feedback, sensitivity and complementary sensitivity}
-\label{sec:org09c7604}
+\label{sec:orge4cbcdd}
 
-\begin{frame}[label={sec:org06a2724}]{Block diagram algebra}
+\begin{frame}[label={sec:org515afab}]{Block diagram algebra}
 \begin{center}
   \includegraphics[width=.6\linewidth]{../../figures/block-simple-feedback}
 \end{center}
@@ -166,7 +166,7 @@ Transfer function from \(r(t)\) to \(y(t)\):
 \end{frame}
 
 
-\begin{frame}[label={sec:org45accec}]{Block diagram algebra}
+\begin{frame}[label={sec:org301f0c3}]{Block diagram algebra}
 \alert{Activity} Pair the block-diagram with the correct closed-loop transfer function!
 
 
@@ -180,183 +180,5 @@ Transfer function from \(r(t)\) to \(y(t)\):
 \textcolor{blue!80!black}{I} & \textcolor{blue!80!black}{II} & \textcolor{blue!80!black}{III} & \textcolor{blue!80!black}{IV}\\
 \(\frac{Y(s)}{R(s)}=\frac{G(s)F(s)}{1 + G(s)}\) & \(\quad \frac{Y(s)}{R(s)}=\frac{G(s)}{1 + G(s)F(s)}\quad\) & \(\frac{Y(s)}{R(s)}=\frac{1}{1 + G(s)F(s)}\) & \(\frac{Y(s)}{R(s)}=\frac{G(s)F(s)}{1 + G(s)F(s)}\)\\
 \end{longtable}
-\end{frame}
-
-\begin{frame}[label={sec:orgbb6e7e3}]{The two-degree-of-freedom controller}
-\begin{center}
-  \includegraphics[width=.7\linewidth]{../../figures/2dof-block-complete}
-\end{center}
-
-\pause
-
-Using the property of \emph{superposition} of LTIs:
-\begin{align*}
-Y(s) &= G_c(s)R(s) + S(s)V(s) - T(s)N(s)
-\end{align*}
-
-\pause
-
-\begin{center}
-\begin{tabular}{ll}
-Closed-loop system (from reference to output) & \(G_c(s) = \frac{G(s)F_f(s)}{1 + G(s)F_b(s)}\)\\
-Sensitivity function & \(S(s) = \frac{1}{1 + G(s)F_b(s)}\)\\
-Complementary sensitivity function & \(T(s) = \frac{G(s)F_b(s)}{1 + G(s)F_b(s)}\)\\
-\end{tabular}
-\end{center}
-\end{frame}
-
-\begin{frame}[label={sec:orgfa57e40}]{The two-degree-of-freedom controller}
-\begin{center}
-  \includegraphics[width=.5\linewidth]{../../figures/2dof-block-complete}
-\end{center}
-
-\begin{center}
-\begin{tabular}{ll}
-Sensitivity function & \(S(s) = \frac{1}{1 + G(s)F_b(s)}\)\\
-Complementary sensitivity function & \(T(s) = \frac{G(s)F_b(s)}{1 + G(s)F_b(s)}\)\\
-\end{tabular}
-\end{center}
-
-\alert{Activity} Calculate \(S(s) + T(s) =\)
-\end{frame}
-
-
-\begin{frame}[label={sec:org5fc9546}]{The two-degree-of-freedom controller}
-\begin{center}
-  \includegraphics[width=.6\linewidth]{../../figures/2dof-block-complete}
-\end{center}
-
-\alert{Why} the two-degrees of freedom controller?
-
-\pause
-
-To seperate two design requirements:
-
-\begin{enumerate}
-\item Obtain desired reference (set-point) tracking.
-\item Find good trade-off between disturbance rejection (small \(S(s)\)) and noise attenuation (small \(T(s)\)).
-\end{enumerate}
-\end{frame}
-
-
-\section{Proportional control of the DC motor}
-\label{sec:org2d37cdf}
-
-\begin{frame}[label={sec:org3e6111a}]{The DC motor}
-\begin{columns}
-\begin{column}{0.5\columnwidth}
-\begin{center}
- \includegraphics[width=1.0\linewidth]{../../figures/block-DC-feedback-white}
-\end{center}
-\end{column}
-\begin{column}{0.5\columnwidth}
-\begin{center}
- \def\ggain{200}
- \def\Tcnst{0.1}
- \begin{tikzpicture}
-   \begin{axis}[
-   width=7cm,
-   height=6cm,
-   grid = both,
-   xlabel = {Time [s]},
-   ylabel = {Ang vel [rad/s]},
-   %xtick = {0, \tdelay, \tone, \two},
-   %xticklabels = {0, $\theta$, $\theta+\frac{\tau}{3}$, $\theta + \tau$},
-   %ytick = {0, \yone, \ytwo, \uampl, \yfinal},
-   %yticklabels = {0, $0.283y_{f}$, $0.632y_f$, $u_f$, $y_f$},
-   xmin = -0.2, xmax=2,
-   minor y tick num=9,
-   minor x tick num=9,
-   every major grid/.style={red, opacity=0.5},
-   ]
-     \addplot [thick, green!50!black, no marks, domain=-0.2:2, samples=100] {(x>0)*\ggain*(1 - exp(-(x/\Tcnst)))}; 
-  \end{axis}
- \end{tikzpicture}
-\end{center}
-\end{column}
-\end{columns}
-\end{frame}
-
-
-
-\begin{frame}[label={sec:orgbec4097}]{The normalized DC motor}
-\begin{columns}
-\begin{column}{0.5\columnwidth}
-\begin{center}
- \includegraphics[width=1.0\linewidth]{../../figures/block-normalized-DC-feedback-white}
-\end{center}
-\end{column}
-
-\begin{column}{0.5\columnwidth}
-\begin{center}
- \def\ggain{1}
- \def\Tcnst{1}
- \begin{tikzpicture}
-   \begin{axis}[
-   width=7cm,
-   height=6cm,
-   grid = both,
-   xlabel = {Time [$\tau$]},
-   ylabel = {Ang vel [20 rad/$\tau$], angle [20 rad]},
-   %xtick = {0, \tdelay, \tone, \two},
-   %xticklabels = {0, $\theta$, $\theta+\frac{\tau}{3}$, $\theta + \tau$},
-   %ytick = {0, \yone, \ytwo, \uampl, \yfinal},
-   %yticklabels = {0, $0.283y_{f}$, $0.632y_f$, $u_f$, $y_f$},
-   xmin = -2, xmax=20,
-   minor y tick num=9,
-   minor x tick num=9,
-   every major grid/.style={red, opacity=0.5},
-   ]
-     \addplot [thick, green!50!black, no marks, domain=-2:20, samples=100] {(x>0)*\ggain*(1 - exp(-(x/\Tcnst)))};
-     \addplot [thick, red!60!black, no marks, domain=-0.2:5, samples=100] {(x>0)*\ggain*(x + exp(-(x/\Tcnst)) -1)};
-   \end{axis}
- \end{tikzpicture}
-\end{center}
-\end{column}
-\end{columns}
-\end{frame}
-
-
-
-\begin{frame}[label={sec:orgbb201bd}]{Proportional control of the normalized DC motor}
-\begin{columns}
-\begin{column}{0.5\columnwidth}
-\begin{center}
- \includegraphics[width=1.0\linewidth]{../../figures/block-DC-feedback}
-\end{center}
-\end{column}
-
-\begin{column}{0.5\columnwidth}
-\begin{center}
- \def\ggain{1}
- \def\Tcnst{1}
- \begin{tikzpicture}
-   \begin{axis}[
-   width=7cm,
-   height=6cm,
-   grid = both,
-   xlabel = {Time [$\tau$]},
-   ylabel = {Angle [20 rad]},
-   title = {$K=1$},
-   %xtick = {0, \tdelay, \tone, \two},
-   %xticklabels = {0, $\theta$, $\theta+\frac{\tau}{3}$, $\theta + \tau$},
-   %ytick = {0, \yone, \ytwo, \uampl, \yfinal},
-   %yticklabels = {0, $0.283y_{f}$, $0.632y_f$, $u_f$, $y_f$},
-   xmin = -2, xmax=20,
-   minor y tick num=4,
-   minor x tick num=4,
-   every major grid/.style={red, opacity=0.5},
-   ]
-     \addplot [thick, black, no marks, domain=-2:20, samples=200] {x>0};
-     \addplot [thick, red!60!black, no marks, domain=-0.2:20, samples=100] {(x>0)*(1 - (exp(-x/2)* (sqrt(3)* cos(deg((sqrt(3)* x)/2)) + sin(deg((sqrt(3)* x)/2))))/sqrt(3))};
-   \end{axis}
- \end{tikzpicture}
-\end{center}
-
-
-\pause
-\alert{Activity} What is the overshoot (in percent) and rise time (in seconds)?
-\end{column}
-\end{columns}
 \end{frame}
 \end{document}

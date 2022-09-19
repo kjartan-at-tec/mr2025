@@ -36,6 +36,15 @@
   \includegraphics[width=.6\linewidth]{../../figures/PnID-ex.png}
 \end{center}
 
+*** Notes                                                          :noexport:
+
+- Part in a food-processing plant.
+- Type of diagram: Piping and Instrumentation Diagram
+- Tank providing a flow of warm, sweat fluid.
+- Valves, heating jacket.
+- Q: How many feedback loops?
+
+
 ** Feedback control systems
 
 The problem situation
@@ -44,6 +53,10 @@ The problem situation
   \includegraphics[width=.34\linewidth]{../../figures/mars-rover-curiosity-vehicle-cosmos.jpg}
 \end{center}
 
+*** Notes                                                          :noexport:
+
+- Curiosity rover
+- 
 
 ** Feedback control system
 
