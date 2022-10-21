@@ -1,4 +1,4 @@
-% Created 2021-09-24 Fri 15:01
+% Created 2022-09-27 Tue 11:09
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169, usenames, dvipsnames]{beamer}
 \usepackage[utf8]{inputenc}
@@ -38,8 +38,8 @@
 
 
 \section{Repetition}
-\label{sec:org1a1505a}
-\begin{frame}[label={sec:org8fc1eb3}]{Block diagram algebra}
+\label{sec:orga63d90e}
+\begin{frame}[label={sec:org1804cac}]{Block diagram algebra}
 \begin{center}
   \includegraphics[width=.6\linewidth]{../../figures/block-simple-feedback}
 \end{center}
@@ -48,36 +48,17 @@ Transfer function from \(r(t)\) to \(y(t)\):
 \[ \frac{Y(s)}{R(s)} = \frac{G(s)}{ 1+ G(s)}\]
 
 \pause
-\alert{Mason's} gain formula: \(G_c(s) = \frac{Y(s)}{R(s)} = \frac{\sum_k T_k\Delta_k}{\Delta}\)
+\alert{Mason's} gain formula: \(G_c(s) = \frac{Y(s)}{R(s)} = \frac{\sum_k P_k\Delta_k}{\Delta}\)
 
 For simple systems with one loop only: \[G_c(s) = \frac{Y(s)}{R(s)} = \frac{\text{Forward path gain}}{1+\text{Loop gain}}\]
 \end{frame}
 
 
 
-
-\begin{frame}[label={sec:org5b4dfeb}]{Block diagram algebra}
-\alert{Activity} Pair the block-diagram with the correct closed-loop transfer function!
-
-
-\begin{longtable}{cccc}
-\textcolor{red}{A} & \textcolor{red}{B} & \textcolor{red}{C} & \textcolor{red}{D}\\
-\includegraphics[width=3cm]{../../figures/block-simple-control-feedback} & \includegraphics[width=3cm]{../../figures/block-simple-control-feedback2} & \includegraphics[width=3cm]{../../figures/block-simple-control-feedback3} & \includegraphics[width=3cm]{../../figures/block-simple-control-feedback4}\\
-\end{longtable}
-
-
-\begin{longtable}{cccc}
-\textcolor{blue!80!black}{I} & \textcolor{blue!80!black}{II} & \textcolor{blue!80!black}{III} & \textcolor{blue!80!black}{IV}\\
-\(\frac{Y(s)}{R(s)}=\frac{G(s)F(s)}{1 + G(s)}\) & \(\quad \frac{Y(s)}{R(s)}=\frac{G(s)}{1 + G(s)F(s)}\quad\) & \(\frac{Y(s)}{R(s)}=\frac{1}{1 + G(s)F(s)}\) & \(\frac{Y(s)}{R(s)}=\frac{G(s)F(s)}{1 + G(s)F(s)}\)\\
-\end{longtable}
-\end{frame}
-
-
-
 \section{Proportional control of the DC motor}
-\label{sec:orga100b65}
+\label{sec:org59b4eb4}
 
-\begin{frame}[label={sec:org799eb1e}]{The DC motor}
+\begin{frame}[label={sec:org21e23d9}]{The DC motor}
 \begin{columns}
 \begin{column}{0.5\columnwidth}
 \begin{center}
@@ -90,8 +71,9 @@ For simple systems with one loop only: \[G_c(s) = \frac{Y(s)}{R(s)} = \frac{\tex
  \def\Tcnst{0.1}
  \begin{tikzpicture}
    \begin{axis}[
+   title={Unit step-response},
    width=7cm,
-   height=6cm,
+   height=5.4cm,
    grid = both,
    xlabel = {Time [s]},
    ylabel = {Ang vel [rad/s]},
@@ -101,7 +83,7 @@ For simple systems with one loop only: \[G_c(s) = \frac{Y(s)}{R(s)} = \frac{\tex
    %yticklabels = {0, $0.283y_{f}$, $0.632y_f$, $u_f$, $y_f$},
    xmin = -0.2, xmax=2,
    minor y tick num=9,
-   minor x tick num=9,
+   minor x tick num=4,
    every major grid/.style={red, opacity=0.5},
    ]
      \addplot [thick, green!50!black, no marks, domain=-0.2:2, samples=100] {(x>0)*\ggain*(1 - exp(-(x/\Tcnst)))}; 
@@ -116,7 +98,7 @@ For simple systems with one loop only: \[G_c(s) = \frac{Y(s)}{R(s)} = \frac{\tex
 \end{column}
 \end{columns}
 \end{frame}
-\begin{frame}[label={sec:orgfc31248}]{The normalized DC motor}
+\begin{frame}[label={sec:orga2d49a8}]{The normalized DC motor}
 \begin{columns}
 \begin{column}{0.5\columnwidth}
 \begin{center}
@@ -139,9 +121,10 @@ For simple systems with one loop only: \[G_c(s) = \frac{Y(s)}{R(s)} = \frac{\tex
    %xticklabels = {0, $\theta$, $\theta+\frac{\tau}{3}$, $\theta + \tau$},
    %ytick = {0, \yone, \ytwo, \uampl, \yfinal},
    %yticklabels = {0, $0.283y_{f}$, $0.632y_f$, $u_f$, $y_f$},
+   ymin = -0.5, ymax=3,
    xmin = -2, xmax=20,
-   minor y tick num=9,
-   minor x tick num=9,
+   minor y tick num=4,
+   minor x tick num=4,
    every major grid/.style={red, opacity=0.5},
    ]
      \addplot [thick, green!50!black, no marks, domain=-2:20, samples=100] {(x>0)*\ggain*(1 - exp(-(x/\Tcnst)))};
@@ -157,7 +140,7 @@ For simple systems with one loop only: \[G_c(s) = \frac{Y(s)}{R(s)} = \frac{\tex
 \end{frame}
 
 
-\begin{frame}[label={sec:org21ba7f1}]{Proportional control of the normalized DC motor}
+\begin{frame}[label={sec:org881e56d}]{Proportional control of the normalized DC motor}
 \begin{columns}
 \begin{column}{0.5\columnwidth}
 \begin{center}
@@ -182,6 +165,7 @@ For simple systems with one loop only: \[G_c(s) = \frac{Y(s)}{R(s)} = \frac{\tex
    %xticklabels = {0, $\theta$, $\theta+\frac{\tau}{3}$, $\theta + \tau$},
    %ytick = {0, \yone, \ytwo, \uampl, \yfinal},
    %yticklabels = {0, $0.283y_{f}$, $0.632y_f$, $u_f$, $y_f$},
+   ymin = -0.5, ymax=2,
    xmin = -2, xmax=20,
    minor y tick num=4,
    minor x tick num=4,
@@ -202,7 +186,7 @@ For simple systems with one loop only: \[G_c(s) = \frac{Y(s)}{R(s)} = \frac{\tex
 
 
 
-\begin{frame}[label={sec:orge679d4d}]{Proportional control of the normalized DC motor}
+\begin{frame}[label={sec:org8d7193f}]{Proportional control of the normalized DC motor}
 \begin{columns}
 \begin{column}{0.5\columnwidth}
 \begin{center}
@@ -223,9 +207,9 @@ Characteristic equation:
 \end{frame}
 
 \section{The root locus diagram}
-\label{sec:org4970f26}
+\label{sec:orgd20445b}
 
-\begin{frame}[label={sec:orgd41484a}]{Root locus}
+\begin{frame}[label={sec:org4b8951d}]{Root locus}
 \begin{center}
  \includegraphics[width=1.0\linewidth]{../../figures/block-rlocus}
 \end{center}
@@ -233,7 +217,7 @@ Characteristic equation:
 \alert{How do the closed-loop poles depend on \(K\)?}
 \end{frame}
 
-\begin{frame}[label={sec:org9835fe2}]{Root locus definition}
+\begin{frame}[label={sec:orga5e54d7}]{Root locus definition}
 Let
 \[\begin{cases} P(s)&=s^n+a_1s^{n-1}+\dots+a_n = (s-p_1)(s-p_2)\cdots(s-p_n)\\ 
 Q(s)&=s^m+b_1s^{m-1}+\dots+b_m=(s-q_1)(s-q_2)\cdots(s-q_m) \end{cases},\ \ \ n\ge m \]
@@ -245,7 +229,7 @@ P(s)+K\cdot Q(s)=0,\ \ \ 0\le K<\infty
 depend on the parameter \(K\). The root locus consists of the set of all points in the complex plane that are roots to \eqref{eq:P(s)+KQ(s)=0} for some non-negative value of \(K\).
 \end{frame}
 
-\begin{frame}[label={sec:org39778df}]{Characteristics of the root locus}
+\begin{frame}[label={sec:org0e0fe88}]{Characteristics of the root locus}
 The polynomial \(P(s)+KQ(s)=0\) above will always have \(n\) roots. Each gives a \emph{branch} in the root locus. Since the polynomials \(P(s)\) and \(Q(s)\) have real-valued coefficients, all roots are either real or complex-conjugated pairs. This means that the root locus is \emph{symmetric about the real axis.} Other characteristics
 \begin{itemize}
 \item Start points - marked by crosses
@@ -255,19 +239,19 @@ The polynomial \(P(s)+KQ(s)=0\) above will always have \(n\) roots. Each gives a
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:org30616d2}]{Start- and end points}
+\begin{frame}[label={sec:org2badeee}]{Start- and end points}
 \begin{description}
 \item[{Start points}] These are the \(n\) roots of \(P(s) + KQ(s)\) for \(K=0\), i.e. the roots of \(P(s)\). These are the open-loop poles, and are marked with crosses '\(\times\)'
 \item[{End points}] These are the \(m\) (finite) roots of \(P(s)+KQ(s)\) when \(K\to\infty\), and are hence the roots of \(Q(s)\). The end points are marked with circles '\(\circ\)'
 \end{description}
 \end{frame}
 
-\begin{frame}[label={sec:orgeba0533}]{The real axis}
+\begin{frame}[label={sec:orge098737}]{The real axis}
 Those parts of the real axis that have an \alert{odd number} of real-valued start- or end points to the right (including multiplicity) belong to the root locus. 
 \end{frame}
 
 
-\begin{frame}[label={sec:org4bf6958}]{Asymptotes, directions}
+\begin{frame}[label={sec:orgb804572}]{Asymptotes, directions}
 The directions of the asymptotes are given by the expression
 \[ \theta_k = \arg s = \frac{(2k+1)\pi}{n-m}, \; k \in \mathbb{Z} \]
 Example: 6 start points and 3 end points gives \(n-m = 6-3 = 3\) and the directions
@@ -285,7 +269,7 @@ Example: 6 start points and 3 end points gives \(n-m = 6-3 = 3\) and the directi
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org0b3a832}]{Asymptotes, intersection with the real axis}
+\begin{frame}[label={sec:org6764917}]{Asymptotes, intersection with the real axis}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 \[ ip = \frac{ \sum_{i=1}^n p_i - \sum_{i=1}^m q_i}{n-m}, \]
@@ -317,12 +301,12 @@ where \(\{p_i\}\) are the starting points (open-loop poles) and \(\{q_i\}\) are 
 
 
 \section{Examples}
-\label{sec:org9e8f3dd}
+\label{sec:org4339c64}
 
-\begin{frame}[label={sec:org3b1b3e2}]{Examples}
+\begin{frame}[label={sec:orgbf189ca}]{Examples}
 \end{frame}
 
-\begin{frame}[label={sec:org8ebc182}]{Motor driving an elastic shaft}
+\begin{frame}[label={sec:org17181ba}]{Motor driving an elastic shaft}
  \small
  \begin{center}
    \includegraphics[width=0.4\linewidth]{../../figures/elastic-shaft.jpg}
@@ -345,7 +329,7 @@ where \(\{p_i\}\) are the starting points (open-loop poles) and \(\{q_i\}\) are 
    \end{align*}
 \end{frame}
 
-\begin{frame}[label={sec:orgd640ec7}]{Motor driving an elastic shaft}
+\begin{frame}[label={sec:org0000f05}]{Motor driving an elastic shaft}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 PD-control
@@ -393,13 +377,13 @@ PD-control
 
 
 
-\begin{frame}[label={sec:org51c1623}]{Motor driving an elastic shaft}
+\begin{frame}[label={sec:org20b9a17}]{Motor driving an elastic shaft}
 \begin{center}
   \includegraphics[width=.7\linewidth]{../../figures/shaft-rlocus}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgb89c6ed}]{Harmonic oscillator}
+\begin{frame}[label={sec:org40b891e}]{Harmonic oscillator}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 P-control
@@ -447,7 +431,7 @@ P-control
 
 
 
-\begin{frame}[label={sec:orgb98a32b}]{Harmonic oscillator}
+\begin{frame}[label={sec:orgb3d1232}]{Harmonic oscillator}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 Lead-compensator
@@ -495,7 +479,7 @@ Lead-compensator
 
 
 
-\begin{frame}[label={sec:org73b4861}]{Pair the root locus plots with the correct transfer function}
+\begin{frame}[label={sec:org0c242b5}]{Pair the root locus plots with the correct transfer function}
 \begin{columns}
 \begin{column}{0.3\columnwidth}
 \begin{align*}

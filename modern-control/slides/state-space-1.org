@@ -21,7 +21,7 @@
   - Understand controllability/reachability
 
 * Repetition: State space models
-** The concept of state                                            :noexport:
+** The concept of state
 
    - State :: The information needed about the history of a dynamical system in order to determine the future behaviour of the system given future input signals.
 
@@ -57,6 +57,8 @@
 #+BEAMER: \pause
 
 *Activity* Can we reach any point in state space \(\begin{bmatrix} x &  y & \theta \end{bmatrix}^T\) by a suitably designed input signal sequence $u(t)$?
+
+
 ** Example: Mobile robot
 
 \small 
@@ -76,7 +78,7 @@
 :END:
 
 Linearized model using deviation variables
-\[ \xi(t) = \xi_0 + z(t), \quad \frac{d}{dt} \xi = \frac{d}{dt} z\]
+\[ \xi(t) = \xi_0 + z(t), \quad \frac{d}{dt} \xi = \frac{d}{dt} z,  \quad \theta_0=90^\circ, v_0 = 0\]
 \[ \frac{d}{dt} z = \begin{bmatrix} \omega\\ v\cos\theta_0 \\ v\sin\theta_0 \end{bmatrix}
 = \underbrace{0}_{A} z + \underbrace{\begin{bmatrix} 1 & 0 \\ 0 & 0\\ 0 & 1\end{bmatrix}}_{B} \begin{bmatrix}\omega\\v\end{bmatrix} \]
 
@@ -90,7 +92,23 @@ Linearized model using deviation variables
 
 *Activity* Is the linearized model controllable? (Hint: What is \(\text{rank}\, \mathcal{C}\)?)
 
+*** Notes                                                          :noexport:
 
+Linearization:
+dotzeta = [w, v cos\theta, v \sin\theta]
+= [ f_1(\theta, x, y, w, v), f_2(\theta, x, y, w, v), f_2(\theta, x, y, w, v)
+
+
+For each element in RHS (each fcn f_i(\theta, x, y, w, v))
+f_i \approx f_i(\theta_0, x_0, y_0, w_0, v_0) + \partial f_i / \partial \theta_0 |o.p. (\theta - \theta_0) + ...
+
+So,
+f_1 = 0 + 0 + 0 + 0 + w + 0.
+f_2 = v_0\cos\theta_0 - v_0\sin\theta_0 (\theta-\theta_0) + 0 + 0 + 0 + \cos\theta_0 (v-v_0)
+f_2 = v_0\sin\theta_0 + v_0\cos\theta_0 (\theta-\theta_0) + 0 + 0 + 0 + \cos\theta_0 (v-v_0)
+
+
+* Observability
 ** Example: Mobile robot
 
 *** Graphics
@@ -114,6 +132,14 @@ Single bearing measurement.
 
 *Activity* Is the system observable with one bearing-only measurement?
 
+*** Notes                                                          :noexport:
+
+z_{k+1} = f(z_k, u_k)
+\gamma_k = g(z_k, u_k) \approx 
+
+alpha = atan2(y, x)
+
+\phi = 
 
 ** Example: Mobile robot
 

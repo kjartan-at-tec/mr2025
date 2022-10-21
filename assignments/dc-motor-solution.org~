@@ -1,0 +1,28 @@
+#+EXCLUDE_TAGS: solution noexport
+#+OPTIONS: toc:nil num:nil date:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTeX_CLASS_OPTIONS: [letterpaper]
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage[top=10mm, bottom=10mm]{geometry}
+
+#+title: Characterization of a DC motor
+#+date: 2022-10-07
+
+* Modeling
+
+** ODE
+The two coupled differential equations that govern the behavior of the DC motor with constant stator magnetic field are
+\begin{align}
+L \frac{d}{dt} i(t) &= u(t) - Ri(t) - kg_r\omega, \\
+J \frac{d}{dt} \omega &= kg_r i(t) - T_l(t)
+\end{align}
+with variables
+- \(i(t)\) :: The armature current,
+- \(\omega(t)\) :: The angular velocity of the wheel,
+- \(u(t)\) :: The armature voltage,
+- \(T_l(t)\) :: The load torque,
+and parameters
+- \(L\) :: The armature inductance,
+- \(R\) :: The armature resistance,
+
+* Transfer functions

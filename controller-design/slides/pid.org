@@ -31,19 +31,14 @@
 
 * Integral control example
 
-** Lead-lag compensator for position control of the DC motor
-
-    \begin{center}
-     \includegraphics[width=.6\linewidth]{../../figures/block-DC-leadlag-compensator-numerical}
-    \end{center}
-
+** Position control of the DC motor - Results
 *** Graphics
 :PROPERTIES:
 :BEAMER_col: 0.5
 :END:
 
     \begin{center}
-      \includegraphics[width=.8\linewidth]{../../figures/bode-loop-gain-leadlag-normalized-DC-crop}
+      \includegraphics[width=1.0\linewidth]{../../figures/bode-loop-gain-lead-normalized-DC-crop}
     \end{center}
 
 #    The phasemargin:
@@ -52,15 +47,89 @@
 
 *** Text
 :PROPERTIES:
+:BEAMER_col: 0.4
+:END:
+
+    \begin{center}
+     \includegraphics[width=1.1\linewidth]{../../figures/block-DC-lead-compensator-numerical}
+    \end{center}
+
+    *Activity* Identify the frequency responses of: 1) The plant, 2) The compensator, 3) The loop gain, and 4) The closed-loop system.
+    
+
+*** Notes                                                          :noexport:
+Reading: 20\log K = 0 - 20\log F - 20\log G = 0 -6 - (-13) = 7 dB
+K = 2.24
+Calculating
+KFG = 1 => K = 1/G/F = 1*sqrt(5)*2/sqrt(4)= sqrt(5) = 2.24
+
+** Position control of the DC motor - Results
+*** Graphics
+:PROPERTIES:
 :BEAMER_col: 0.5
 :END:
 
     \begin{center}
+     \includegraphics[width=\linewidth]{../../figures/nyquist-loop-gain-lead-normalized-DC}
+    \end{center}
+
+*** Text
+:PROPERTIES:
+:BEAMER_col: 0.5
+:END:
+
+        \begin{center}
+      \includegraphics[width=1.0\linewidth]{../../figures/step-response-lead-normalized-DC}
+    \end{center}
+
+
+
+** Lead-lag compensator for position control of the DC motor
+
+    \begin{center}
+     \includegraphics[width=.6\linewidth]{../../figures/block-DC-leadlag-compensator-numerical}
+    \end{center}
+
+ #+beamer: \pause
+ 
+*** Graphics
+:PROPERTIES:
+:BEAMER_col: 0.5
+:END:
+
+
+#    The phasemargin:
+# \[   \varphi_m = G_o(i\omega_c) - (-\unit{180}{\degree}) \quad \Leftrightarrow\quad G_o(i\omega_c) - \varphi_m = -\unit{180}{\degree}\]
+    \begin{center}
       \includegraphics[width=.8\linewidth]{../../figures/response-leadlag-normalized-DC-crop}
+    \end{center}
+
+    
+ #+beamer: \pause
+
+*** Text
+:PROPERTIES:
+:BEAMER_col: 0.5
+:END:
+
+    \begin{center}
+      \includegraphics[width=.8\linewidth]{../../figures/bode-loop-gain-leadlag-normalized-DC-crop}
     \end{center}
     
 
 
+*** Notes                                                          :noexport:
+Which is which?
+
+| Line         | Trf                   | Motivation                                                 |
+|--------------+-----------------------+------------------------------------------------------------|
+| Thin black   | G = 1/(s(s+1)), plant | Low freq approx: 1/iw, High freq approx: -1/w^2            |
+| Green        | F_lead                | Positive phase                                             |
+| Orange       | F_lag                 | Neg phase, low freq: 1/0.1 * 1.6/16 = 1, h freq: (1/0.1)*1 |
+| Dashed black | Go no lag             | Add thin black and green                                   |
+| Solid black  | Go w lag              | To dashed black add orange                                 |
+| BLue         | G_c                   | Static gain 1, Peak near \omega_c                          |
+|              |                       |                                                            |
 
 * The need for integral control
 

@@ -1,4 +1,4 @@
-% Created 2021-10-15 Fri 07:39
+% Created 2022-10-14 Fri 13:55
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
@@ -42,9 +42,15 @@
 
 
 \section{Apollo moon lander}
-\label{sec:orgf2ea2b4}
+\label{sec:org5cc8e2d}
 
-\begin{frame}[label={sec:org348834a}]{The Apollo lunar module}
+\begin{frame}[label={sec:org837b1f6}]{The Apollo lunar module}
+\begin{center}
+  \includegraphics[width=0.5\linewidth]{../../figures/Apollo_11_Lunar_Module.jpg}
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:org250657c}]{The Apollo lunar module}
 \begin{center}
 \includegraphics[width=0.7\linewidth]{../../figures/fig-apollo}
 \end{center}
@@ -57,7 +63,7 @@
 
 
 
-\begin{frame}[label={sec:orgfaa9732}]{State variables}
+\begin{frame}[label={sec:org56cd564}]{State variables}
 \begin{columns}
 \begin{column}{0.65\columnwidth}
 \begin{center}
@@ -74,7 +80,7 @@ With dynamics
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:orgc9f7ee6}]{State-space model}
+\begin{frame}[label={sec:orgf901bfc}]{State-space model}
 State variables: \(x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \begin{bmatrix} \dot{\theta} & \theta & \dot{z} \end{bmatrix}^T\). With dynamics
 \[ \begin{cases} \dot{x}_1 =  \ddot{\theta} = \frac{1}{J} u\\ \dot{x}_2 = \dot{\theta} = x_1\\ \dot{x}_3 = \ddot{z} = g\theta = gx_2 \end{cases} \]
 
@@ -83,9 +89,7 @@ State variables: \(x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \begin{
 \[ \dot{x} = \begin{bmatrix} \dot{x}_1\\\dot{x}_2\\\dot{x}_3\end{bmatrix} = \underbrace{\begin{bmatrix} \textcolor{white}{0} & \textcolor{white}{0} &\textcolor{white}{0} \\\textcolor{white}{1} & \textcolor{white}{0}& \textcolor{white}{0}\\ \textcolor{white}{0}& \textcolor{white}{g} &\textcolor{white}{0} \end{bmatrix}}_{A} \begin{bmatrix} x_1\\x_2\\x_3\end{bmatrix} + \underbrace{\begin{bmatrix} \textcolor{white}{\frac{1}{J}} \\ \textcolor{white}{0} \\\textcolor{white}{0}  \end{bmatrix}}_{B} u \]
 \end{frame}
 
-\begin{frame}[label={sec:org0597e2b}]{State-space model}
-\end{frame}
-\begin{frame}[label={sec:org2af19a2}]{State-space model}
+\begin{frame}[label={sec:orgc7723a6}]{State-space model}
 State variables: \(x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \begin{bmatrix} \dot{\theta} & \theta & \dot{z} \end{bmatrix}^T\). With dynamics
 \[ \begin{cases} \dot{x}_1 =  \ddot{\theta} = \frac{1}{J} u\\ \dot{x}_2 = \dot{\theta} = x_1\\ \dot{x}_3 = \ddot{z} = g\theta = gx_2 \end{cases} \]
 
@@ -96,27 +100,37 @@ State variables: \(x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \begin{
 \alert{Activity} What are the poles of the system?
 \end{frame}
 
-\begin{frame}[label={sec:org76223fa}]{Sensors}
+\begin{frame}[label={sec:orge51059f}]{Sensors}
 \begin{center}
 \includegraphics[width=0.8\linewidth]{../../figures/fig-apollo}
 \end{center}
-\alert{Activity} What sensors are needed for state feedback?
+\alert{Activity} What type of sensors are needed for state feedback?
 \end{frame}
 
-\begin{frame}[label={sec:orgb7c22f6}]{Controllability}
+\begin{frame}[label={sec:org042ee19}]{Controllability}
 \[ \dot{x} = \begin{bmatrix} \dot{x}_1\\\dot{x}_2\\\dot{x}_3\end{bmatrix} = \underbrace{\begin{bmatrix} \textcolor{black!60!black}{0} & \textcolor{black!60!black}{0} &\textcolor{black!60!black}{0} \\\textcolor{black!60!black}{1} & \textcolor{black!60!black}{0}& \textcolor{black!60!black}{0}\\ \textcolor{black!60!black}{0}& \textcolor{black!60!black}{g} &\textcolor{black!60!black}{0} \end{bmatrix}}_{A} \begin{bmatrix} x_1\\x_2\\x_3\end{bmatrix} + \underbrace{\begin{bmatrix} \textcolor{black!60!black}{\frac{1}{J}} \\ \textcolor{black!60!black}{0} \\\textcolor{black!60!black}{0}  \end{bmatrix}}_{B} u \]
 
 Forming the controllability matrix. Note that
 \[ A^2 = \begin{bmatrix} 0 &  0 & 0\\ 0 & 0 & 0\\ g & 0 & 0 \end{bmatrix} \]
 \[ \mathcal{C} = \begin{bmatrix} B & AB & A^2B\end{bmatrix}
-   = \begin{bmatrix} \frac{1}{J} & 0 & \textcolor{white}{0}\\0 & \frac{1}{J} & \textcolor{white}{0} \\0 & 0 & \textcolor{white}{\frac{1}{J}g} \end{bmatrix} \]
+   = \begin{bmatrix} \textcolor{white}{\frac{1}{J}} & \textcolor{white}{0} & \textcolor{white}{0}\\\textcolor{white}{0} & \textcolor{white}{\frac{1}{J}} & \textcolor{white}{0} \\\textcolor{white}{0} & \textcolor{white}{0} & \textcolor{white}{\frac{1}{J}g} \end{bmatrix} \]
+\end{frame}
+
+
+\begin{frame}[label={sec:org360de65}]{Controllability}
+\[ \dot{x} = \begin{bmatrix} \dot{x}_1\\\dot{x}_2\\\dot{x}_3\end{bmatrix} = \underbrace{\begin{bmatrix} \textcolor{black!60!black}{0} & \textcolor{black!60!black}{0} &\textcolor{black!60!black}{0} \\\textcolor{black!60!black}{1} & \textcolor{black!60!black}{0}& \textcolor{black!60!black}{0}\\ \textcolor{black!60!black}{0}& \textcolor{black!60!black}{g} &\textcolor{black!60!black}{0} \end{bmatrix}}_{A} \begin{bmatrix} x_1\\x_2\\x_3\end{bmatrix} + \underbrace{\begin{bmatrix} \textcolor{black!60!black}{\frac{1}{J}} \\ \textcolor{black!60!black}{0} \\\textcolor{black!60!black}{0}  \end{bmatrix}}_{B} u \]
+
+Forming the controllability matrix. Note that
+\[ A^2 = \begin{bmatrix} 0 &  0 & 0\\ 0 & 0 & 0\\ g & 0 & 0 \end{bmatrix} \]
+\[ \mathcal{C} = \begin{bmatrix} B & AB & A^2B\end{bmatrix}
+   = \begin{bmatrix} \textcolor{red!60!black}{\frac{1}{J}} & \textcolor{red!60!black}{0} & \textcolor{red!60!black}{0}\\\textcolor{red!60!black}{0} & \textcolor{red!60!black}{\frac{1}{J}} & \textcolor{red!60!black}{0} \\\textcolor{red!60!black}{0} & \textcolor{red!60!black}{0} & \textcolor{red!60!black}{\frac{1}{J}g} \end{bmatrix} \]
 
 \pause
 \alert{Activity} Is the system controllable?
 \end{frame}
 
 
-\begin{frame}[label={sec:org827db36}]{Linear state feedback}
+\begin{frame}[label={sec:orgaa56539}]{Linear state feedback}
 \begin{columns}
 \begin{column}{0.6\columnwidth}
 \[ \dot{x} = \begin{bmatrix} \dot{x}_1\\\dot{x}_2\\\dot{x}_3\end{bmatrix} = \underbrace{\begin{bmatrix} \textcolor{black!60!black}{0} & \textcolor{black!60!black}{0} &\textcolor{black!60!black}{0} \\\textcolor{black!60!black}{1} & \textcolor{black!60!black}{0}& \textcolor{black!60!black}{0}\\ \textcolor{black!60!black}{0}& \textcolor{black!60!black}{g} &\textcolor{black!60!black}{0} \end{bmatrix}}_{A} \begin{bmatrix} x_1\\x_2\\x_3\end{bmatrix} + \underbrace{\begin{bmatrix} \textcolor{black!60!black}{\frac{1}{J}} \\ \textcolor{black!60!black}{0} \\\textcolor{black!60!black}{0}  \end{bmatrix}}_{B} u \]
@@ -137,7 +151,7 @@ Since the system is \alert{controllable}, we can find a gain vector \(\textcolor
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org17d03c2}]{Linear state feedback}
+\begin{frame}[label={sec:orgb268808}]{Linear state feedback}
 \small
 
 The poles of 
@@ -156,7 +170,7 @@ s^3 + \frac{1}{J}\textcolor{morange}{l_1}s^2 + \frac{1}{J}\textcolor{morange}{l_
 \end{align*}
 \end{frame}
 
-\begin{frame}[label={sec:orga0df4f2}]{Where to place the closed-loop poles}
+\begin{frame}[label={sec:org1da8941}]{Where to place the closed-loop poles}
 \begin{columns}
 \begin{column}{0.35\columnwidth}
 \begin{center}
@@ -189,7 +203,7 @@ Desired closed-loop characteristic polynomial
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org6f6ed56}]{Determining the state feedback gain}
+\begin{frame}[label={sec:orgf232036}]{Determining the state feedback gain}
 By linear state feedback we have characteristic polynomial
 \[\det \Big(sI - (A-B\textcolor{morange}{L})\Big) =  s^3 + \frac{1}{J}\textcolor{morange}{l_1}s^2 + \frac{1}{J}\textcolor{morange}{l_2}s + \frac{1}{J}g\textcolor{morange}{l_3}.\]
 
@@ -199,7 +213,7 @@ And we want to achieve the characteristic polynomial
 \alert{Activity} What do we do next?
 \end{frame}
 
-\begin{frame}[label={sec:org2393acf}]{Determining the state feedback gain}
+\begin{frame}[label={sec:org3f7560f}]{Determining the state feedback gain}
 Set the characteristic polynomial obtained from \(\det\) \Big(sI - (A-B\textcolor{morange}{L})\Big) equal to the desired characteristic polynomial
 
 \[ s^3 + \frac{1}{J}\textcolor{morange}{l_1}s^2 + \frac{1}{J}\textcolor{morange}{l_2}s + \frac{1}{J}g\textcolor{morange}{l_3} =  s^3 + \frac{1 + \sqrt{2}}{\tau_c}s^2 + \frac{1+\sqrt{2}}{\tau_c^2}s + \frac{1}{\tau_c^3} \]
@@ -221,7 +235,7 @@ s^0: \quad & \frac{1}{J}g\textcolor{morange}{l_3} = \frac{1}{\tau_c^3}
 \end{frame}
 
 
-\begin{frame}[label={sec:org8879e69}]{The gain \(l_0\)}
+\begin{frame}[label={sec:orge84151d}]{The gain \(l_0\)}
 \begin{center}
 \includegraphics[width=0.6\linewidth]{../../figures/block-apollo}
 \end{center}

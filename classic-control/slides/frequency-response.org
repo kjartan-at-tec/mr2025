@@ -103,12 +103,6 @@
    The Bode diagram shows the *magnitude* and *phase* of the transfer function evaluated on the positive imaginary axis. It thus contains all information about the steady-state response of the system to input signals of different frequency.
 
 
-** Specifications on the frequency properties of the closed-loop system
-
-#+BEGIN_CENTER 
- \includegraphics[width=0.899\linewidth]{../../figures/spec-bode-closed-loop-new}
-#+END_CENTER
-
 ** Exercise: Reading the Bode diagram
    #+BEGIN_CENTER 
     \includegraphics[width=\linewidth]{../../figures/alias-example-bode-GC}
@@ -120,9 +114,15 @@
    #+END_CENTER
 
 *** Notes                                                          :noexport:
-3: 4pi/pis = 4 rad/s, gain \approx 1, phshift \approx -150, not quite completely out of phase. OK
+3: 4pi/pi s = 4 rad/s, gain \approx 1, phshift \approx -150, not quite completely out of phase. OK
 
 Correct answer 2: Should have had an amplification, but plot shows attenuation.
+
+** Specifications on the frequency properties of the closed-loop system
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.899\linewidth]{../../figures/spec-bode-closed-loop-new}
+#+END_CENTER
 
 ** From loop gain to closed-loop gain
    #+begin_export latex
@@ -150,20 +150,32 @@ Correct answer 2: Should have had an amplification, but plot shows attenuation.
   \end{center}
   #+end_export
 
+
 \[ G_c(i\omega) = \frac{G(i\omega)F(i\omega)}{1 + G(i\omega)F(i\omega)} = \frac{G_o(i\omega)}{1 + G_o(i\omega)} \]
+#+BEAMER: \pause
+
 \[ |G_c(i\omega)| = \frac{|G_o(i\omega)|}{|1 + G_o(i\omega)|} = \frac{|G_o(i\omega)|}{|G_o(i\omega) - (-1)|} \]
 
 #+BEAMER: \pause
 
 *Keep the loop gain \(G_o(i\omega)\) away from -1!* 
 
+*** Notes                                                          :noexport:
+
+- Sketch two imaginary planes.
+  - Mark imaginary axis s=iw
+  - Map some points on imaginary axis through G_o(iw)
+- Mark what |G_o| is: length of arrow from origin to G_o 
+- Mark |G_o - 1|: length of arrow from 1 to G_o
 
 
 
 
-** If the phase shift is \(\pi\)
 
-   \( G_o(i\omega_1) = -1 \), \(|G_o(i\omega_1)| = 1\), \(\arg G_o(i\omega_1) = -\pi\)
+
+** If \(G_o(i\omega_1) = -1\)
+
+   \( G_o(i\omega_1) = -1 \), \(\quad |G_o(i\omega_1)| = 1\), \(\quad \arg G_o(i\omega_1) = -\pi\)
 
    #+begin_export latex
    \begin{center}
@@ -192,10 +204,38 @@ Correct answer 2: Should have had an amplification, but plot shows attenuation.
    If not, then the closed-loop system will have poles on the imaginary axis (in the s-domain). 
    \end{tcolorbox}
 
-** The simplified Nyquist criterion in the s-plane
+*** Notes                                                          :noexport:
+There is a switch that lets us immediately shift the source of the input to the system, from an external source to a negative feedback signal.
+
+Input is a sinusoid of a particular frequency w_1. Since the gain of the loop gain is -1 at this frequency, the sinusoid at the output will have the same amplitude and shifted in phase by pi. This means, of course, that the output is just the negative of the input signal.
+
+In the feedback, the signal is negated. So if we switch, the input to the system will be the same as before. The output will also be the same, and we can see that the system will be oscillating at that particular frequency, with no external driving input.
+
+
+** The Nyquist criterion                                           :noexport:
 #+BEGIN_CENTER 
  \includegraphics[width=0.65\linewidth]{../../figures/implane-nyquist-contour-map}
 #+END_CENTER
+
+#+beamer: \pause
+
+- Assume The loop gain \(G_o\) has \(P\) poles in the right half plane.
+  - Count the number \(N\) with sign that the Nyquist curve encircles the point -1.
+
+Recourses: 
+[[https://youtu.be/sof3meN96MA][Brian Douglas (video)]]
+[[https://lpsa.swarthmore.edu/Nyquist/NyquistStability.html][Swarthmore College (text)]]
+
+** The simplified Nyquist criterion in the s-plane
+
+#+BEAMER: \pause
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.65\linewidth]{../../figures/implane-nyquist-contour-map}
+#+END_CENTER
+
+#+BEAMER: \pause
+
 \begin{tcolorbox}
 If the open-loop system (the loop gain) is not unstable, i.e. $G_o(s)$ has no poles in the right-half plane, then the closed-loop system will be stable if the Nyquist curve \textbf{do not encircle the point \(s=-1\)}. The point $s=-1$ should stay on the left side of the Nyquist curve when we go along the curve from low to high frequencies.
 \end{tcolorbox}
@@ -236,6 +276,12 @@ If the open-loop system (the loop gain) is not unstable, i.e. $G_o(s)$ has no po
 2) If \(Go(i\omega_1) = -i\) what is \(|G_c(i\omega_1)|\)?
 
     
+** Stability margins excercise
+\begin{center}
+  \includegraphics[width=.6\linewidth]{../../figures/bode-example-margin2.pdf}
+\end{center}
+
+*Activity* Determine the cross-over frequency \(\omega_c\), the phase cross-over frequency \(\omega_p\), the phase margin and the amplitude margin. 
 ** How to achieve the frequency-domain specifications
 *** Problem statement
     :PROPERTIES:
@@ -261,9 +307,3 @@ Which of the Bode plots to the right shows the correct loop gain \(G_o(i\omega)\
 
 
 
-** Stability margins excercise
-\begin{center}
-  \includegraphics[width=.6\linewidth]{../../figures/bode-example-margin2.pdf}
-\end{center}
-
-*Activity* Determine the cross-over frequency \(\omega_c\), the phase cross-over frequency \(\omega_p\), the phase margin and the amplitude margin. 

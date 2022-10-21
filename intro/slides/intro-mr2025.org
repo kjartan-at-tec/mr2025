@@ -30,6 +30,41 @@
 
 * Course content
 
+** Feedback control
+
+#+begin_export latex
+\begin{center}
+\begin{tikzpicture}[node distance=20mm,
+                    block/.style={rectangle, draw, minimum width=15mm, inner sep=3mm},
+                    sumnode/.style={circle, draw, inner sep=3pt}]
+  \node[coordinate] (input) {};
+  \node[sumnode, right of=input] (sum) {};
+   \node[block, right of=sum,] (lti) {Controller};
+   \node[block, right of=lti, node distance=30mm] (lti2) {Plant};
+   \node[coordinate, right of=lti2, node distance=30mm] (output) {};
+   \draw[->] (input) -- node[near start, above] {$r(t)$}  (sum);
+   \draw[->] (sum) -- node[ above] {}  (lti);
+   \draw[->] (lti) -- node[ above] {$u(t)$}  (lti2);
+   \draw[->] (lti2) -- node[coordinate] (meas) {} node[near end, above] {$y(t)$} (output);
+   \draw[->] (meas) -- ++(0, -14mm) -| node[left, pos=0.96] {$-$} (sum);
+ \end{tikzpicture}
+\end{center}
+
+#+end_export
+
+*** Notes                                                          :noexport:
+
+- Examples:
+  | Input                     | Output                               |
+  |---------------------------+--------------------------------------|
+  | Torque in motor           | Angle of arm in robot manipulator    |
+  | Voltage in motor armature | Angular velocity of motor            |
+  | Thrust from rockets       | Position and orientation of satelite |
+  | Opening of a valve        | Level in a tank                      |
+  | Flow of steam             | Temperature in a tank reactor        |
+  | Position of fuel rods     | Heat generated in a nuclear reactor  |
+
+
 ** Feedback control systems are ubiquitous
 
 \begin{center}
@@ -47,18 +82,73 @@
 
 ** Feedback control systems
 
-The problem situation
+
+#+begin_export latex
+\begin{center}
+\begin{tikzpicture}[scale = 0.7, node distance=20mm,
+                    block/.style={rectangle, draw, minimum width=15mm, inner sep=3mm},
+                    sumnode/.style={circle, draw, inner sep=3pt}]
+  \node[coordinate] (input) {};
+  \node[sumnode, right of=input] (sum) {};
+   \node[block, right of=sum,] (lti) {Controller};
+   \node[block, right of=lti, node distance=30mm] (lti2) {Plant};
+   \node[coordinate, right of=lti2, node distance=30mm] (output) {};
+   \draw[->] (input) -- node[near start, above] {$r(t)$}  (sum);
+   \draw[->] (sum) -- node[ above] {}  (lti);
+   \draw[->] (lti) -- node[ above] {$u(t)$}  (lti2);
+   \draw[->] (lti2) -- node[coordinate] (meas) {} node[near end, above] {$y(t)$} (output);
+   \draw[->] (meas) -- ++(0, -14mm) -| node[left, pos=0.96] {$-$} (sum);
+ \end{tikzpicture}
+\end{center}
+
+#+end_export
+
+*Controller design:* Determine a feedback controller such that the controlled system performs according to given *performance specifications*. 
+
+*** Notes                                                          :noexport:
+
+What is *good performance*?
+
+
+** The problem situation
+*** Graphics
+:PROPERTIES:
+:BEAMER_col: 0.4
+:END:
 
 \begin{center}
-  \includegraphics[width=.34\linewidth]{../../figures/mars-rover-curiosity-vehicle-cosmos.jpg}
+  \includegraphics[width=.94\linewidth]{../../figures/mars-rover-curiosity-vehicle-cosmos.jpg}
 \end{center}
+
+*** Text
+:PROPERTIES:
+:BEAMER_col: 0.6
+:END:
+\begin{center}
+  \includegraphics[width=.94\linewidth]{../../figures/mars.nasa.jpeg}
+\end{center}
+
+
+- Mass 900 kg
+- Six wheels, each with an electric motor
+- Front- and rear-wheel steering 
+- Rocker-bogie suspension system
 
 *** Notes                                                          :noexport:
 
 - Curiosity rover
+- Operating on mars for more than 10 years.
+- Weighs close to 1t
+- Six wheels, each with a DC motor 20W
+- 0.9*6*20W = 108W acc 1t to 1 m/s:
+  - Ek = 1/2 m v^2 = 0.5 * 900 * 1 = 450 J
+  - P = dE/dt => \approx P_max = \Delta E / \Delta T => \Delta T = \Delta E / P_max = 450 J / (108) J/s \approx 4.2s
+- P in  = P out, P = T*\omega, T_out * w_out = T_in * w_in => T_out/T_in = w_in/w_out = g_r
+  g_r = T_out / T_in = 6 Nm / 30e-3 Nm = 1000 * 6/30 = 100 * 60/30 = 200:1
+- 
 - 
 
-** Feedback control system
+** The problem situation
 
 *** Graphics
 :PROPERTIES:
@@ -81,7 +171,16 @@ The problem situation
     \end{center}
 
 
-
+**** Notes                                                         :noexport:
+- One motor in the hub of each wheel
+- Electric drive
+  - Motor
+  - Sensors
+  - Controller
+  - Power electronics
+  - Power source
+    - On rover: Battery + Nuclear Thermo generator (Plutoneum source)
+  - 
 
 * Much content                                                     :noexport:
 ** MR2023 Modelación y automatización
@@ -95,91 +194,6 @@ The problem situation
 \begin{center}
   \includegraphics[width=.36\linewidth]{../../figures/DB-content-3.png}
 \end{center}
-
-* Control systems specifications
-
-** Feedback control system                                         :noexport:
-
-\begin{center}
-  \includegraphics[width=.3\linewidth]{../../figures/curiosity-wheel.jpg}
-  \includegraphics[width=.6\linewidth]{../../figures/electric-drive-block.png}
-\end{center}
-
-
-** Performance requirements - time domain
-
-\begin{center}
-  \includegraphics[width=.8\linewidth]{../../figures/step-response-specifications}
-\end{center}
-
-** Performance requirements - time domain
-
- *Activity* Does the system satisfy the requirements?
-
-*** Text
-:PROPERTIES:
-:BEAMER_col: 0.3
-:END:
-
- | Rise time | < 1.5s |
- | Overshoot | < 18% |
-
- 
-*** Graphics
-:PROPERTIES:
-:BEAMER_col: 0.7
-:END:
-
-    \begin{center}
-     \includegraphics[width=1.0\linewidth]{../../figures/second-order-response-example}
-    \end{center}
-** Performance requirements - frequency domain
-
-\begin{center}
-  \includegraphics[width=.8\linewidth]{../../figures/spec-bode-closed-loop-new}
-\end{center}
-
-
-** Performance requirements - frequency domain
-
-\begin{center}
-  \includegraphics[width=1.0\linewidth]{../../figures/bode-closed-loop-example-responses}
-\end{center}
-
-#+BEAMER: \pause
-
-*Activity* What is the gain and phase shift at $\omega = 2$ rad/s?
-
-** Performance requirements - frequency domain
-
-\begin{center}
-  \includegraphics[width=.8\linewidth]{../../figures/spec-bode-closed-loop-new}
-\end{center}
-
-
-** Performance requirements - frequency domain
-
- *Activity* Does the system satisfy the requirements?
-
- 
-*** Graphics
-:PROPERTIES:
-:BEAMER_col: 0.7
-:END:
-
-    \begin{center}
-     \includegraphics[width=1.0\linewidth]{../../figures/bode-closed-loop-example}
-    \end{center}
-*** Text
-:PROPERTIES:
-:BEAMER_col: 0.3
-:END:
-
- | Bandwidth      | >3 rad/s |
- | Resonance peak | <9dB    |
-
-
- 
 
 * Feedback, sensitivity and complementary sensitivity
 
@@ -215,6 +229,201 @@ A - IV
 B - II
 C - I
 D - III
+
+
+* Control systems specifications
+
+** Feedback control system                                         :noexport:
+
+\begin{center}
+  \includegraphics[width=.3\linewidth]{../../figures/curiosity-wheel.jpg}
+  \includegraphics[width=.6\linewidth]{../../figures/electric-drive-block.png}
+\end{center}
+
+
+** Performance requirements 
+
+   \begin{center}
+     \begin{tikzpicture}[scale = 0.8, node distance=20mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+     
+     \node[coordinate] (refinput) {};
+     \node[block, right of=refinput] (motor) {$G_c(s)$};
+     \node[coordinate, right of=motor, node distance=20mm] (output) {};
+
+     \draw[->] (refinput) -- node[above, pos=0.3] (voltsignal) {$r(t)$} (motor);
+     \draw[->] (motor) -- node[above, pos=0.5] (velsignal) {$y(t)$} (output);
+     \end{tikzpicture}
+   \end{center}
+
+
+** Performance requirements - time domain
+\begin{center}
+  \includegraphics[width=.8\linewidth]{../../figures/step-response-specifications}
+\end{center}
+
+*** Notes                                                            :noexport:
+
+PO = (ymax - yf)/yf * 100
+
+
+** Performance requirements - time domain
+
+ *Activity* Does the system satisfy the requirements?
+
+*** Text
+:PROPERTIES:
+:BEAMER_col: 0.3
+:END:
+
+ | Rise time | < 1.5s |
+ | Overshoot | < 18% |
+
+ 
+*** Graphics
+:PROPERTIES:
+:BEAMER_col: 0.7
+:END:
+
+    \begin{center}
+     \includegraphics[width=1.0\linewidth]{../../figures/second-order-response-example}
+    \end{center}
+
+*** Notes                                                            :noexport:
+
+Each vert div 0.05,
+Each hor div 0.5,
+Overshoot, PO = (1.17-1)/1 * 100 = 17%
+
+t_10 = 0.5
+t_90 = 2.2
+
+t_r = t_90 - t_10 = 2.2 - 0.5 = 1.7 s
+
+** Performance requirements - frequency domain
+
+** Response of LTI systems to sinusoids
+   \begin{center}
+     \begin{tikzpicture}[scale = 0.8, node distance=20mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+     
+     \node[coordinate] (refinput) {};
+     \node[block, right of=refinput] (motor) {$G_c(s)$};
+     \node[coordinate, right of=motor, node distance=20mm] (output) {};
+
+     \draw[->] (refinput) -- node[above, pos=0.3] (voltsignal) {$r(t)$} (motor);
+     \draw[->] (motor) -- node[above, pos=0.5] (velsignal) {$y(t)$} (output);
+     \end{tikzpicture}
+   \end{center}
+
+   Let $r(t) = \sin\omega_1 t$. Then, after transients have died out,
+   \[ y(t) = |G_c(i\omega_1)| \sin \big( \omega_1 t + \arg G_c(i\omega_1)\big). \]
+
+
+** The Bode diagram shows the frequency properties of a dynamical system
+
+\small
+
+   \[ y(t) = \underbrace{|G_c(i\omega_1)|}_{\text{amplification}} \sin \big( \omega_1 t + \underbrace{\arg G_c(i\omega_1)}_{\text{phase shift}} \big) \]
+
+
+\begin{center}
+  \includegraphics[width=.9\linewidth]{../../figures/bode-closed-loop-example-responses}
+\end{center}
+
+
+** Performance requirements - frequency domain
+
+\begin{center}
+  \includegraphics[width=.8\linewidth]{../../figures/spec-bode-closed-loop-new}
+\end{center}
+
+*** Notes                                                          :noexport:
+
+
+** Performance requirements - frequency domain
+
+\begin{center}
+  \includegraphics[width=1.0\linewidth]{../../figures/bode-closed-loop-example-responses}
+\end{center}
+
+#+BEAMER: \pause
+
+*Activity* What is the gain and phase shift at $\omega = 2$ rad/s?
+
+*** Note                                                           :noexport:
+
+Gain:  0.3
+Phase shift: -200 deg
+
+** Performance requirements - frequency domain
+
+\begin{center}
+  \includegraphics[width=.8\linewidth]{../../figures/spec-bode-closed-loop-new}
+\end{center}
+
+
+** Performance requirements - frequency domain
+
+ *Activity* Does the system satisfy the requirements?
+
+ 
+*** Graphics
+:PROPERTIES:
+:BEAMER_col: 0.7
+:END:
+
+    \begin{center}
+     \includegraphics[width=1.0\linewidth]{../../figures/bode-closed-loop-example}
+    \end{center}
+*** Text
+:PROPERTIES:
+:BEAMER_col: 0.3
+:END:
+
+ | Bandwidth      | >3 rad/s |
+ | Resonance peak | <9dB    |
+
+
+
+* Problem situation, again                                         :noexport:
+** The problem situation, revisited
+*** Graphics
+:PROPERTIES:
+:BEAMER_col: 0.4
+:END:
+
+\begin{center}
+  \includegraphics[width=.94\linewidth]{../../figures/mars-rover-curiosity-vehicle-cosmos.jpg}
+\end{center}
+
+*** Text
+:PROPERTIES:
+:BEAMER_col: 0.6
+:END:
+
+#+beamer: \pause
+
+- Mass 900 kg
+- Six wheels, each with DC motor
+- Assuming motors of 20W each, and mechanical efficiency of 90%:
+  - How long to accelerate the rover to 1 m/s?
+#+beamer: \pause
+- Assuming max motor torque of 30 mNm and no loss in transmission.
+  - What gear ratio is needed to obtain 6Nm torque on wheel axis?
+
+*** Notes                                                          :noexport:
+
+- Curiosity rover
+- Operating on mars for more than 10 years.
+- Weighs close to 1t
+- Six wheels, each with a DC motor 20W
+- 0.9*6*20W = 108W acc 1t to 1 m/s:
+  - Ek = 1/2 m v^2 = 0.5 * 900 * 1 = 450 J
+  - P = dE/dt => \approx P_max = \Delta E / \Delta T => \Delta T = \Delta E / P_max = 450 J / (108) J/s \approx 4.2s
+- P in  = P out, P = T*\omega, T_out * w_out = T_in * w_in => T_out/T_in = w_in/w_out = g_r
+  g_r = T_out / T_in = 6 Nm / 30e-3 Nm = 1000 * 6/30 = 100 * 60/30 = 200:1
+- 
+- 
+
 
 
 *  Two-degree of freedom controller                                :noexport:

@@ -1,4 +1,4 @@
-% Created 2021-10-05 Tue 12:38
+% Created 2022-10-07 Fri 12:40
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169, usenames, dvipsnames]{beamer}
 \usepackage[utf8]{inputenc}
@@ -37,36 +37,37 @@
 \maketitle
 
 \section{Integral control example}
-\label{sec:orga09aeba}
+\label{sec:orgc4a88e7}
 
-\begin{frame}[label={sec:org343ea4e}]{Lead-lag compensator for position control of the DC motor}
+\begin{frame}[label={sec:org5444051}]{Lead-lag compensator for position control of the DC motor}
 \begin{center}
  \includegraphics[width=.6\linewidth]{../../figures/block-DC-leadlag-compensator-numerical}
 \end{center}
 
+\pause
+
 \begin{columns}
+\begin{column}{0.5\columnwidth}
+\begin{center}
+  \includegraphics[width=.8\linewidth]{../../figures/response-leadlag-normalized-DC-crop}
+\end{center}
+
+
+\pause
+\end{column}
+
 \begin{column}{0.5\columnwidth}
 \begin{center}
   \includegraphics[width=.8\linewidth]{../../figures/bode-loop-gain-leadlag-normalized-DC-crop}
 \end{center}
 \end{column}
-
-
-\begin{column}{0.5\columnwidth}
-\begin{center}
-  \includegraphics[width=.8\linewidth]{../../figures/response-leadlag-normalized-DC-crop}
-\end{center}
-\end{column}
 \end{columns}
 \end{frame}
 
-
-
-
 \section{The need for integral control}
-\label{sec:org9eefaca}
+\label{sec:orgd218933}
 
-\begin{frame}[label={sec:org452b0de}]{Feedback control}
+\begin{frame}[label={sec:org19868f0}]{Feedback control}
    \begin{center}
    \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
   { 
@@ -96,7 +97,7 @@
 \end{frame}
 
 
-\begin{frame}[label={sec:org098f579}]{Feedback control - eliminating a constant disturbance}
+\begin{frame}[label={sec:org8ec45b4}]{Feedback control - eliminating a constant disturbance}
 \small
 
 \[\frac{E(s)}{V(s)} = \frac{-G(s)}{1 + G(s)F(s)} \]
@@ -121,7 +122,7 @@ If steady-state exists
 \end{frame}
 
 
-\begin{frame}[label={sec:org367c393}]{The PID controller}
+\begin{frame}[label={sec:orgc0e62d4}]{The PID controller}
 \begin{center}
   \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt},scale=0.8, every node/.style={scale=0.8}]
 
@@ -147,7 +148,7 @@ If steady-state exists
 \end{frame}
 
 
-\begin{frame}[label={sec:org7217e42}]{The PID - Parallel form}
+\begin{frame}[label={sec:org57a3c26}]{The PID - Parallel form}
 \definecolor{ppc}{rgb}{0.1,0.1,0.6}
 \definecolor{iic}{rgb}{0.6,0.1,0.1}
 \definecolor{ddc}{rgb}{0.1,0.6,0.1}
@@ -182,7 +183,7 @@ u(t) &= k_c\Big( \textcolor{ppc}{e(t)} + \textcolor{iic}{\frac{1}{\tau_i} \int_0
 \end{align*}
 \end{frame}
 
-\begin{frame}[label={sec:org39d413a}]{The PID - Parallel form, modified D-part}
+\begin{frame}[label={sec:org08d9578}]{The PID - Parallel form, modified D-part}
 \definecolor{ppc}{rgb}{0.1,0.1,0.6}
 \definecolor{iic}{rgb}{0.6,0.1,0.1}
 \definecolor{ddc}{rgb}{0.1,0.6,0.1}
@@ -216,7 +217,7 @@ u(t) &= k_c\Big( \textcolor{ppc}{e(t)} + \textcolor{iic}{\frac{1}{\tau_i} \int_0
 \[    u(t) = k_c\Big( \textcolor{ppc}{e(t)} + \textcolor{iic}{\overbrace{\frac{1}{\tau_i} \int_0^{t} e(\xi) d\xi}^{u_I(t)}} + \textcolor{ddc}{ \underbrace{\tau_d \frac{d}{dt} \big(-y(t)\big)}_{u_D(t)}} \Big) \]
 \end{frame}
 
-\begin{frame}[label={sec:org68f445c}]{The PID - Parallel form}
+\begin{frame}[label={sec:orgbade89f}]{The PID - Parallel form}
 \begin{center}
   \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}, scale=0.6, every node/.style={scale=0.6}]
 
@@ -265,9 +266,9 @@ u(t) &= k_c\Big( \textcolor{ppc}{e(t)} + \textcolor{iic}{\frac{1}{\tau_i} \int_0
 \alert{Activity} Sketch the error signal \(e(t)\), the derivative signal \(u_D(t)\) and the integral signal \(u_I(t)\) (use \(\tau_i=\tau_d=1\))
 \end{frame}
 
-\begin{frame}[label={sec:org128cca1}]{The PID - Parallel form, solution}
+\begin{frame}[label={sec:org23ed89a}]{The PID - Parallel form, solution}
 \end{frame}
-\begin{frame}[label={sec:orge7c0902}]{The PID - Parallel form, solution}
+\begin{frame}[label={sec:orgab4ea06}]{The PID - Parallel form, solution}
 \(u(t) = k_c\Big( \textcolor{ppc}{e(t)} + \textcolor{iic}{\overbrace{\frac{1}{\tau_i} \int_0^{t} e(\xi) d\xi}^{u_I(t)}} + \textcolor{ddc}{ \underbrace{\tau_d \frac{d}{dt} \big(-y(t)\big)}_{u_D(t)}} \Big)\)
    \begin{center}
    \def\TT{1}
@@ -291,7 +292,7 @@ u(t) &= k_c\Big( \textcolor{ppc}{e(t)} + \textcolor{iic}{\frac{1}{\tau_i} \int_0
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org828ec17}]{The PID - practical form}
+\begin{frame}[label={sec:orgd95388b}]{The PID - practical form}
 \definecolor{ppc}{rgb}{0.1,0.1,0.6}
 \definecolor{iic}{rgb}{0.6,0.1,0.1}
 \definecolor{ddc}{rgb}{0.1,0.5,0.1}
@@ -327,10 +328,10 @@ The parameter \(N\) is chosen to limit the influence of noisy measurements. Typi
 \end{frame}
 
 \section{PID tuning - (Smith and Corripio) Ziegler Nichols}
-\label{sec:orgecf410e}
-\begin{frame}[label={sec:orge76c75f}]{PID tuning}
+\label{sec:org439bf60}
+\begin{frame}[label={sec:org81a432e}]{PID tuning}
 \end{frame}
-\begin{frame}[label={sec:org8270939}]{Method by Smith \& Corripio using table by Ziegler-Nichols}
+\begin{frame}[label={sec:org037d26a}]{Method by Smith \& Corripio using table by Ziegler-Nichols}
 \small
 
 Given process model (fitted to response of the system) \[ G(s) = K \frac{\mathrm{e}^{-s\theta}}{\tau s + 1} \] and PID controller
@@ -353,11 +354,11 @@ Gives good control for \[0.1 < \frac{\theta}{\tau} < 0.6.\]
 \end{frame}
 
 \section{Fitting first-order model with delay}
-\label{sec:org3b7287d}
+\label{sec:org21cf460}
 
-\begin{frame}[label={sec:orgd018def}]{Fitting first-order model with delay}
-Assuming a plant model of first-order with time constant \(T\) and delay \(\theta\)
-\[  \quad \textcolor{green!50!black}{Y(s)} = \frac{K\mathrm{e}^{-s\theta}}{s\tau + 1}\textcolor{blue!80!black}{U(s)} \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad \textcolor{green!50!black}{y(t)} = u_f K\big( 1 - \mathrm{e}^{-\frac{t-\theta}{T}}\big)u_H(t-\theta)\]
+\begin{frame}[label={sec:orge6e61ca}]{Fitting first-order model with delay}
+Assuming a plant model of first-order with time constant \(\tau\) and delay \(\theta\)
+\[  \quad \textcolor{green!50!black}{Y(s)} = \frac{K\mathrm{e}^{-s\theta}}{s\tau + 1}\textcolor{blue!80!black}{U(s)} \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad \textcolor{green!50!black}{y(t)} = u_f K\big( 1 - \mathrm{e}^{-\frac{t-\theta}{\tau}}\big)u_H(t-\theta)\]
 \def\Tcnst{3}
 \def\tdelay{0.6}
 \def\ggain{2}
@@ -375,7 +376,7 @@ Assuming a plant model of first-order with time constant \(T\) and delay \(\thet
     height=4.5cm,
     grid = both,
     xtick = {0, \tdelay, \tone, \two},
-    xticklabels = {0, $\theta$, $\theta+\frac{T}{3}$, $\theta + T$},
+    xticklabels = {0, $\theta$, $\theta+\frac{\tau}{3}$, $\theta + \tau$},
     ytick = {0, \yone, \ytwo, \uampl, \yfinal},
     yticklabels = {0, $ $, $ $, $u_f$, $y_f$},
     xmin = -0.2,
@@ -390,11 +391,11 @@ Assuming a plant model of first-order with time constant \(T\) and delay \(\thet
   \end{tikzpicture}
 \end{center}
 
-\alert{Individual activity} Evaluate the response \(y(t)\) at the two time instants \(t=\theta + \frac{T}{3}\) and \(t=\theta + T\)!
+\alert{Individual activity} Evaluate the response \(y(t)\) at the two time instants \(t=\theta + \frac{\tau}{3}\) and \(t=\theta + \tau\)!
 \end{frame}
 
 
-\begin{frame}[label={sec:orga4a7913}]{Fitting first-order model with delay}
+\begin{frame}[label={sec:org6e2ea6d}]{Fitting first-order model with delay}
 Assuming a plant model of first-order with time constant \(\tau\) and delay \(\theta\)
 \[  \quad \textcolor{green!50!black}{Y(s)} = \frac{K\mathrm{e}^{-s\theta}}{s\tau + 1}\textcolor{blue!80!black}{U(s)} \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad \textcolor{green!50!black}{y(t)} = u_f K\big( 1 - \mathrm{e}^{-\frac{t-\theta}{\tau}}\big)u_H(t-\theta)\]
 \def\Tcnst{3}
@@ -432,7 +433,7 @@ Assuming a plant model of first-order with time constant \(\tau\) and delay \(\t
 \[ y_f = \lim_{t\to\infty} y(t) = u_f K \quad \Rightarrow \quad K = \frac{y_f}{u_f}. \]
 \end{frame}
 
-\begin{frame}[label={sec:org7950bdf}]{First-order model with delay - example}
+\begin{frame}[label={sec:orgc9c465a}]{First-order model with delay - example}
 \[  \quad Y(s) = \frac{K\mathrm{e}^{-s\theta}}{s\tau + 1}U(s) \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad y(t) = u_f K\big( 1 - \mathrm{e}^{-\frac{t-\theta}{\tau}}\big)u_s(t-\theta)\]
 \def\Tcnst{2.1}
 \def\tdelay{1}
@@ -470,7 +471,7 @@ Assuming a plant model of first-order with time constant \(\tau\) and delay \(\t
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org9c7f529}]{First-order model with delay - example}
+\begin{frame}[label={sec:org4ba72ea}]{First-order model with delay - example}
 \[  \quad Y(s) = \frac{K\mathrm{e}^{-s\theta}}{s\tau + 1}U(s) \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad y(t) = u_f K\big( 1 - \mathrm{e}^{-\frac{t-\theta}{\tau}}\big)u_s(t-\theta)\]
 \def\Tcnst{2.1}
 \def\tdelay{1}
@@ -510,7 +511,7 @@ Assuming a plant model of first-order with time constant \(\tau\) and delay \(\t
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgd0a24e3}]{First-order model with delay - example}
+\begin{frame}[label={sec:org810362f}]{First-order model with delay - example}
 \[  \quad Y(s) = \frac{K\mathrm{e}^{-s\theta}}{s\tau + 1}U(s) \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad y(t) = u_f K\big( 1 - \mathrm{e}^{-\frac{t-\theta}{\tau}}\big)u_s(t-\theta)\]
 \def\Tcnst{2.1}
 \def\tdelay{1}
@@ -552,7 +553,7 @@ Assuming a plant model of first-order with time constant \(\tau\) and delay \(\t
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org2990a88}]{First-order model with delay - example}
+\begin{frame}[label={sec:org3d9309e}]{First-order model with delay - example}
 \[  \quad Y(s) = \frac{K\mathrm{e}^{-s\theta}}{s\tau + 1}U(s) \quad \overset{U(s) = \frac{u_f}{s}}{\Longrightarrow} \quad y(t) = u_f K\big( 1 - \mathrm{e}^{-\frac{t-\theta}{\tau}}\big)u_s(t-\theta)\]
 \def\Tcnst{2.1}
 \def\tdelay{1}
@@ -598,11 +599,11 @@ Assuming a plant model of first-order with time constant \(\tau\) and delay \(\t
 
 
 \section{Analytical PID design}
-\label{sec:org769c41a}
+\label{sec:org2dd4b29}
 
-\begin{frame}[label={sec:org0d4c840}]{Analytical PID design}
+\begin{frame}[label={sec:org744ed83}]{Analytical PID design}
 \end{frame}
-\begin{frame}[label={sec:org0b5a81b}]{Analytical PID design}
+\begin{frame}[label={sec:org4b075f8}]{Analytical PID design}
    \begin{center}
    \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
   { 
@@ -625,9 +626,9 @@ Assuming a plant model of first-order with time constant \(\tau\) and delay \(\t
 \alert{Activity}  Solve for \(F(s)\) in the closed-loop transfer function \[G_c(s) = \frac{G(s)F(s)}{1 + G(s)F(s)}\] 
 \end{frame}
 
-\begin{frame}[label={sec:org49c0dfe}]{Analytical PID design - Solution}
+\begin{frame}[label={sec:org3493455}]{Analytical PID design - Solution}
 \end{frame}
-\begin{frame}[label={sec:org9f6204b}]{Analytical PID design - Solution}
+\begin{frame}[label={sec:orgff51f33}]{Analytical PID design - Solution}
 Solving for \(F(s)\) in the closed-loop transfer function \(G_c(s) = \frac{G(s)F(s)}{1 + G(s)F(s)}\) 
 
 \[ \big(1 + G(s)F(s)\big) G_c(s) = G(s)F(s)\]
@@ -635,7 +636,7 @@ Solving for \(F(s)\) in the closed-loop transfer function \(G_c(s) = \frac{G(s)F
 \[F(s) = \frac{\frac{G_c(s)}{G(s)}}{1 - G_c(s)}\]
 \end{frame}
 
-\begin{frame}[label={sec:orgb678f1c}]{Analytic PID tuning - first-order with delay}
+\begin{frame}[label={sec:org2c5c555}]{Analytic PID tuning - first-order with delay}
    \begin{center}
    \begin{tikzpicture}[node distance=22mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
   { 
@@ -662,7 +663,7 @@ Given model \(G(s) = K \frac{\mathrm{e}^{-s\theta}}{\tau s + 1}\) of the process
 Which is a PI-controller with \(k_c = \frac{\tau}{K(\tau_c+\theta)}\) and \(\tau_i = \tau\).
 \end{frame}
 
-\begin{frame}[label={sec:org0739cf5}]{Example}
+\begin{frame}[label={sec:org46d8795}]{Example}
 \small
 
    \begin{center}

@@ -1,4 +1,4 @@
-% Created 2022-09-14 Wed 15:27
+% Created 2022-09-23 Fri 10:17
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169, usenames, dvipsnames]{beamer}
 \usepackage[utf8]{inputenc}
@@ -37,24 +37,82 @@
 \maketitle
 
 \section{Course content}
-\label{sec:org5000c51}
+\label{sec:orgbce74dd}
 
-\begin{frame}[label={sec:orgf7b0052}]{Feedback control systems are ubiquitous}
+\begin{frame}[label={sec:orgf33528d}]{Feedback control}
+\begin{center}
+\begin{tikzpicture}[node distance=20mm,
+                    block/.style={rectangle, draw, minimum width=15mm, inner sep=3mm},
+                    sumnode/.style={circle, draw, inner sep=3pt}]
+  \node[coordinate] (input) {};
+  \node[sumnode, right of=input] (sum) {};
+   \node[block, right of=sum,] (lti) {Controller};
+   \node[block, right of=lti, node distance=30mm] (lti2) {Plant};
+   \node[coordinate, right of=lti2, node distance=30mm] (output) {};
+   \draw[->] (input) -- node[near start, above] {$r(t)$}  (sum);
+   \draw[->] (sum) -- node[ above] {}  (lti);
+   \draw[->] (lti) -- node[ above] {$u(t)$}  (lti2);
+   \draw[->] (lti2) -- node[coordinate] (meas) {} node[near end, above] {$y(t)$} (output);
+   \draw[->] (meas) -- ++(0, -14mm) -| node[left, pos=0.96] {$-$} (sum);
+ \end{tikzpicture}
+\end{center}
+\end{frame}
+
+
+\begin{frame}[label={sec:orgcc52a65}]{Feedback control systems are ubiquitous}
 \begin{center}
   \includegraphics[width=.6\linewidth]{../../figures/PnID-ex.png}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org181757f}]{Feedback control systems}
-The problem situation
 
+\begin{frame}[label={sec:org1fd3b65}]{Feedback control systems}
 \begin{center}
-  \includegraphics[width=.34\linewidth]{../../figures/mars-rover-curiosity-vehicle-cosmos.jpg}
+\begin{tikzpicture}[scale = 0.7, node distance=20mm,
+                    block/.style={rectangle, draw, minimum width=15mm, inner sep=3mm},
+                    sumnode/.style={circle, draw, inner sep=3pt}]
+  \node[coordinate] (input) {};
+  \node[sumnode, right of=input] (sum) {};
+   \node[block, right of=sum,] (lti) {Controller};
+   \node[block, right of=lti, node distance=30mm] (lti2) {Plant};
+   \node[coordinate, right of=lti2, node distance=30mm] (output) {};
+   \draw[->] (input) -- node[near start, above] {$r(t)$}  (sum);
+   \draw[->] (sum) -- node[ above] {}  (lti);
+   \draw[->] (lti) -- node[ above] {$u(t)$}  (lti2);
+   \draw[->] (lti2) -- node[coordinate] (meas) {} node[near end, above] {$y(t)$} (output);
+   \draw[->] (meas) -- ++(0, -14mm) -| node[left, pos=0.96] {$-$} (sum);
+ \end{tikzpicture}
 \end{center}
+
+\alert{Controller design:} Determine a feedback controller such that the controlled system performs according to given \alert{performance specifications}. 
 \end{frame}
 
 
-\begin{frame}[label={sec:org7edc729}]{Feedback control system}
+\begin{frame}[label={sec:org8e0200c}]{The problem situation}
+\begin{columns}
+\begin{column}{0.4\columnwidth}
+\begin{center}
+  \includegraphics[width=.94\linewidth]{../../figures/mars-rover-curiosity-vehicle-cosmos.jpg}
+\end{center}
+\end{column}
+
+\begin{column}{0.6\columnwidth}
+\begin{center}
+  \includegraphics[width=.94\linewidth]{../../figures/mars.nasa.jpeg}
+\end{center}
+
+
+\begin{itemize}
+\item Mass 900 kg
+\item Six wheels, each with an electric motor
+\item Front- and rear-wheel steering
+\item Rocker-bogie suspension system
+\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[label={sec:orgd2aabaf}]{The problem situation}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 \begin{center}
@@ -72,19 +130,62 @@ The problem situation
 \end{columns}
 \end{frame}
 
+\section{Feedback, sensitivity and complementary sensitivity}
+\label{sec:orgeaddbdb}
 
+\begin{frame}[label={sec:orgc308a29}]{Block diagram algebra}
+\begin{center}
+  \includegraphics[width=.6\linewidth]{../../figures/block-simple-feedback}
+\end{center}
+
+Transfer function from \(r(t)\) to \(y(t)\):
+\[ \frac{Y(s)}{R(s)} = \frac{G(s)}{ 1+ G(s)}\]
+\end{frame}
+
+
+\begin{frame}[label={sec:org7f70da5}]{Block diagram algebra}
+\alert{Activity} Pair the block-diagram with the correct closed-loop transfer function!
+
+
+\begin{longtable}{cccc}
+\textcolor{red}{A} & \textcolor{red}{B} & \textcolor{red}{C} & \textcolor{red}{D}\\
+\includegraphics[width=3cm]{../../figures/block-simple-control-feedback} & \includegraphics[width=3cm]{../../figures/block-simple-control-feedback2} & \includegraphics[width=3cm]{../../figures/block-simple-control-feedback3} & \includegraphics[width=3cm]{../../figures/block-simple-control-feedback4}\\
+\end{longtable}
+
+
+\begin{longtable}{cccc}
+\textcolor{blue!80!black}{I} & \textcolor{blue!80!black}{II} & \textcolor{blue!80!black}{III} & \textcolor{blue!80!black}{IV}\\
+\(\frac{Y(s)}{R(s)}=\frac{G(s)F(s)}{1 + G(s)}\) & \(\quad \frac{Y(s)}{R(s)}=\frac{G(s)}{1 + G(s)F(s)}\quad\) & \(\frac{Y(s)}{R(s)}=\frac{1}{1 + G(s)F(s)}\) & \(\frac{Y(s)}{R(s)}=\frac{G(s)F(s)}{1 + G(s)F(s)}\)\\
+\end{longtable}
+\end{frame}
 
 
 \section{Control systems specifications}
-\label{sec:orgc0fc7c2}
+\label{sec:org249376c}
 
-\begin{frame}[label={sec:orge6739cc}]{Performance requirements - time domain}
+\begin{frame}[label={sec:org8b5be4d}]{Performance requirements}
+\begin{center}
+  \begin{tikzpicture}[scale = 0.8, node distance=20mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+
+  \node[coordinate] (refinput) {};
+  \node[block, right of=refinput] (motor) {$G_c(s)$};
+  \node[coordinate, right of=motor, node distance=20mm] (output) {};
+
+  \draw[->] (refinput) -- node[above, pos=0.3] (voltsignal) {$r(t)$} (motor);
+  \draw[->] (motor) -- node[above, pos=0.5] (velsignal) {$y(t)$} (output);
+  \end{tikzpicture}
+\end{center}
+\end{frame}
+
+
+\begin{frame}[label={sec:org9ee73d3}]{Performance requirements - time domain}
 \begin{center}
   \includegraphics[width=.8\linewidth]{../../figures/step-response-specifications}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org74f382d}]{Performance requirements - time domain}
+
+\begin{frame}[label={sec:org2a71769}]{Performance requirements - time domain}
 \alert{Activity} Does the system satisfy the requirements?
 
 \begin{columns}
@@ -105,14 +206,48 @@ Overshoot & < 18\%\\
 \end{column}
 \end{columns}
 \end{frame}
-\begin{frame}[label={sec:org373384e}]{Performance requirements - frequency domain}
+
+\begin{frame}[label={sec:org86e7ded}]{Performance requirements - frequency domain}
+\end{frame}
+
+\begin{frame}[label={sec:org7e24ac1}]{Response of LTI systems to sinusoids}
+\begin{center}
+  \begin{tikzpicture}[scale = 0.8, node distance=20mm, block/.style={rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
+
+  \node[coordinate] (refinput) {};
+  \node[block, right of=refinput] (motor) {$G_c(s)$};
+  \node[coordinate, right of=motor, node distance=20mm] (output) {};
+
+  \draw[->] (refinput) -- node[above, pos=0.3] (voltsignal) {$r(t)$} (motor);
+  \draw[->] (motor) -- node[above, pos=0.5] (velsignal) {$y(t)$} (output);
+  \end{tikzpicture}
+\end{center}
+
+Let \(r(t) = \sin\omega_1 t\). Then, after transients have died out,
+\[ y(t) = |G_c(i\omega_1)| \sin \big( \omega_1 t + \arg G_c(i\omega_1)\big). \]
+\end{frame}
+
+
+\begin{frame}[label={sec:orgc563a69}]{The Bode diagram shows the frequency properties of a dynamical system}
+\small
+
+\[ y(t) = \underbrace{|G_c(i\omega_1)|}_{\text{amplification}} \sin \big( \omega_1 t + \underbrace{\arg G_c(i\omega_1)}_{\text{phase shift}} \big) \]
+
+
+\begin{center}
+  \includegraphics[width=.9\linewidth]{../../figures/bode-closed-loop-example-responses}
+\end{center}
+\end{frame}
+
+
+\begin{frame}[label={sec:orgdfb8b90}]{Performance requirements - frequency domain}
 \begin{center}
   \includegraphics[width=.8\linewidth]{../../figures/spec-bode-closed-loop-new}
 \end{center}
 \end{frame}
 
 
-\begin{frame}[label={sec:orgd33a327}]{Performance requirements - frequency domain}
+\begin{frame}[label={sec:org3e6895b}]{Performance requirements - frequency domain}
 \begin{center}
   \includegraphics[width=1.0\linewidth]{../../figures/bode-closed-loop-example-responses}
 \end{center}
@@ -122,14 +257,14 @@ Overshoot & < 18\%\\
 \alert{Activity} What is the gain and phase shift at \(\omega = 2\) rad/s?
 \end{frame}
 
-\begin{frame}[label={sec:orgc1bad71}]{Performance requirements - frequency domain}
+\begin{frame}[label={sec:org4c944dd}]{Performance requirements - frequency domain}
 \begin{center}
   \includegraphics[width=.8\linewidth]{../../figures/spec-bode-closed-loop-new}
 \end{center}
 \end{frame}
 
 
-\begin{frame}[label={sec:org155d311}]{Performance requirements - frequency domain}
+\begin{frame}[label={sec:orgc37d97c}]{Performance requirements - frequency domain}
 \alert{Activity} Does the system satisfy the requirements?
 
 
@@ -152,33 +287,35 @@ Resonance peak & <9dB\\
 
 
 
-
-\section{Feedback, sensitivity and complementary sensitivity}
-\label{sec:orge4cbcdd}
-
-\begin{frame}[label={sec:org515afab}]{Block diagram algebra}
+\section{Problem situation, again}
+\label{sec:org6d14264}
+\begin{frame}[label={sec:orgf073ce5}]{The problem situation, revisited}
+\begin{columns}
+\begin{column}{0.4\columnwidth}
 \begin{center}
-  \includegraphics[width=.6\linewidth]{../../figures/block-simple-feedback}
+  \includegraphics[width=.94\linewidth]{../../figures/mars-rover-curiosity-vehicle-cosmos.jpg}
 \end{center}
+\end{column}
 
-Transfer function from \(r(t)\) to \(y(t)\):
-\[ \frac{Y(s)}{R(s)} = \frac{G(s)}{ 1+ G(s)}\]
-\end{frame}
+\begin{column}{0.6\columnwidth}
+\pause
 
-
-\begin{frame}[label={sec:org301f0c3}]{Block diagram algebra}
-\alert{Activity} Pair the block-diagram with the correct closed-loop transfer function!
-
-
-\begin{longtable}{cccc}
-\textcolor{red}{A} & \textcolor{red}{B} & \textcolor{red}{C} & \textcolor{red}{D}\\
-\includegraphics[width=3cm]{../../figures/block-simple-control-feedback} & \includegraphics[width=3cm]{../../figures/block-simple-control-feedback2} & \includegraphics[width=3cm]{../../figures/block-simple-control-feedback3} & \includegraphics[width=3cm]{../../figures/block-simple-control-feedback4}\\
-\end{longtable}
-
-
-\begin{longtable}{cccc}
-\textcolor{blue!80!black}{I} & \textcolor{blue!80!black}{II} & \textcolor{blue!80!black}{III} & \textcolor{blue!80!black}{IV}\\
-\(\frac{Y(s)}{R(s)}=\frac{G(s)F(s)}{1 + G(s)}\) & \(\quad \frac{Y(s)}{R(s)}=\frac{G(s)}{1 + G(s)F(s)}\quad\) & \(\frac{Y(s)}{R(s)}=\frac{1}{1 + G(s)F(s)}\) & \(\frac{Y(s)}{R(s)}=\frac{G(s)F(s)}{1 + G(s)F(s)}\)\\
-\end{longtable}
+\begin{itemize}
+\item Mass 900 kg
+\item Six wheels, each with DC motor
+\item Assuming motors of 20W each, and mechanical efficiency of 90\%:
+\begin{itemize}
+\item How long to accelerate the rover to 1 m/s?
+\end{itemize}
+\end{itemize}
+\pause
+\begin{itemize}
+\item Assuming max motor torque of 30 mNm and no loss in transmission.
+\begin{itemize}
+\item What gear ratio is needed to obtain 6Nm torque on wheel axis?
+\end{itemize}
+\end{itemize}
+\end{column}
+\end{columns}
 \end{frame}
 \end{document}

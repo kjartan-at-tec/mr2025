@@ -119,12 +119,12 @@
   1. *Ackerman's method* 
      #+begin_src octave
 	L = acker(A, B, pd)
-	K = acker(A, C', po)'
+	K = acker(A', C', po)'
      #+end_src
   1. *More numerically stable method* 
      #+begin_src octave
 	L = place(A, B, pd)
-	K = place(A, C', po)'
+	K = place(A', C', po)'
      #+end_src
 
 * Example - DC motor
@@ -150,7 +150,7 @@
     \[ x = \begin{bmatrix} x_1\\x_2 \end{bmatrix}= \begin{bmatrix} \omega\\ \theta \end{bmatrix} \]
     With dynamics
     \begin{align*}
-    \tau \dot{\omega} &= -\omega + Ku\\
+    \tau \dot{\omega} &= -\omega + ku\\
     \dot{\theta} &= \omega
     \end{align*}
 *** Text
@@ -234,6 +234,14 @@ y&=\bbm b_1& b_2& \cdots& b_n\ebm x
 
 *Activity* Determine the state-space model of the DC motor on controllable canonical form
 
+*** Notes                                                          :noexport:
+
+a(s) = s^2 + 1/tau s + 0
+b(s) = 0*s + k/tau
+
+A = [-1/tau 0; 1 0]
+B = [1;0]
+C = [0 k/tau]
 
 ** State-space model on observable canonical form
 *** Graphics
@@ -310,6 +318,7 @@ with characteristic polynomial
     \node[anchor=center, red!80!black] at (-\rp, -\rp) {\Large $\times$ };
 
     \draw[thin, <->] (0,0) -- node[above] {$\frac{1}{\tau_c}$} (-\rp, \rp);
+    \draw[->] (-1, 0) arc[radius=1, start angle=180, end angle=135] node[pos=0.5, left] {\small $45^\circ$};
     \end{tikzpicture}
 \end{center}
 #+end_export

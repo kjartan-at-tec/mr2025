@@ -1,4 +1,4 @@
-% Created 2021-10-12 Tue 12:29
+% Created 2022-10-11 Tue 12:26
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
@@ -34,12 +34,17 @@
 \maketitle
 
 \section{Repetition: State space models}
-\label{sec:orgfa57760}
+\label{sec:orgb6f47ab}
+\begin{frame}[label={sec:org6566b62}]{The concept of state}
+\begin{description}
+\item[{State}] The information needed about the history of a dynamical system in order to determine the future behaviour of the system given future input signals.
+\end{description}
+\end{frame}
 
 \section{Mobile robot unicycle model}
-\label{sec:org684bf07}
+\label{sec:org0903872}
 
-\begin{frame}[label={sec:org8194325}]{Example: Mobile robot}
+\begin{frame}[label={sec:orgafb5849}]{Example: Mobile robot}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 \begin{center}
@@ -66,7 +71,9 @@ Called uni-cycle model.
 \end{column}
 \end{columns}
 \end{frame}
-\begin{frame}[label={sec:orgbb3a664}]{Example: Mobile robot}
+
+
+\begin{frame}[label={sec:org5256b71}]{Example: Mobile robot}
 \small 
 \begin{columns}
 \begin{column}{0.4\columnwidth}
@@ -78,7 +85,7 @@ Called uni-cycle model.
 \end{column}
 \begin{column}{0.6\columnwidth}
 Linearized model using deviation variables
-\[ \xi(t) = \xi_0 + z(t), \quad \frac{d}{dt} \xi = \frac{d}{dt} z\]
+\[ \xi(t) = \xi_0 + z(t), \quad \frac{d}{dt} \xi = \frac{d}{dt} z,  \quad \theta_0=90^\circ, v_0 = 0\]
 \[ \frac{d}{dt} z = \begin{bmatrix} \omega\\ v\cos\theta_0 \\ v\sin\theta_0 \end{bmatrix}
 = \underbrace{0}_{A} z + \underbrace{\begin{bmatrix} 1 & 0 \\ 0 & 0\\ 0 & 1\end{bmatrix}}_{B} \begin{bmatrix}\omega\\v\end{bmatrix} \]
 
@@ -96,7 +103,9 @@ Linearized model using deviation variables
 \end{frame}
 
 
-\begin{frame}[label={sec:org554dd27}]{Example: Mobile robot}
+\section{Observability}
+\label{sec:orgbf5acea}
+\begin{frame}[label={sec:orgb7cccdf}]{Example: Mobile robot}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 Single bearing measurement.
@@ -115,8 +124,7 @@ Single bearing measurement.
 \end{columns}
 \end{frame}
 
-
-\begin{frame}[label={sec:org23594f7}]{Example: Mobile robot}
+\begin{frame}[label={sec:orgd28397b}]{Example: Mobile robot}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 Bearing and distance measurement.

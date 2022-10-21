@@ -33,6 +33,11 @@
    
 ** The Apollo lunar module
 
+\begin{center}
+  \includegraphics[width=0.5\linewidth]{../../figures/Apollo_11_Lunar_Module.jpg}
+\end{center}
+
+** The Apollo lunar module
    #+begin_export latex
    \begin{center}
    \includegraphics[width=0.7\linewidth]{../../figures/fig-apollo}
@@ -46,6 +51,25 @@
 
 
 *** Notes                                                          :noexport:
+
+    Ayer vímos este modelo del módulo lunar de Apollo. El modelo es para el control de la velocidad horizaontal, z dot. Cambié la dirección de esta flecha que representa el empuje del propulsor principal, para que enseña la fuerza que actua en el módulo. Para que este se mantenga a cierta distancia del superficie de la luna, esta fuerza tiene que tener un componente vertical con magnitúd mg, donde este g es la acceleration de gravedad en el superficie de la luna, que es 1.62 m/s^2.
+
+    Cuando el módulo tiene un  angula al respeto al vertical, esta fuerza de propulso va a tener un componente horizontal. Cual es su magnitúd?
+
+    La dinámica del sistema está expresado abajo en forma de un diagrama de bloques. La señal de entrada es el torque causada por los propulsores de atitúd. Esta causa una acceleracińo angular del módulo de 1/J por el torque, dónde J es el momento de inertia. Integrando la acceleración nos da la velocidad angular. 
+
+    Si vemos las fuerzas en la dirección horizontal, vemos que 
+    m\ddot{z} = F_h = mg tan\theta
+    \ddot{z} = g \tan\theta \approz g \theta, entonces k2=g
+
+    Integrando la acceleración nos da la velocidad.
+
+    La approximación lineal tiene la función de transferencia G = k_1k_2/s^3 = (g/J) / s^3
+
+    Es una sistema de orden tres, entonces se necesita tres variables de estado para representar su dinámica. 
+
+
+
 If u(t) is torque in Nm, then \frac{1}{J} = 1/J, where J is the moment of inertia of the module
 
 The horizontal component of the main thrust, which is mg/cos(theta)*sin(theta) = m*g*tan(theta) is what causes the acceleration in the z-direction.
@@ -86,7 +110,6 @@ State variables: \( x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \begin
    \[ \dot{x} = \begin{bmatrix} \dot{x}_1\\\dot{x}_2\\\dot{x}_3\end{bmatrix} = \underbrace{\begin{bmatrix} \textcolor{white}{0} & \textcolor{white}{0} &\textcolor{white}{0} \\\textcolor{white}{1} & \textcolor{white}{0}& \textcolor{white}{0}\\ \textcolor{white}{0}& \textcolor{white}{g} &\textcolor{white}{0} \end{bmatrix}}_{A} \begin{bmatrix} x_1\\x_2\\x_3\end{bmatrix} + \underbrace{\begin{bmatrix} \textcolor{white}{\frac{1}{J}} \\ \textcolor{white}{0} \\\textcolor{white}{0}  \end{bmatrix}}_{B} u \]
 
 ** State-space model
-** State-space model
 
    State variables: \( x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \begin{bmatrix} \dot{\theta} & \theta & \dot{z} \end{bmatrix}^T\). With dynamics
    \[ \begin{cases} \dot{x}_1 =  \ddot{\theta} = \frac{1}{J} u\\ \dot{x}_2 = \dot{\theta} = x_1\\ \dot{x}_3 = \ddot{z} = g\theta = gx_2 \end{cases} \]
@@ -113,7 +136,17 @@ State variables: \( x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \begin
    Forming the controllability matrix. Note that
    \[ A^2 = \begin{bmatrix} 0 &  0 & 0\\ 0 & 0 & 0\\ g & 0 & 0 \end{bmatrix} \]
    \[ \mathcal{C} = \begin{bmatrix} B & AB & A^2B\end{bmatrix}
-   = \begin{bmatrix} \frac{1}{J} & 0 & \textcolor{white}{0}\\0 & \frac{1}{J} & \textcolor{white}{0} \\0 & 0 & \textcolor{white}{\frac{1}{J}g} \end{bmatrix} \]
+   = \begin{bmatrix} \textcolor{white}{\frac{1}{J}} & \textcolor{white}{0} & \textcolor{white}{0}\\\textcolor{white}{0} & \textcolor{white}{\frac{1}{J}} & \textcolor{white}{0} \\\textcolor{white}{0} & \textcolor{white}{0} & \textcolor{white}{\frac{1}{J}g} \end{bmatrix} \]
+   
+
+** Controllability
+
+   \[ \dot{x} = \begin{bmatrix} \dot{x}_1\\\dot{x}_2\\\dot{x}_3\end{bmatrix} = \underbrace{\begin{bmatrix} \textcolor{black!60!black}{0} & \textcolor{black!60!black}{0} &\textcolor{black!60!black}{0} \\\textcolor{black!60!black}{1} & \textcolor{black!60!black}{0}& \textcolor{black!60!black}{0}\\ \textcolor{black!60!black}{0}& \textcolor{black!60!black}{g} &\textcolor{black!60!black}{0} \end{bmatrix}}_{A} \begin{bmatrix} x_1\\x_2\\x_3\end{bmatrix} + \underbrace{\begin{bmatrix} \textcolor{black!60!black}{\frac{1}{J}} \\ \textcolor{black!60!black}{0} \\\textcolor{black!60!black}{0}  \end{bmatrix}}_{B} u \]
+
+   Forming the controllability matrix. Note that
+   \[ A^2 = \begin{bmatrix} 0 &  0 & 0\\ 0 & 0 & 0\\ g & 0 & 0 \end{bmatrix} \]
+   \[ \mathcal{C} = \begin{bmatrix} B & AB & A^2B\end{bmatrix}
+   = \begin{bmatrix} \textcolor{red!60!black}{\frac{1}{J}} & \textcolor{red!60!black}{0} & \textcolor{red!60!black}{0}\\\textcolor{red!60!black}{0} & \textcolor{red!60!black}{\frac{1}{J}} & \textcolor{red!60!black}{0} \\\textcolor{red!60!black}{0} & \textcolor{red!60!black}{0} & \textcolor{red!60!black}{\frac{1}{J}g} \end{bmatrix} \]
    
 #+BEAMER: \pause
 *Activity* Is the system controllable?

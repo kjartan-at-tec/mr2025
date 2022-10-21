@@ -1,0 +1,49 @@
+#+EXCLUDE_TAGS: solution noexport
+#+OPTIONS: toc:nil num:nil date:nil
+#+LaTeX_CLASS: koma-article 
+#+LaTeX_CLASS_OPTIONS: [letterpaper]
+#+LaTex_HEADER: \usepackage{khpreamble}
+#+LaTex_HEADER: \usepackage[top=10mm, bottom=10mm]{geometry}
+
+#+title: Characterization of a DC motor
+#+date: 2022-10-07
+
+* Modeling
+
+** ODE
+The two coupled differential equations that govern the behavior of the DC motor with constant stator magnetic field are
+\begin{align}
+L \frac{d}{dt} i(t) &= u(t) - Ri(t) - kg_r\omega(t), \label{eq:circ}\\
+J \frac{d}{dt} \omega(t) &= kg_r i(t) - T_l(t)
+\label{eq:newton}
+\end{align}
+with variables
+- \(i(t)\) :: The armature current,
+- \(\omega(t)\) :: The angular velocity of the wheel,
+- \(u(t)\) :: The armature voltage,
+- \(T_l(t)\) :: The load torque,
+and parameters
+- \(L\) :: The armature inductance,
+- \(R\) :: The armature resistance,
+- \(k\) :: The motor constant (in Nm/A or V/(rad/s)),
+- \(g_r\) :: The gear ratio
+- \(J\) :: The moment of inertia.
+
+** Transfer functions
+Taking the Laplace transform of \eqref{eq:circ} and \eqref{eq:newton} (and ignoring the initial values) gives
+\begin{align}
+sL I(s) &= U(s) - RI(s) - kg_r\Omega(s), \label{eq:circL}\\
+sJ\Omega(s) &= kg_r I(s) - T_l(s).
+\label{eq:newtonL}
+\end{align}
+Solving \eqref{eq:circL} for \(I(s)\) gives
+\[ I(s) = \frac{1}{sL+R}U(s) - \frac{kg_r}{sL + R} \]
+and inserting in \eqref{eq:newtonL} gives
+\begin{equation}
+\begin{aligned}
+sJ\omega(s) &= \frac{k g_r}{sL+R}U(s) - \frac{(kg_r)^2}{sL+R}\Omega(s) - T_l(s)\\
+sJ(sL+R)\Omega(s) &= k g_rU(s) - (kg_r)^2\Omega(s) - (sL+R)T_l(s)\\
+\big(sJ(sL+R) + (k g_r)^2\big)\Omega(s) &= k g_rU(s) - (sL+R)T_l(s)\\
+\Omega(s) &= \frac{k g_r}{sJ(sL+R) + (k g_r)^2}U(s) - \frac{sL+R}{sJ(sL+R) + (k g_r)^2}T_l(s)
+\end{aligned}
+\end{equation}

@@ -1,0 +1,189 @@
+\documentclass[dvisvgm,hypertex,aspectratio=169]{beamer}
+\usefonttheme{serif}
+
+%\usepackage[utf8]{inputenc}
+%\usepackage[T1]{fontenc}
+
+%\usepackage[draft]{animate}
+\usepackage[final]{animate}
+\usepackage{ifthen}
+
+
+%\usepackage{pythontex} % <--
+\usepackage{graphicx}
+
+
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=1.16}
+\usetikzlibrary{calc}
+\usetikzlibrary{decorations.pathmorphing,patterns}
+\usepackage{amsmath}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% Define footer
+\usepackage{ccicons}
+
+\makeatletter
+\setbeamertemplate{footline}
+{
+  \leavevmode%
+  \hbox{%
+  %\begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+    %\usebeamerfont{title in head/foot}\insertsubsection
+  %\end{beamercolorbox}%
+  %\begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+  %  \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}
+  %  \insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
+  %\end{beamercolorbox}}%
+  %\vskip0pt%
+  \begin{beamercolorbox}[wd=.92\paperwidth,ht=2.25ex,dp=1ex,right]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\insertauthor
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.08\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+    \ccbysa
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+\makeatother
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\author{\href{mailto:kjartan@tec.mx}{kjartan@tec.mx}}
+
+\begin{document}
+
+\section{Create animation}
+
+  \def\tend{30}
+  \def\nframes{24}
+  \def\nsamples{200}
+  \def\wexpstart{-1}
+  \def\wexpend{1}
+
+  \def\wwn{1}
+  \def\zzeta{0.2}
+  \pgfmathsetmacro{\wnzeta}{\wwn * \zzeta}
+  \pgfmathsetmacro{\wnzetatwo}{pow(\wnzeta, 2)}
+  \pgfmathsetmacro{\wntwo}{pow(\wwn, 2)}
+  \pgfmathsetmacro{\impart}{\wwn*sqrt(1-\zzeta*\zzeta)}
+
+\begin{frame}[label=A]{Second-order Bode plot}
+
+  \begin{center}
+        \begin{animateinline}[controls, loop, palindrome]{4}
+          \multiframe{\nframes}{n=0+1}{
+            
+            \pgfmathsetmacro{\wexp}{\wexpstart + (\wexpend-\wexpstart)/\nframes*\n}
+            \pgfmathsetmacro{\ww}{pow(10, \wexp)}
+            \pgfmathsetmacro{\wstart}{pow(10, \wexpstart)}
+            \pgfmathsetmacro{\wend}{pow(10, \wexpend)}
+            \pgfmathsetmacro{\gain}{\wntwo/(sqrt(\wnzetatwo + pow(\wwn+\ww, 2)) * sqrt(\wnzetatwo + pow(\wwn-\ww, 2)))}
+            \pgfmathsetmacro{\phshift}{-atan2(\wwn + \ww, \wnzeta) - atan2(\ww - \wwn, \wnzeta)}
+
+            \begin{tikzpicture}[scale=0.5, transform shape, yshift=0mm]
+              \begin{scope}[transform shape, yshift=45mm, xshift=20mm]
+          \tiny
+
+          \node[draw, minimum width=14mm, minimum height=12mm] (sys) {$G(s)=\frac{\omega_n^2}{s^2 + 2\zeta\omega_n s + \omega_n^2}$};
+          \node[coordinate, left of=sys, node distance=46mm] (input) {};
+          \node[coordinate, right of=sys, node distance=46mm] (output) {};
+          \draw[->] (input) -- node[ above] { $\textcolor{blue!80!green}{u(t)=\sin(\omega_1 t)}$} (sys);
+          \draw[->] (sys) -- node[near end, above] { $\textcolor{green!80!black}{y(t)=|G(i\omega_1)|\sin\big(\omega_1 t + \arg G(i\omega_1)\big)}$} (output);
+        \end{scope}
+
+            \begin{loglogaxis} [
+            width=7cm,
+            height=5cm,
+            ylabel=$|G|$,
+            %xticklabels=\empty,
+            xtick={0.01, 0.1, 1, 10},
+            xticklabels={$0.01\omega_n$, $0.1\omega_n$, $\omega_n$, $10\omega_n$},
+            grid=both,
+            minor y tick num=9,
+            % extra y ticks={.5}, % how to convert to fixed point tick label ?
+            % extra y tick style={log identify minor tick positions=true},
+            every major grid/.style={red, opacity=0.5},
+            ymin=0.01, ymax=10,
+            xmin = 0.1, xmax=10,
+            ]
+            \addplot+[thick, orange!80!black, no marks, domain=\wstart:\wend, samples=100]
+                  {\wntwo/(sqrt(\wnzetatwo + pow(\wwn+\x, 2)) * sqrt(\wnzetatwo + pow(\wwn-\x, 2)))};
+            \draw[black!90, ] (axis cs: \ww, 0.01) -- (axis cs: \ww, 10);
+            \node[magenta!80!black, circle, draw, inner sep=2pt, thick,] at (axis cs: \ww, \gain) {};
+          \end{loglogaxis}
+          \begin{semilogxaxis} [
+            xlabel=$\omega$,
+            ylabel=$\arg G$,
+            xshift = 7.5cm, 
+            width=7cm,
+            height=5cm,
+            grid=both,
+            ytick={0, -90, -180},
+            ymin=-180, ymax = 0,
+            xtick={ 0.1, 1, 10},
+            xticklabels={$0.01\omega_n$, $0.1\omega_n$, $\omega_n$, $10\omega_n$},
+            xmin = 0.1, xmax = 10,
+            minor y tick num=2,
+            every major grid/.style={red, opacity=0.5},
+            %legend entries={Bessel filter, Delay of one},
+            %legend pos={south west},
+            ]
+            \addplot+[thick, orange!80!black, no marks, domain=\wstart:\wend, samples=100]
+               {-atan2(\wwn + \x, \wnzeta) - atan2(\x - \wwn, \wnzeta)};
+            \draw[black!90,] (axis cs: \ww, -90) -- (axis cs: \ww, 10);
+            \node[magenta!80!black, circle, draw, inner sep=2pt, thick,] at (axis cs: \ww, \phshift) {};
+          \end{semilogxaxis}
+
+          \begin{axis} [
+            width = 10.5cm,
+            height= 5cm,
+            yshift = -5cm,
+            xshift = 5cm,
+            xtick = \empty,
+            % xlabel = {$t \; [\omega_n^{-1}]$},
+            ymin=-3,
+            ymax = 3,
+            ]
+            \addplot+[thick, blue!80!green, no marks, domain=0:\tend, samples=\nsamples, smooth] {sin(\ww*180/3.14*x)};
+            \addplot+[thick, green!80!black, no marks, domain=0:\tend, samples=\nsamples, smooth] {\gain*sin(\ww*180/3.14*x + \phshift)};
+            
+          \end{axis}
+          
+          \begin{scope}[yshift=-45mm, xshift=-2.5cm, ]
+            \pgfmathsetmacro{\www}{min(\ww, 4)};
+            \pgfmathsetmacro{\normfreq}{\www/\wwn};
+            \clip (-2, -1) rectangle (2, 10);
+            \draw[->] (-2, 0) -- (0.3, 0) node[below] {Re};
+            \draw[->] (0, -1.5) -- (0, 3) node[right] {Im};
+            \node[red] at (-\wnzeta, \impart) {\large $\times$};
+            \node[red] at (-\wnzeta, -\impart) {\large $\times$};
+            \node[magenta!80!black, circle, draw, inner sep=2pt, thick,] at (0, \www) {};
+            \draw[->, black!60] (-\wnzeta, \impart) to (0, \www);
+            \draw[->, black!60] (-\wnzeta, -\impart) to (0, \www);
+            \node at (0.9, \www) {$\normfreq \omega_n$};
+            \node[]  at (-\wnzeta, -0.5){$-\zeta\omega_n$};
+          \end{scope}
+
+          \begin{scope}[yshift=-25mm, xshift=1cm, scale=0.6]
+            \pgfmathsetmacro{\xx}{2*\gain*cos(\phshift)};
+            \pgfmathsetmacro{\yy}{2*\gain*sin(\phshift)};
+            \draw[->] (-2, 0) -- (3, 0) node[below] {Re};
+            \draw[->] (0, -2) -- (0, 1) node[left] {Im};
+            \node[magenta!80!black, circle, draw, inner sep=2pt, thick,] at (\xx, \yy) {};
+            \node at (1.5, 1) {$G(i\omega)$-plane};
+            \draw (2,0) -- (2, 0.2) node[above] {1};
+            \draw[orange!80!black, domain=0:100, smooth, samples at={0, 0.01, 0.02, 0.04, 0.08, 0.16, 0.32, 0.4, 0.5, 0.6, 0.64, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0, 1.05, 1.1, 1.15, 1.2, 1.28, 1.4, 1.6, 1.8, 2, 2.2, 2.56, 3, 4,  5.12, 6, 7, 8, 9, 10,  12, 14, 16, 20}, variable=\x] plot ({2*(\wntwo/(sqrt(\wnzetatwo + pow(\wwn+\x, 2)) * sqrt(\wnzetatwo + pow(\wwn-\x, 2)))*cos(-atan2(\wwn + \x, \wnzeta) - atan2(\x - \wwn, \wnzeta)))}, {2*(\wntwo/(sqrt(\wnzetatwo + pow(\wwn+\x, 2)) * sqrt(\wnzetatwo + pow(\wwn-\x, 2)))*sin(-atan2(\wwn + \x, \wnzeta) - atan2(\x - \wwn, \wnzeta)))});
+            \node[white] at (0, -2.5) {h};
+          \end{scope}
+        \end{tikzpicture}
+      }
+    \end{animateinline}
+  \end{center}
+\end{frame}
+
+\end{document}
+
+

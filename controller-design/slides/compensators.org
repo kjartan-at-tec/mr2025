@@ -575,6 +575,16 @@ KFG = 1 => K = 1/G/F = 1*sqrt(5)*2/sqrt(4)= sqrt(5) = 2.24
     \end{center}
 
 
+*** Notes                                                          :noexport:
+- Why s' = tau s?
+  - The variable s of the s-domain has unit frequency, or "per unit of time".
+    Since the model is normalized by using the time-constant of the first-order system as unit of time we have
+    [s] = 1/tau = (in our case) 1/(0.1 s).
+    However, working with SI units, we would prefer (but it is not necessary though!) to work with an
+    s-variable which has unit 1/s. This can be achieved by the change of variables
+    s' = s / tau  <=>  s = tau s':
+    [s'] = 0.1 / (0.1 s) = 1/s. 
+
 * Design example - radar antenna                                   :noexport:
 
 ** Position control of a radar antenna

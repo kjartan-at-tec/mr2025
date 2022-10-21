@@ -1,4 +1,4 @@
-% Created 2021-10-19 Tue 15:00
+% Created 2022-10-18 Tue 14:08
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
@@ -42,17 +42,17 @@
 
 
 \section{State feedback with observer}
-\label{sec:org2f935f0}
-\begin{frame}[label={sec:org44016c9}]{State feedback with reconstructed states}
+\label{sec:org2d43c1c}
+\begin{frame}[label={sec:org9c6fdd4}]{State feedback with reconstructed states}
 \end{frame}
 
-\begin{frame}[label={sec:orgbac2dad}]{State feedback with reconstructed states}
+\begin{frame}[label={sec:org9053424}]{State feedback with reconstructed states}
 \begin{center}
 \includegraphics[width=0.9\linewidth]{../../figures/fig-apollo}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org2d58208}]{State feedback}
+\begin{frame}[label={sec:orgd52a7c0}]{State feedback}
 Given
  \begin{equation}
  \begin{split}
@@ -83,7 +83,7 @@ Substituting the control law in the state space model \eqref{eq:ssmodel} gives
 
 
 
-\begin{frame}[label={sec:orgd1a7365}]{Observer design}
+\begin{frame}[label={sec:org331a250}]{Observer design}
 Given model
  \begin{equation*}
  \begin{split}
@@ -106,7 +106,7 @@ with poles given by the eigenvalues of the matrix \(A_o = A - \textcolor{mred}{K
 \end{frame}
 
 
-\begin{frame}[label={sec:org26932c4}]{Control by feedback from reconstructed states}
+\begin{frame}[label={sec:orge761c84}]{Control by feedback from reconstructed states}
 The design problem can be separated into two problems
 \begin{enumerate}
 \item Determine the gain vector \(\textcolor{orange!80!black}{L}\) and the gain \(\textcolor{mbluegreen}{l_0}\) of the control law
@@ -122,7 +122,7 @@ to get a good balance between disturbance rejection and noise attenuation.
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:org7c5c7f8}]{Computing the observer gain}
+\begin{frame}[label={sec:org6159338}]{Computing the observer gain}
 A matrix \(M\) and its transpose \(M\transp\) have the same eigenvalues. Hence, the problem of determining the gain \(K\) to obtain desired eigenvalues of 
 \[A- \textcolor{mred}{K}C\] is equivalent to determining the gain \(\textcolor{mred}{K}\) in 
 \[(A-\textcolor{mred}{K}C)\transp = A\transp - C\transp \textcolor{mred}{K}\transp.\]
@@ -132,31 +132,31 @@ The last problem has the exact same form as the problem of determining \(\textco
 So, the same matlab function can be used for both problems.
 \end{frame}
 
-\begin{frame}[label={sec:orgc1e9ad6},fragile]{Computing the state feedback and  observer gains}
+\begin{frame}[label={sec:org3c49faf},fragile]{Computing the state feedback and  observer gains}
  \begin{enumerate}
 \item \alert{Ackerman's method} 
 \begin{verbatim}
 L = acker(A, B, pd)
-K = acker(A, C', po)'
+K = acker(A', C', po)'
 \end{verbatim}
 \item \alert{More numerically stable method} 
 \begin{verbatim}
 L = place(A, B, pd)
-K = place(A, C', po)'
+K = place(A', C', po)'
 \end{verbatim}
 \end{enumerate}
 \end{frame}
 
 \section{Example - DC motor}
-\label{sec:org5db664c}
-\begin{frame}[label={sec:org3e671f9}]{Example - Position control of the DC motor}
+\label{sec:org47da4e6}
+\begin{frame}[label={sec:org4ef50e1}]{Example - Position control of the DC motor}
 \begin{center}
   \includegraphics[width=0.8\linewidth]{../../figures/block-DC}
 \end{center}
 \end{frame}
 
 
-\begin{frame}[label={sec:org8593380}]{State-space model with physical states}
+\begin{frame}[label={sec:org79ab022}]{State-space model with physical states}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 \begin{center}
@@ -167,7 +167,7 @@ State variables corresponding to physical signals:
 \[ x = \begin{bmatrix} x_1\\x_2 \end{bmatrix}= \begin{bmatrix} \omega\\ \theta \end{bmatrix} \]
 With dynamics
 \begin{align*}
-\tau \dot{\omega} &= -\omega + Ku\\
+\tau \dot{\omega} &= -\omega + ku\\
 \dot{\theta} &= \omega
 \end{align*}
 \end{column}
@@ -186,7 +186,7 @@ With dynamics
 
 
 
-\begin{frame}[label={sec:orgf01569b}]{State-space model with physical states}
+\begin{frame}[label={sec:org59d2f62}]{State-space model with physical states}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 \begin{center}
@@ -211,7 +211,7 @@ With dynamics
 \end{frame}
 
 
-\begin{frame}[label={sec:org4239a79}]{State-space model on controllable canonical form}
+\begin{frame}[label={sec:org655345c}]{State-space model on controllable canonical form}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 \begin{center}
@@ -245,8 +245,7 @@ y&=\bbm b_1& b_2& \cdots& b_n\ebm x
 \end{columns}
 \end{frame}
 
-
-\begin{frame}[label={sec:org6bee89b}]{State-space model on observable canonical form}
+\begin{frame}[label={sec:org49ff4e3}]{State-space model on observable canonical form}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 \begin{center}
@@ -280,7 +279,7 @@ y&=\bbm 1& 0& \cdots& 0 \ebm x
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org76cc716}]{State-feedback for model with physical states}
+\begin{frame}[label={sec:org45d4d4b}]{State-feedback for model with physical states}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 \[ \dot{x} = \begin{bmatrix} \dot{x}_1\\\dot{x}_2\end{bmatrix} = \underbrace{\begin{bmatrix} \textcolor{black}{-\frac{1}{\tau}} & \textcolor{black}{0} \\\textcolor{black}{1} & \textcolor{black}{0} \end{bmatrix}}_{A} \begin{bmatrix} x_1\\x_2\end{bmatrix} + \underbrace{\begin{bmatrix} \textcolor{black}{\frac{K}{\tau}} \\ \textcolor{black}{0} \end{bmatrix}}_{B} u \]
@@ -310,6 +309,7 @@ with characteristic polynomial
     \node[anchor=center, red!80!black] at (-\rp, -\rp) {\Large $\times$ };
 
     \draw[thin, <->] (0,0) -- node[above] {$\frac{1}{\tau_c}$} (-\rp, \rp);
+    \draw[->] (-1, 0) arc[radius=1, start angle=180, end angle=135] node[pos=0.5, left] {\small $45^\circ$};
     \end{tikzpicture}
 \end{center}
 
@@ -323,7 +323,7 @@ Desired closed-loop characteristic polynomial
 \end{frame}
 
 
-\begin{frame}[label={sec:org60f8f9e}]{State-feedback for model with physical states}
+\begin{frame}[label={sec:org1eae8d2}]{State-feedback for model with physical states}
 Characteristic polynomial obtained with state feedback
 \[s^2 + (\textcolor{black}{\frac{1}{\tau}}  + \textcolor{morange}{l_1}\frac{k}{\tau})s +  \textcolor{morange}{l_2}\frac{k}{\tau} \]
 Desired characteristic polynomial
@@ -343,7 +343,7 @@ Determine the feedback gains!
 \end{frame}
 
 
-\begin{frame}[label={sec:org3f6e467}]{Observer for the model with physical states}
+\begin{frame}[label={sec:org146a8f1}]{Observer for the model with physical states}
 \small
 
 \begin{columns}
@@ -397,7 +397,7 @@ Choose \(d\) between 2 and 10 and  obtain desired closed-loop characteristic pol
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:orgfc87ee3}]{Observer for the model with physical states}
+\begin{frame}[label={sec:org4823eac}]{Observer for the model with physical states}
 Characteristic polynomial of the observer 
 \[s^2 + (\frac{1}{\tau} + \textcolor{mred}{k_2})s + (\textcolor{mred}{k_1}+\frac{\textcolor{mred}{k_2}}{\tau})\]
 Desired characteristic polynomial

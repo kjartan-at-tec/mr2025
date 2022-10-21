@@ -1,0 +1,80 @@
+% Created 2022-10-07 Fri 07:47
+% Intended LaTeX compiler: pdflatex
+\documentclass[letterpaper]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage{khpreamble}
+\usepackage[top=10mm, bottom=10mm]{geometry}
+\author{Kjartan Halvorsen}
+\date{}
+\title{Characterization of a DC motor}
+\hypersetup{
+ pdfauthor={Kjartan Halvorsen},
+ pdftitle={Characterization of a DC motor},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 26.3 (Org mode 9.4.6)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+
+\section*{Modeling}
+\label{sec:org9eca945}
+
+\subsection*{ODE}
+\label{sec:org2b1d6d7}
+The two coupled differential equations that govern the behavior of the DC motor with constant stator magnetic field are
+\begin{align}
+L \frac{d}{dt} i(t) &= u(t) - Ri(t) - kg_r\omega(t), \label{eq:circ}\\
+J \frac{d}{dt} \omega(t) &= kg_r i(t) - T_l(t)
+\label{eq:newton}
+\end{align}
+with variables
+\begin{description}
+\item[{\(i(t)\)}] The armature current,
+\item[{\(\omega(t)\)}] The angular velocity of the wheel,
+\item[{\(u(t)\)}] The armature voltage,
+\item[{\(T_l(t)\)}] The load torque,
+\end{description}
+and parameters
+\begin{description}
+\item[{\(L\)}] The armature inductance,
+\item[{\(R\)}] The armature resistance,
+\item[{\(k\)}] The motor constant (in Nm/A or V/(rad/s)),
+\item[{\(g_r\)}] The gear ratio
+\item[{\(J\)}] The moment of inertia.
+\end{description}
+
+\subsection*{Transfer functions}
+\label{sec:org51b2c71}
+Taking the Laplace transform of \eqref{eq:circ} and \eqref{eq:newton} (and ignoring the initial values) gives
+\begin{align}
+sL I(s) &= U(s) - RI(s) - kg_r\Omega(s), \\
+\label{eq:circL}
+sJ\Omega(s) &= kg_r I(s) - T_l(s).
+\label{eq:newtonL}
+\end{align}
+Solving \eqref{eq:circL} for \(I(s)\) gives
+\[ I(s) = \frac{1}{sL+R}U(s) - \frac{kg_r}{sL + R} \]
+and inserting in \eqref{eq:newtonL} gives
+\begin{equation}
+\begin{aligned}
+sJ\omega(s) &= \frac{k g_r}{sL+R}U(s) - \frac{(kg_r)^2}{sL+R}\Omega(s) - T_l(s)\\
+sJ(sL+R)\Omega(s) &= k g_rU(s) - (kg_r)^2\Omega(s) - (sL+R)T_l(s)\\
+\big(sJ(sL+R) + (k g_r)^2\big)\Omega(s) &= k g_rU(s) - (sL+R)T_l(s)\\
+\Omega(s) &= \frac{k g_r}{sJ(sL+R) + (k g_r)^2}U(s) - \frac{sL+R}{sJ(sL+R) + (k g_r)^2}T_l(s)
+\end{aligned}
+\end{equation}
+\end{document}

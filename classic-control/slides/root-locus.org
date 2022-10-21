@@ -30,14 +30,14 @@ Transfer function from $r(t)$ to $y(t)$:
 \[ \frac{Y(s)}{R(s)} = \frac{G(s)}{ 1+ G(s)}\]
 
 #+BEAMER: \pause
-*Mason's* gain formula: \(G_c(s) = \frac{Y(s)}{R(s)} = \frac{\sum_k T_k\Delta_k}{\Delta}\)
+*Mason's* gain formula: \(G_c(s) = \frac{Y(s)}{R(s)} = \frac{\sum_k P_k\Delta_k}{\Delta}\)
 
 For simple systems with one loop only: \[G_c(s) = \frac{Y(s)}{R(s)} = \frac{\text{Forward path gain}}{1+\text{Loop gain}}\]
 
 
 
 
-** Block diagram algebra
+** Block diagram algebra                                            :noexport:
 
  *Activity* Pair the block-diagram with the correct closed-loop transfer function!
 
@@ -84,8 +84,9 @@ D - III
      \def\Tcnst{0.1}
      \begin{tikzpicture}
        \begin{axis}[
+       title={Unit step-response},
        width=7cm,
-       height=6cm,
+       height=5.4cm,
        grid = both,
        xlabel = {Time [s]},
        ylabel = {Ang vel [rad/s]},
@@ -95,7 +96,7 @@ D - III
        %yticklabels = {0, $0.283y_{f}$, $0.632y_f$, $u_f$, $y_f$},
        xmin = -0.2, xmax=2,
        minor y tick num=9,
-       minor x tick num=9,
+       minor x tick num=4,
        every major grid/.style={red, opacity=0.5},
        ]
 	 \addplot [thick, green!50!black, no marks, domain=-0.2:2, samples=100] {(x>0)*\ggain*(1 - exp(-(x/\Tcnst)))}; 
@@ -107,7 +108,12 @@ D - III
 #+BEAMER: \pause
 
 *Activity* What is the angle (approximately) rotated by the motor after 0.1s starting from still?
+
 *** Notes                                                          :noexport:
+Q: Why doesn't the velocity keep increasing forever with a constant armature voltage?
+Q: What is the time-constant of first-order sys?
+Q: What is the gain?
+
 Triangle a = 130/2 * 0.1 = 13/2 = 6.5 rad
 
 Later normalized motor 0.4*20 = <8 rad
@@ -141,9 +147,10 @@ Later normalized motor 0.4*20 = <8 rad
        %xticklabels = {0, $\theta$, $\theta+\frac{\tau}{3}$, $\theta + \tau$},
        %ytick = {0, \yone, \ytwo, \uampl, \yfinal},
        %yticklabels = {0, $0.283y_{f}$, $0.632y_f$, $u_f$, $y_f$},
+       ymin = -0.5, ymax=3,
        xmin = -2, xmax=20,
-       minor y tick num=9,
-       minor x tick num=9,
+       minor y tick num=4,
+       minor x tick num=4,
        every major grid/.style={red, opacity=0.5},
        ]
 	 \addplot [thick, green!50!black, no marks, domain=-2:20, samples=100] {(x>0)*\ggain*(1 - exp(-(x/\Tcnst)))};
@@ -154,6 +161,14 @@ Later normalized motor 0.4*20 = <8 rad
 
     #+BEAMER: \pause
     *Activity* What is the settling time (approximately) for the velocity (in \(\tau\) and in seconds)?
+
+*** Notes                                                          :noexport:
+There is nothing holy with the time-unit "seconds". We could choose some other time-unit. Which means scaling the time-axis. For instance,
+we may use the time-constant as the time-unit: 0.1s in this case.
+Now each horizontal division here has the length (in time of course) of one time-constant, or 0.1 s.
+
+With this unit of time, the unit-step-response of this particular DC motor will converge to 20 rad/tau = 200 rad/s. So we could scale the angles also, by choosing another unit for angle. By choosing 20 rad as our unit, we see that the unit-step response converges to 1 unit / time constant = 20 rad / 0.1s = 200 rad/s. The gain with these normalized values is 1. We end up with this normalized transfer function.
+
 
 
 ** Proportional control of the normalized DC motor
@@ -188,6 +203,7 @@ Later normalized motor 0.4*20 = <8 rad
        %xticklabels = {0, $\theta$, $\theta+\frac{\tau}{3}$, $\theta + \tau$},
        %ytick = {0, \yone, \ytwo, \uampl, \yfinal},
        %yticklabels = {0, $0.283y_{f}$, $0.632y_f$, $u_f$, $y_f$},
+       ymin = -0.5, ymax=2,
        xmin = -2, xmax=20,
        minor y tick num=4,
        minor x tick num=4,
@@ -230,6 +246,8 @@ Characteristic equation:
 *Activity* Solve the characteristic equation!
 
 *** Notes                                                          :noexport:
+
+
 s = -1/2 +/- 1/2 sqrt(1 - 4K)
 
 Case 1: 0 < K < 1/4  Real-valued poles symmetric about -1/2
@@ -238,7 +256,9 @@ Case 3: K>1/4 Complex conj poles
         s = -1/2 +/- i/2 sqrt(4K-1)
         Real part stays the same. Imaginary part goes out towards infinity on lines
 	parallel to imaginary axis.
-	
+
+Draw the root locus!
+
 * The root locus diagram
 
 ** Root locus
