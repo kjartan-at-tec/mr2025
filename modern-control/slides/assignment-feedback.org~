@@ -1,0 +1,282 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169]
+#+OPTIONS: H:2
+# #+BEAMER_THEME: Madrid
+#+COLUMNS: %45ITEM %10BEAMER_ENV(Env) %10BEAMER_ACT(Act) %4BEAMER_COL(Col) %8BEAMER_OPT(Opt)
+     
+#+LaTex_HEADER: \usepackage{pifont}
+#+LaTex_HEADER: \newcommand{\cmark}{\textcolor{green!80!black}{\ding{51}}}
+
+#+LaTex_HEADER: \usepackage{amssymb}
+#+LaTex_HEADER: \usepackage{pgfplotstable}
+#+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
+#+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
+
+#+LaTex_HEADER: \usepackage{khpreamble, euscript, mathtools}
+#+LaTex_HEADER: \DeclareMathOperator{\atantwo}{atan2}
+#+LaTex_HEADER: \newcommand*{\ctrb}{\EuScript{C}}
+#+LaTex_HEADER: \newcommand*{\obsv}{\EuScript{O}}
+
+
+#+title: State feedback
+
+
+
+* Promise                                                          :noexport:
+  
+  After this lecture you will understand how to design a state feedback controller
+
+* Apollo moon lander
+   
+** The Apollo lunar module
+
+\begin{center}
+  \includegraphics[width=0.5\linewidth]{../../figures/Apollo_11_Lunar_Module.jpg}
+\end{center}
+
+** The Apollo lunar module
+   #+begin_export latex
+   \begin{center}
+   \includegraphics[width=0.7\linewidth]{../../figures/fig-apollo}
+   \end{center}
+   #+end_export
+
+   #+BEAMER: \pause
+
+*Activity* Which is the transfer function of the system?
+   \[1: \; G(s) = \frac{\frac{g}{J} }{s^2}\qquad 2: \; G(s) = \frac{\frac{g}{J} }{s(s^2 + 1)} \qquad 3: \; G(s) = \frac{\frac{g}{J} }{s^3}\]
+
+
+*** Notes                                                          :noexport:
+
+    Ayer vímos este modelo del módulo lunar de Apollo. El modelo es para el control de la velocidad horizaontal, z dot. Cambié la dirección de esta flecha que representa el empuje del propulsor principal, para que enseña la fuerza que actua en el módulo. Para que este se mantenga a cierta distancia del superficie de la luna, esta fuerza tiene que tener un componente vertical con magnitúd mg, donde este g es la acceleration de gravedad en el superficie de la luna, que es 1.62 m/s^2.
+
+    Cuando el módulo tiene un  angula al respeto al vertical, esta fuerza de propulso va a tener un componente horizontal. Cual es su magnitúd?
+
+    La dinámica del sistema está expresado abajo en forma de un diagrama de bloques. La señal de entrada es el torque causada por los propulsores de atitúd. Esta causa una acceleracińo angular del módulo de 1/J por el torque, dónde J es el momento de inertia. Integrando la acceleración nos da la velocidad angular. 
+
+    Si vemos las fuerzas en la dirección horizontal, vemos que 
+    m\ddot{z} = F_h = mg tan\theta
+    \ddot{z} = g \tan\theta \approz g \theta, entonces k2=g
+
+    Integrando la acceleración nos da la velocidad.
+
+    La approximación lineal tiene la función de transferencia G = k_1k_2/s^3 = (g/J) / s^3
+
+    Es una sistema de orden tres, entonces se necesita tres variables de estado para representar su dinámica. 
+
+
+
+If u(t) is torque in Nm, then \frac{1}{J} = 1/J, where J is the moment of inertia of the module
+
+The horizontal component of the main thrust, which is mg/cos(theta)*sin(theta) = m*g*tan(theta) is what causes the acceleration in the z-direction.
+F = mg tan(theta) \approx mg theta = m \ddot{zeta}  => \frac{1}{J} = g
+
+
+
+** State variables
+
+
+*** Graphics
+:PROPERTIES:
+:BEAMER_col: 0.65
+:END:
+
+
+   \begin{center}
+   \includegraphics[width=\linewidth]{../../figures/fig-apollo}
+   \end{center}
+
+State variables: \( x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \begin{bmatrix} \dot{\theta} & \theta & \dot{z} \end{bmatrix}^T\).
+
+*** Text
+:PROPERTIES:
+:BEAMER_col: 0.45
+:END:
+
+ With dynamics
+   \[ \begin{cases} \dot{x}_1 =  \ddot{\theta} = \frac{1}{J} u\\ \dot{x}_2 = \dot{\theta} = x_1\\ \dot{x}_3 = \ddot{z} = g\theta = gx_2 \end{cases} \]
+
+** State-space model
+
+   State variables: \( x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \begin{bmatrix} \dot{\theta} & \theta & \dot{z} \end{bmatrix}^T\). With dynamics
+   \[ \begin{cases} \dot{x}_1 =  \ddot{\theta} = \frac{1}{J} u\\ \dot{x}_2 = \dot{\theta} = x_1\\ \dot{x}_3 = \ddot{z} = g\theta = gx_2 \end{cases} \]
+
+   *Activity* Fill the matrix \(A\) and vector \(B\).
+
+   \[ \dot{x} = \begin{bmatrix} \dot{x}_1\\\dot{x}_2\\\dot{x}_3\end{bmatrix} = \underbrace{\begin{bmatrix} \textcolor{white}{0} & \textcolor{white}{0} &\textcolor{white}{0} \\\textcolor{white}{1} & \textcolor{white}{0}& \textcolor{white}{0}\\ \textcolor{white}{0}& \textcolor{white}{g} &\textcolor{white}{0} \end{bmatrix}}_{A} \begin{bmatrix} x_1\\x_2\\x_3\end{bmatrix} + \underbrace{\begin{bmatrix} \textcolor{white}{\frac{1}{J}} \\ \textcolor{white}{0} \\\textcolor{white}{0}  \end{bmatrix}}_{B} u \]
+
+** State-space model
+
+   State variables: \( x = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix}^T = \begin{bmatrix} \dot{\theta} & \theta & \dot{z} \end{bmatrix}^T\). With dynamics
+   \[ \begin{cases} \dot{x}_1 =  \ddot{\theta} = \frac{1}{J} u\\ \dot{x}_2 = \dot{\theta} = x_1\\ \dot{x}_3 = \ddot{z} = g\theta = gx_2 \end{cases} \]
+
+   \[ \dot{x} = \begin{bmatrix} \dot{x}_1\\\dot{x}_2\\\dot{x}_3\end{bmatrix} = \underbrace{\begin{bmatrix} \textcolor{red!60!black}{0} & \textcolor{red!60!black}{0} &\textcolor{red!60!black}{0} \\\textcolor{red!60!black}{1} & \textcolor{red!60!black}{0}& \textcolor{red!60!black}{0}\\ \textcolor{red!60!black}{0}& \textcolor{red!60!black}{g} &\textcolor{red!60!black}{0} \end{bmatrix}}_{A} \begin{bmatrix} x_1\\x_2\\x_3\end{bmatrix} + \underbrace{\begin{bmatrix} \textcolor{red!60!black}{\frac{1}{J}} \\ \textcolor{red!60!black}{0} \\\textcolor{red!60!black}{0}  \end{bmatrix}}_{B} u \]
+
+#+BEAMER: \pause
+
+*Activity* What are the poles of the system?
+
+** Sensors
+
+   #+begin_export latex
+   \begin{center}
+   \includegraphics[width=0.8\linewidth]{../../figures/fig-apollo}
+   \end{center}
+   #+end_export
+   *Activity* What type of sensors are needed for state feedback?
+
+** Controllability
+
+   \[ \dot{x} = \begin{bmatrix} \dot{x}_1\\\dot{x}_2\\\dot{x}_3\end{bmatrix} = \underbrace{\begin{bmatrix} \textcolor{black!60!black}{0} & \textcolor{black!60!black}{0} &\textcolor{black!60!black}{0} \\\textcolor{black!60!black}{1} & \textcolor{black!60!black}{0}& \textcolor{black!60!black}{0}\\ \textcolor{black!60!black}{0}& \textcolor{black!60!black}{g} &\textcolor{black!60!black}{0} \end{bmatrix}}_{A} \begin{bmatrix} x_1\\x_2\\x_3\end{bmatrix} + \underbrace{\begin{bmatrix} \textcolor{black!60!black}{\frac{1}{J}} \\ \textcolor{black!60!black}{0} \\\textcolor{black!60!black}{0}  \end{bmatrix}}_{B} u \]
+
+   Forming the controllability matrix. Note that
+   \[ A^2 = \begin{bmatrix} 0 &  0 & 0\\ 0 & 0 & 0\\ g & 0 & 0 \end{bmatrix} \]
+   \[ \mathcal{C} = \begin{bmatrix} B & AB & A^2B\end{bmatrix}
+   = \begin{bmatrix} \textcolor{white}{\frac{1}{J}} & \textcolor{white}{0} & \textcolor{white}{0}\\\textcolor{white}{0} & \textcolor{white}{\frac{1}{J}} & \textcolor{white}{0} \\\textcolor{white}{0} & \textcolor{white}{0} & \textcolor{white}{\frac{1}{J}g} \end{bmatrix} \]
+   
+
+** Controllability
+
+   \[ \dot{x} = \begin{bmatrix} \dot{x}_1\\\dot{x}_2\\\dot{x}_3\end{bmatrix} = \underbrace{\begin{bmatrix} \textcolor{black!60!black}{0} & \textcolor{black!60!black}{0} &\textcolor{black!60!black}{0} \\\textcolor{black!60!black}{1} & \textcolor{black!60!black}{0}& \textcolor{black!60!black}{0}\\ \textcolor{black!60!black}{0}& \textcolor{black!60!black}{g} &\textcolor{black!60!black}{0} \end{bmatrix}}_{A} \begin{bmatrix} x_1\\x_2\\x_3\end{bmatrix} + \underbrace{\begin{bmatrix} \textcolor{black!60!black}{\frac{1}{J}} \\ \textcolor{black!60!black}{0} \\\textcolor{black!60!black}{0}  \end{bmatrix}}_{B} u \]
+
+   Forming the controllability matrix. Note that
+   \[ A^2 = \begin{bmatrix} 0 &  0 & 0\\ 0 & 0 & 0\\ g & 0 & 0 \end{bmatrix} \]
+   \[ \mathcal{C} = \begin{bmatrix} B & AB & A^2B\end{bmatrix}
+   = \begin{bmatrix} \textcolor{red!60!black}{\frac{1}{J}} & \textcolor{red!60!black}{0} & \textcolor{red!60!black}{0}\\\textcolor{red!60!black}{0} & \textcolor{red!60!black}{\frac{1}{J}} & \textcolor{red!60!black}{0} \\\textcolor{red!60!black}{0} & \textcolor{red!60!black}{0} & \textcolor{red!60!black}{\frac{1}{J}g} \end{bmatrix} \]
+   
+#+BEAMER: \pause
+*Activity* Is the system controllable?
+
+
+** Linear state feedback
+
+*** Graphics
+:PROPERTIES:
+:BEAMER_col: 0.6
+:END:
+
+   \[ \dot{x} = \begin{bmatrix} \dot{x}_1\\\dot{x}_2\\\dot{x}_3\end{bmatrix} = \underbrace{\begin{bmatrix} \textcolor{black!60!black}{0} & \textcolor{black!60!black}{0} &\textcolor{black!60!black}{0} \\\textcolor{black!60!black}{1} & \textcolor{black!60!black}{0}& \textcolor{black!60!black}{0}\\ \textcolor{black!60!black}{0}& \textcolor{black!60!black}{g} &\textcolor{black!60!black}{0} \end{bmatrix}}_{A} \begin{bmatrix} x_1\\x_2\\x_3\end{bmatrix} + \underbrace{\begin{bmatrix} \textcolor{black!60!black}{\frac{1}{J}} \\ \textcolor{black!60!black}{0} \\\textcolor{black!60!black}{0}  \end{bmatrix}}_{B} u \]
+
+Introduce linear state feedback
+
+\[ u = -\textcolor{morange}{L}x + \textcolor{mbluegreen}{l_0} r,\]
+where $r$ is a reference signal.
+
+*** Text
+:PROPERTIES:
+:BEAMER_col: 0.4
+:END:
+
+Closed-loop system
+
+\[\dot{x} = (A-B\textcolor{morange}{L})x + \textcolor{mbluegreen}{l_0}Br\]
+
+Since the system is *controllable*, we can find a gain vector $\textcolor{morange}{L}$ that places the eigenvalues of $A-B\textcolor{morange}{L}$ (the poles of the closed-loop system) at desired locations.
+
+** Linear state feedback
+\small
+
+The poles of 
+\(\dot{x} = (A-B\textcolor{morange}{L})x + \textcolor{mbluegreen}{l_0}Br\)
+are given by the solutions to the characteristic equation
+
+\begin{align*}
+\det \Big(sI - (A-B\textcolor{morange}{L})\Big) &= 0\\
+\det \left(\begin{bmatrix} s & 0 & 0\\ 0 & s & 0\\ 0 & 0 & s
+\end{bmatrix}
+- \begin{bmatrix} 0 & 0 & 0\\1 & 0 & 0\\0 & g & 0\end{bmatrix}
++ \begin{bmatrix} \frac{1}{J}\textcolor{morange}{l_1} & \frac{1}{J}\textcolor{morange}{l_2} & \frac{1}{J}\textcolor{morange}{l_3}\\0 & 0 & 0\\0 & 0 & 0\end{bmatrix}\right) &= 0\\
+\det \begin{bmatrix} s+\frac{1}{J}\textcolor{morange}{l_1} & \frac{1}{J}\textcolor{morange}{l_2} & \frac{1}{J}\textcolor{morange}{l_3}\\-1 & s & 0\\0 & -g & s \end{bmatrix} &= 0\\
+(s+\frac{1}{J}\textcolor{morange}{l_1})s^2  + \frac{1}{J}\textcolor{morange}{l_2}s +\frac{1}{J}g\textcolor{morange}{l_3} &= 0\\
+s^3 + \frac{1}{J}\textcolor{morange}{l_1}s^2 + \frac{1}{J}\textcolor{morange}{l_2}s +\frac{1}{J}g\textcolor{morange}{l_3} &= 0
+\end{align*}
+
+** Where to place the closed-loop poles
+
+*** Graphics
+:PROPERTIES:
+:BEAMER_col: 0.35
+:END:
+
+#+begin_export latex
+\begin{center}
+  \begin{tikzpicture}[scale=0.7]
+  \pgfmathsetmacro{\wc}{2}
+  \pgfmathsetmacro{\rp}{\wc*cos(45)}
+    \draw[->] (-4,0) to (2,0) node[below] {Re};
+    \draw[->] (0,-3) to (0,3) node[left] {Im};
+
+    \draw[dashed, black!80] (0,\wc) arc[radius=\wc{}cm, start angle=90, end angle=270]; 
+
+    \node[anchor=center, red!80!black] at (-\rp, \rp) {\Large $\times$ };
+    \node[anchor=center, red!80!black] at (-\rp, -\rp) {\Large $\times$ };
+    \node[anchor=center, red!80!black] at (-\wc, 0) {\Large $\times$ };
+
+    \draw[thin, <->] (0,0) -- node[above] {$\frac{1}{\tau_c}$} (-\rp, \rp);
+    \end{tikzpicture}
+\end{center}
+#+end_export
+
+
+*** Text
+:PROPERTIES:
+:BEAMER_col: 0.65
+:END:
+
+Desired closed-loop characteristic polynomial
+
+\begin{align*}
+  (s-p_1)(s-p_2)(s-p_3) &= (s+\frac{1}{\tau_c})(s^2 + \frac{\sqrt{2}}{\tau_c}s + \frac{1}{\tau_c^2})\\
+   &= s^3 + \frac{1 + \sqrt{2}}{\tau_c}s^2 + \frac{1+\sqrt{2}}{\tau_c^2}s + \frac{1}{\tau_c^3}
+\end{align*}
+
+** Determining the state feedback gain
+By linear state feedback we have characteristic polynomial
+\[\det \Big(sI - (A-B\textcolor{morange}{L})\Big) =  s^3 + \frac{1}{J}\textcolor{morange}{l_1}s^2 + \frac{1}{J}\textcolor{morange}{l_2}s + \frac{1}{J}g\textcolor{morange}{l_3}.\]
+
+And we want to achieve the characteristic polynomial
+\[ s^3 + \frac{1 + \sqrt{2}}{\tau_c}s^2 + \frac{1+\sqrt{2}}{\tau_c^2}s + \frac{1}{\tau_c^3}. \]
+
+*Activity* What do we do next?
+
+** Determining the state feedback gain
+Set the characteristic polynomial obtained from \det \Big(sI - (A-B\textcolor{morange}{L})\Big) equal to the desired characteristic polynomial
+
+\[ s^3 + \frac{1}{J}\textcolor{morange}{l_1}s^2 + \frac{1}{J}\textcolor{morange}{l_2}s + \frac{1}{J}g\textcolor{morange}{l_3} =  s^3 + \frac{1 + \sqrt{2}}{\tau_c}s^2 + \frac{1+\sqrt{2}}{\tau_c^2}s + \frac{1}{\tau_c^3} \]
+
+Solve for the gains by setting corresponding coefficients equal.
+
+\begin{equation*}
+\begin{rcases}
+s^2: \quad & \frac{1}{J}\textcolor{morange}{l_1} = \frac{1 + \sqrt{2}}{\tau_c}\\
+s^1: \quad & \frac{1}{J}\textcolor{morange}{l_2} = \frac{1 + \sqrt{2}}{\tau_c^2}\\
+s^0: \quad & \frac{1}{J}g\textcolor{morange}{l_3} = \frac{1}{\tau_c^3}
+\end{rcases} \Rightarrow
+\begin{rcases}
+ \quad \textcolor{morange}{l_1} &= \frac{J(1 + \sqrt{2})}{\tau_c}\\
+ \quad \textcolor{morange}{l_2} &= \frac{J(1 + \sqrt{2})}{\tau_c^2}\\
+ \quad \textcolor{morange}{l_3} &= \frac{J}{g\tau_c^3}
+\end{rcases}
+\end{equation*}
+
+
+** The gain \(l_0\)
+
+#+begin_center
+\includegraphics[width=0.6\linewidth]{../../figures/block-apollo}
+#+end_center
+
+\[ G(s) = \frac{\frac{g}{J}}{s^3}\]
+It can be shown that state feedback does not change the numerator of the transfer function, only the denominator, so
+
+\[G_c(s) = \textcolor{mbluegreen}{l_0}\frac{\frac{g}{J}}{s^3 + \frac{1 + \sqrt{2}}{\tau_c}s^2 + \frac{1+\sqrt{2}}{\tau_c^2}s + \frac{1}{\tau_c^3}}\]
+
+We want unit static gain,  \(G_c(0) = 1\)
+
+#+BEAMER: \pause
+
+*Activity* Determine the gain \(\textcolor{mbluegreen}{l_0}\)

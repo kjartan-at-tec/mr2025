@@ -1,4 +1,4 @@
-% Created 2021-11-05 Fri 08:09
+% Created 2022-11-01 Tue 12:40
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
@@ -35,9 +35,9 @@
 \maketitle
 
 \section{Intro}
-\label{sec:orgf8addd4}
+\label{sec:org128f184}
 
-\begin{frame}[label={sec:orgdf9cd65}]{The computerized control system of the Apollo LM}
+\begin{frame}[label={sec:orgadd0a8c}]{The computerized control system of the Apollo LM}
 \begin{columns}
 \begin{column}{0.3\columnwidth}
 \begin{center}
@@ -61,25 +61,29 @@
 \end{frame}
 
 \section{Discrete-time system example}
-\label{sec:org0303089}
+\label{sec:orga948cc8}
 
 \section{Zero-order hold, or step-invariant sampling preview}
-\label{sec:orga56de4c}
+\label{sec:orgffa1003}
 
-\begin{frame}[label={sec:orgdaff664}]{Discrete-time systems}
+\begin{frame}[label={sec:orga000fe7}]{Discrete-time systems}
 \end{frame}
 
-\begin{frame}[label={sec:orga3832d8}]{The world according to the discrete-time controller}
+
+\begin{frame}[label={sec:orgebe7768}]{The world according to the discrete-time controller}
 \small 
 \begin{center}
 \includegraphics[width=0.6\linewidth]{../../figures/fig1-1-schematic.png}
 
 Source: Åström and Wittenmark "Computer-controlled systems".
 \end{center}
+
+\pause
+
+The sampling leading to the \emph{stroboscopic} model can have some peculiar effects: \url{https://youtu.be/yIUZ-qKWnXc}
 \end{frame}
 
-
-\begin{frame}[label={sec:orgf2c3225}]{Discrete-time Linear Shift-Invariant systems}
+\begin{frame}[label={sec:org53a40e3}]{Discrete-time Linear Shift-Invariant systems}
 \begin{center}
 \begin{tikzpicture}[node distance=20mm, anchor=north]
 \node[coordinate] (input) {};
@@ -107,7 +111,7 @@ Source: Åström and Wittenmark "Computer-controlled systems".
 \end{frame}
 
 
-\begin{frame}[label={sec:org07bdc2d}]{Discrete-time LSI systems}
+\begin{frame}[label={sec:orgfda832f}]{Discrete-time LSI systems}
 \begin{block}{Impulse response}
 \[ y(k) = g \ast u = \sum_{n=0}^\infty g(n) u(k-n) \]
 
@@ -139,7 +143,7 @@ If the input signal is a unit discrete impulse
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:orgeefd909}]{The response of a discrete LSI system is a weighted sum of the current and previous values of the input}
+\begin{frame}[label={sec:org4c23626}]{The response of a discrete LSI system is a weighted sum of the current and previous values of the input}
 \small
 
 \[ y(k) = g \ast u = \sum_{n=0}^\infty g(n) u(k-n) \]
@@ -169,11 +173,11 @@ If the input signal is a unit discrete impulse
 \[y(k) = \]
 \end{frame}
 \section{The z-transform}
-\label{sec:org41c24eb}
-\begin{frame}[label={sec:orgaac462f}]{The z-transform}
+\label{sec:org9c19a3b}
+\begin{frame}[label={sec:org68db21b}]{The z-transform}
 \end{frame}
 
-\begin{frame}[label={sec:orga12406a}]{The impulse modulation model of sampling}
+\begin{frame}[label={sec:org5e3f8ac}]{The impulse modulation model of sampling}
 The \alert{impulse train}, a.k.a the \alert{Dirac comb}:
 \(m(t) = \sum_{k=-\infty}^{\infty} \delta(t-kh)\)\hspace*{10mm}
 \pause
@@ -190,7 +194,7 @@ The \alert{impulse train}, a.k.a the \alert{Dirac comb}:
 \end{frame}
 
 
-\begin{frame}[label={sec:orga095775}]{The Laplace transform}
+\begin{frame}[label={sec:orgefd8547}]{The Laplace transform}
 \begin{block}{Definition}
 \[ F(s) = \laplace{f(t)} = \int_0^\infty f(t) \mathrm{e}^{-st} dt\]
 \end{block}
@@ -201,7 +205,7 @@ Note that in control engineering, the one-sided transform is used.
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:orgc5e6c65}]{The z-transform}
+\begin{frame}[label={sec:org8066876}]{The z-transform}
 \begin{block}{Definition}
 \[ F(z) = \ztrf{f(kh)} = \sum_{k=0}^{\infty} f(kh)z^{-k} \]
 \end{block}
@@ -213,7 +217,7 @@ Note that in control engineering, the one-sided transform is used.
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:org88e5a2d}]{The Laplace transform of a sampled signal}
+\begin{frame}[label={sec:org1096b37}]{The Laplace transform of a sampled signal}
 Assume right-sided signal \(f(t)\), meaning it is zero for negative times \(t<0\).
 \[f_s(t) = f(t)m(t) = f(t) \sum_{k=0}^{\infty} \delta(t-kh) = \sum_{k=0}^{\infty} f(t)\delta(t-kh) = \sum_{k=0}^{\infty} f(kh) \delta(t-kh) \]
 
@@ -226,7 +230,7 @@ F_s(s) &= \laplace{f_s(t)} = \int_0^\infty \left(\sum_{k=0}^{\infty} f(kh) \delt
 \end{align*}
 \end{frame}
 
-\begin{frame}[label={sec:org29958f2}]{The Laplace transform of a sampled signal}
+\begin{frame}[label={sec:orgbe8fef5}]{The Laplace transform of a sampled signal}
 \small
 
 Note:
@@ -246,7 +250,7 @@ F(z) &= \sum_{k=0}^{\infty} f(kh) z^{-k} \quad \text{z-transform}
 \end{frame}
 
 
-\begin{frame}[label={sec:org913bd31}]{One of the most important transform pairs}
+\begin{frame}[label={sec:orgb74d450}]{One of the most important transform pairs}
 \[f(kh) = \alpha^{kh}, \quad \alpha \in \mathbb{C}\]
 
 \pause
@@ -266,13 +270,13 @@ F(z) &= \sum_{k=0}^{\infty} f(kh) z^{-k} \quad \text{z-transform}
 \end{frame}
 
 \section{Step-invariant sampling}
-\label{sec:org51c9544}
+\label{sec:org13ef3c4}
 
 
-\begin{frame}[label={sec:orga4e7ff4}]{Step-invariant sampling (a.k.a ZOH sampling)}
+\begin{frame}[label={sec:org12eb1f6}]{Step-invariant sampling (a.k.a ZOH sampling)}
 \end{frame}
 
-\begin{frame}[label={sec:org2be0e7d}]{Step-invariant sampling (a.k.a ZOH sampling)}
+\begin{frame}[label={sec:orgc95546a}]{Step-invariant sampling (a.k.a ZOH sampling)}
 \begin{center}
 \includegraphics[width=0.9\linewidth]{../../figures/invariant-sampling-white.pdf}
 \end{center}
@@ -281,7 +285,7 @@ F(z) &= \sum_{k=0}^{\infty} f(kh) z^{-k} \quad \text{z-transform}
 Step-invariant sampling (zero order hold): \(u(kh) = \begin{cases} 1, & k \ge 0\\0, & k<0 \end{cases}\)
 \end{frame}
 
-\begin{frame}[label={sec:org4469578}]{Step-invariant sampling (a.k.a ZOH sampling)}
+\begin{frame}[label={sec:org7fbb677}]{Step-invariant sampling (a.k.a ZOH sampling)}
 The idea is to sample the continuous-time system's response to a step input, in order to obtain a discrete approximation which is \alert{exact} (at the sampling instants) for such an input signal. 
 
 \begin{center}
@@ -291,7 +295,7 @@ The idea is to sample the continuous-time system's response to a step input, in 
 Step-invariant sampling (zero order hold): \(u(kh) = \begin{cases} 1, & k \ge 0\\0, & k<0 \end{cases}\)
 \end{frame}
 
-\begin{frame}[label={sec:org3fd7f57}]{Why is step-invariant sampling a good idea?}
+\begin{frame}[label={sec:orge330f94}]{Why is step-invariant sampling a good idea?}
 A piecewise constant (stair-case shaped) function can be written as a sum of delayed step-responses!
 \begin{center}
   \begin{tikzpicture}
@@ -339,8 +343,8 @@ A piecewise constant (stair-case shaped) function can be written as a sum of del
 
 
 \section{Zero-order hold sampling procedure}
-\label{sec:orga6e4b44}
-\begin{frame}[label={sec:orgef29196}]{Step-invariant sampling, or zero-order-hold sampling}
+\label{sec:org9abdedc}
+\begin{frame}[label={sec:org5255c7c}]{Step-invariant sampling, or zero-order-hold sampling}
 Let the input to the continuous-time system be a unit step \(u(t)=u_H(t),\) which has Laplace transform \(U(s)=\frac{1}{s}.\) In the Laplace-domain we get
 \[Y(s) = G(s)\frac{1}{s}\]
 \begin{enumerate}
@@ -351,8 +355,8 @@ Let the input to the continuous-time system be a unit step \(u(t)=u_H(t),\) whic
 \end{frame}
 
 \section{Zero-order hold sampling example}
-\label{sec:orgb9b841f}
-\begin{frame}[label={sec:orga4c5722}]{Example: First-order system}
+\label{sec:org7d32417}
+\begin{frame}[label={sec:orge9624e6}]{Example: First-order system}
 \small
 
 \[ G(s) = \frac{1}{\tau s + 1}. \]

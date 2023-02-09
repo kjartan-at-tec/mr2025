@@ -1,4 +1,4 @@
-% Created 2021-11-16 Tue 07:28
+% Created 2021-11-16 Tue 12:20
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=169]{beamer}
 \usepackage[utf8]{inputenc}
@@ -35,8 +35,8 @@
 \maketitle
 
 \section{Intro}
-\label{sec:org11c96cd}
-\begin{frame}[label={sec:org0994cac}]{A complicated process}
+\label{sec:orgbd1e666}
+\begin{frame}[label={sec:org2751a29}]{A complicated process}
 \begin{columns}
 \begin{column}{0.6\columnwidth}
 From Wikipedia "Cyclonic separation"
@@ -49,7 +49,7 @@ From Wikipedia "Cyclonic separation"
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:orgcf1505b}]{System identification}
+\begin{frame}[label={sec:org751e871}]{System identification}
 \small
 
 \begin{center}
@@ -75,7 +75,7 @@ From Wikipedia "Cyclonic separation"
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org865b102}]{The shift operator \(\shift\)}
+\begin{frame}[label={sec:org490de77}]{The shift operator \(\shift\)}
 \[ \shift x(k) = x(k+1), \qquad \shift^{-1}x(k) = x(k-1) \]
 
 \pause
@@ -97,7 +97,7 @@ From Wikipedia "Cyclonic separation"
 \end{frame}
 
 
-\begin{frame}[label={sec:org7b8b4ba}]{The Auto-Regressive with eXogenous input (ARX) model}
+\begin{frame}[label={sec:orgb5a828e}]{The Auto-Regressive with eXogenous input (ARX) model}
 \begin{center}
 \includegraphics[width=0.7\linewidth]{../../figures/block-arx}
 \end{center}
@@ -106,7 +106,7 @@ From Wikipedia "Cyclonic separation"
 The error signal \(e(k)\) is a zero-mean white noise sequence representing perturbations and modeling errors.
 \end{frame}
 
-\begin{frame}[label={sec:orgcdc2333}]{First-order ARX model with one delay}
+\begin{frame}[label={sec:org67debc5}]{First-order ARX model with one delay}
 \small
 
 \begin{center}
@@ -130,13 +130,13 @@ Using the model to predict the output one step ahead:
 
 
 
-\begin{frame}[label={sec:orgefa5ea5}]{Parameter estimation - Least squares}
+\begin{frame}[label={sec:orga46ad0e}]{Parameter estimation - Least squares}
 \alert{Objective} Given observations \[\mathcal{D} = \{ (u_1,y_1), (u_2, y_2), \ldots, (u_N, y_N)\}\] and model \(\mathcal{M}: \; y(k+1) = -ay(k) + b_0u(k) + b_1u(k-1)  + e(k+1)\), obtain the parameters \((a_1,\,b_0,\,b_1)\) which gives the best fit of the model to the data.
 \end{frame}
 
 
 
-\begin{frame}[label={sec:org8585052}]{Parameter estimation - Least squares}
+\begin{frame}[label={sec:org14c898d}]{Parameter estimation - Least squares}
 Given observations \[\mathcal{D} = \{ (u_1,y_1), (u_2, y_2), \ldots, (u_N, y_N)\}\] and model \(\mathcal{M}: \; y(k+1) = -ay(k) + b_0u(k) + b_1u(k-1)  + e(k+1)\).
 
 \begin{enumerate}
@@ -147,21 +147,21 @@ Given observations \[\mathcal{D} = \{ (u_1,y_1), (u_2, y_2), \ldots, (u_N, y_N)\
 \end{frame}
 
 
-\begin{frame}[label={sec:org7e6a9f6}]{Parameter estimation - Least squares}
+\begin{frame}[label={sec:orgd45f810}]{Parameter estimation - Least squares}
 \begin{enumerate}
 \setcounter{enumi}{1}
 \item Combine all the observations \(y_k\) and predictions \(\hat{y}_k\) on vector form
 \begin{align*}
 \epsilon &= \begin{bmatrix} \epsilon_3\\\epsilon_4\\\vdots\\\epsilon_N\end{bmatrix} =  \begin{bmatrix} y_3\\ y_4\\\vdots\\y_N \end{bmatrix} - \begin{bmatrix} \hat{y}_3\\ \hat{y}_4\\\vdots\\\hat{y}_N \end{bmatrix}
- =  \begin{bmatrix} y_2\\ y_3\\\vdots\\y_N \end{bmatrix} - \begin{bmatrix} \varphi_2^T\theta\\ \varphi_3^T\theta\\\vdots\\\varphi_N^T\theta \end{bmatrix}\\
-&= y - \underbrace{\begin{bmatrix}\varphi_1^T\\\varphi_2^T\\\vdots\\\varphi_N^T\end{bmatrix}}_{\Phi}\theta = y - \Phi\theta 
+ =  \begin{bmatrix} y_3\\ y_4\\\vdots\\y_N \end{bmatrix} - \begin{bmatrix} \varphi_3^T\theta\\ \varphi_4^T\theta\\\vdots\\\varphi_N^T\theta \end{bmatrix}\\
+&= y - \underbrace{\begin{bmatrix}\varphi_3^T\\\varphi_4^T\\\vdots\\\varphi_N^T\end{bmatrix}}_{\Phi}\theta = y - \Phi\theta 
 \end{align*}
 \item Solve \(\arg\min \; J(\theta) = \frac{1}{2}\epsilon^T\epsilon = \frac{1}{2}\sum_{i=3}^N \epsilon_i(\theta)^2\) \(\quad \Rightarrow \hat{\theta}_{LS} = (\Phi^T\Phi)^{-1}\Phi^Ty\)
 \end{enumerate}
 \end{frame}
 
 
-\begin{frame}[label={sec:orgb3ee24f}]{The problem with least squares}
+\begin{frame}[label={sec:org38f4275}]{The problem with least squares}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 \begin{align*}
@@ -187,7 +187,7 @@ Given observations \[\mathcal{D} = \{ (u_1,y_1), (u_2, y_2), \ldots, (u_N, y_N)\
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:org10fbc71}]{More robust: The Huber loss function}
+\begin{frame}[label={sec:orgb47fa3d}]{More robust: The Huber loss function}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 Also known as \alert{robust regression}
@@ -218,7 +218,7 @@ Also known as \alert{robust regression}
 \end{frame}
 
 
-\begin{frame}[label={sec:org81b4333}]{First-order ARX model without delay}
+\begin{frame}[label={sec:org79c3a95}]{First-order ARX model without delay}
 \begin{center}
 \includegraphics[width=0.4\linewidth]{../../figures/block-arx}
 \end{center}
@@ -233,7 +233,7 @@ Also known as \alert{robust regression}
 \end{frame}
 
 
-\begin{frame}[label={sec:org9016e88}]{The ARX model}
+\begin{frame}[label={sec:org2c10269}]{The ARX model}
 \[ A(\shift) y(k) = B(\shift)u(k) + e(k+n)\]
 
 \alert{Activity} Fill the empty blocks.

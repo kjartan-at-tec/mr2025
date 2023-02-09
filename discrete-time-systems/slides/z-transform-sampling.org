@@ -179,6 +179,44 @@ If the input signal is a unit discrete impulse
 * The z-transform
 ** The z-transform
 
+
+** The Laplace transform
+*** Definition 
+    \[ F(s) = \laplace{f(t)} = \int_0^\infty f(t) \mathrm{e}^{-st} dt\]
+*** Inverse transform
+    \[ f(t) = \mathcal{L}^{-1}\{F(s)\} = \frac{1}{2\pi i} \int_{\gamma - i\infty}^{\gamma + i\infty} F(s)\mathrm{e}^{st} \, ds \]
+
+Note that in control engineering, the one-sided transform is used.
+
+** The z-transform
+*** Definition
+   \[ F(z) = \ztrf{f(kh)} = \sum_{k=0}^{\infty} f(kh)z^{-k} \]
+
+*** Inverse transform
+   \[ f(kh) = \frac{1}{2\pi i} \oint_r F(z) z^{k-1} \, dz \]
+
+Note that in control engineering, the one-sided transform is used.
+
+** One of the most important transform pairs
+   \[f(kh) = \alpha^{kh}, \quad \alpha \in \mathbb{C}\]
+
+   #+BEAMER: \pause
+   
+   \begin{align*}
+      F(z) &= \ztrf{f(kh)} = \sum_{k=0}^{\infty} f(kh)z^{-k}
+      =  \sum_{k=0}^{\infty} \alpha^{kh}z^{-k} =  \sum_{k=0}^{\infty} \left(\alpha^{h}\right)^kz^{-k}\\
+      &=  \sum_{k=0}^{\infty} \left(\frac{\alpha^{h}}{z}\right)^{k}
+      =  \frac{1}{1 - \frac{\alpha^h}{z}} = \frac{z}{z-\alpha^{h}}, \quad |\frac{\alpha^h}{z}| < 1
+   \end{align*}
+
+   #+BEAMER: \pause
+
+   \begin{tcolorbox}
+   \[ \alpha^{kh} \quad  \overset{\mathcal{Z}}{\longleftrightarrow} \quad \frac{z}{z-\alpha^h} \]
+   \end{tcolorbox}
+
+
+* Relationship between z-transform and the Laplace-transform
 ** The impulse modulation model of sampling
    The *impulse train*, a.k.a the *Dirac comb*:
    \( m(t) = \sum_{k=-\infty}^{\infty} \delta(t-kh) \)\hspace*{10mm}
@@ -217,24 +255,6 @@ If the input signal is a unit discrete impulse
     F_s(s) = F(s) \ast M(s) = \int_{x=-\infty}^{\infty} M(s) F(s-x)
            = \int_x \sum_j \delta(s-i\omega_j) F(s-x
 
-
-** The Laplace transform
-*** Definition 
-    \[ F(s) = \laplace{f(t)} = \int_0^\infty f(t) \mathrm{e}^{-st} dt\]
-*** Inverse transform
-    \[ f(t) = \mathcal{L}^{-1}\{F(s)\} = \frac{1}{2\pi i} \int_{\gamma - i\infty}^{\gamma + i\infty} F(s)\mathrm{e}^{st} \, ds \]
-
-Note that in control engineering, the one-sided transform is used.
-
-** The z-transform
-*** Definition
-   \[ F(z) = \ztrf{f(kh)} = \sum_{k=0}^{\infty} f(kh)z^{-k} \]
-
-*** Inverse transform
-   \[ f(kh) = \frac{1}{2\pi i} \oint_r F(z) z^{k-1} \, dz \]
-
-Note that in control engineering, the one-sided transform is used.
-
 ** The Laplace transform of a sampled signal
 Assume right-sided signal \(f(t)\), meaning it is zero for negative times $t<0$.
 \[f_s(t) = f(t)m(t) = f(t) \sum_{k=0}^{\infty} \delta(t-kh) = \sum_{k=0}^{\infty} f(t)\delta(t-kh) = \sum_{k=0}^{\infty} f(kh) \delta(t-kh) \]
@@ -266,24 +286,6 @@ Note:
    \[ z = \mathrm{e}^{sh}\]
    \end{tcolorbox}
 
-
-** One of the most important transform pairs
-   \[f(kh) = \alpha^{kh}, \quad \alpha \in \mathbb{C}\]
-
-   #+BEAMER: \pause
-   
-   \begin{align*}
-      F(z) &= \ztrf{f(kh)} = \sum_{k=0}^{\infty} f(kh)z^{-k}
-      =  \sum_{k=0}^{\infty} \alpha^{kh}z^{-k} =  \sum_{k=0}^{\infty} \left(\alpha^{h}\right)^kz^{-k}\\
-      &=  \sum_{k=0}^{\infty} \left(\frac{\alpha^{h}}{z}\right)^{k}
-      =  \frac{1}{1 - \frac{\alpha^h}{z}} = \frac{z}{z-\alpha^{h}}, \quad |\frac{\alpha^h}{z}| < 1
-   \end{align*}
-
-   #+BEAMER: \pause
-
-   \begin{tcolorbox}
-   \[ \alpha^{kh} \quad  \overset{\mathcal{Z}}{\longleftrightarrow} \quad \frac{z}{z-\alpha^h} \]
-   \end{tcolorbox}
 
 * Step-invariant sampling
 

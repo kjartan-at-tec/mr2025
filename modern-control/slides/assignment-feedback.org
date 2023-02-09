@@ -1,0 +1,117 @@
+#+OPTIONS: toc:nil
+# #+LaTeX_CLASS: koma-article 
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation,aspectratio=169]
+#+OPTIONS: H:2
+# #+BEAMER_THEME: Madrid
+#+COLUMNS: %45ITEM %10BEAMER_ENV(Env) %10BEAMER_ACT(Act) %4BEAMER_COL(Col) %8BEAMER_OPT(Opt)
+     
+#+LaTex_HEADER: \usepackage{pifont}
+#+LaTex_HEADER: \newcommand{\cmark}{\textcolor{green!80!black}{\ding{51}}}
+
+#+LaTex_HEADER: \usepackage{amssymb}
+#+LaTex_HEADER: \usepackage{pgfplotstable}
+#+LaTex_HEADER: \DeclareMathOperator{\shift}{q}
+#+LaTex_HEADER: \DeclareMathOperator{\diff}{p}
+
+#+LaTex_HEADER: \usepackage{khpreamble, euscript, mathtools}
+#+LaTex_HEADER: \DeclareMathOperator{\atantwo}{atan2}
+#+LaTex_HEADER: \newcommand*{\ctrb}{\EuScript{C}}
+#+LaTex_HEADER: \newcommand*{\obsv}{\EuScript{O}}
+
+
+#+title: The Apollo LM state feedback assignment
+
+
+
+* Promise                                                          :noexport:
+  
+  After this review you will understand better the choices of observer poles.
+
+* Apollo moon lander
+   
+** The Apollo lunar module
+
+\begin{center}
+  \includegraphics[width=0.5\linewidth]{../../figures/Apollo_11_Lunar_Module.jpg}
+\end{center}
+
+** The Apollo lunar module
+   #+begin_export latex
+   \begin{center}
+   \includegraphics[width=0.7\linewidth]{../../figures/fig-apollo}
+   \end{center}
+   #+end_export
+
+   #+BEAMER: \pause
+
+*Activity* Which is the transfer function of the system?
+   \[1: \; G(s) = \frac{\frac{g}{J} }{s^2}\qquad 2: \; G(s) = \frac{\frac{g}{J} }{s(s^2 + 1)} \qquad 3: \; G(s) = \frac{\frac{g}{J} }{s^3}\]
+
+
+** Plan
+
+1. Obtain discrete-time pulse transfer function for the LM.
+2. Convert transfer function to discrete-time state space model.
+3. Design a state feedback controller \(u(k) = Lx(k) + l_0r(k)\) to obtain good reference response.
+4. Design an observer \(\hat{x}(k+1) = A\hat{x}(k) + B u(k) + K\big(y(k) - C\hat{x}(k)\big)\) and studying two cases: *Slow observer vs fast observer.*
+
+
+** 1. Discretize the continuous-time model
+
+\[ G(s) = \frac{\frac{g}{J} }{s^3}\]
+
+The idea is to sample the continuous-time system's response to a step input, in order to obtain a discrete approximation which is *exact* (at the sampling instants) for such an input signal. 
+
+#+BEGIN_CENTER 
+ \includegraphics[width=0.9\linewidth]{../../figures/invariant-sampling.pdf}
+#+END_CENTER
+
+Step-invariant sampling (zero order hold): \( u(kh) = \begin{cases} 1, & k \ge 0\\0, & k<0 \end{cases} \)
+
+*** Notes                                                          :noexport:
+
+1. Step response
+   Y(s) = G(s)U(s) =(1/6)(g/J) \frac{ 6}{s^4}
+   y(t) = \frac{g}{6J} t^3.
+2. Sample and apply z-transform
+   Y(z) = \frac{g}{6J} \ztrf{ (kh)^3 } = \frac{gh^3}{6J} \frac{z^{-1}(1 + 4z^{-1} + z^{-2})}{(1-z^{-1})^4)}
+        = \frac{gh^3}{6J} \frac{ z (z^2 + 4z + 1) }{(z-1)^4}
+3. Pulse-transfer fcn
+   H(z) = U(z)^-1Y(z) = \frac{gh^3}{6J} \frac{z^2 + 4z + 1}{z^3 -3z^2 + 3z - 1}
+   	
+
+** 2. Convert to discrete-time state space
+Using, for instance, the *observable canonical form*
+
+\begin{equation*}
+H(z)=\frac{b_1z^{n-1}+\dots+b_{n-1}z+b_n}{z^n+a_1z^{n-1}+\dots
+  +a_{n-1}z+a_n}
+\end{equation*}
+can be represented on state-space form as
+\begin{align*}
+x(k+1)&=\bbm -a_1& 1& 0 &\cdots &  0\\
+-a_2 & 0& 1 &  \cdots& 0\\
+-a_3 & 0 & 0& \cdots & 0\\
+\vdots& \vdots& \vdots & \ddots& \vdots\\
+-a_n& 0& 0 & \cdots& 0\ebm x(k) +
+\bbm b_1\\ b_2\\ b_3\\ \vdots\\ b_n\ebm u(k)\\
+y(k) &=\bbm 1& 0& \cdots& 0 \ebm x(k)
+\end{align*}
+
+#+BEAMER: \pause
+
+*Activity* Determine the discrete-time state-space model of the LM on observable canonical form
+
+*** Notes                                                          :noexport:
+
+\begin{align*}
+x(k+1)&=\bbm 3 & 1& 0 \\
+-3 & 0& 1\\
+1 & 0 & 0\ebm x(k) +
+\big(\frac{gh^3}{6J}\big) \bbm 1\\ 4\\1\ebm u(k)\\
+y(k) &=\bbm 1& 0& \ 0 \ebm x(k)
+\end{align*}
+
+

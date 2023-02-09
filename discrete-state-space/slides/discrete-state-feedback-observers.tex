@@ -1,4 +1,4 @@
-% Created 2021-11-26 Fri 08:58
+% Created 2022-11-25 Fri 12:10
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=1610]{beamer}
 \usepackage[utf8]{inputenc}
@@ -34,11 +34,11 @@
 \maketitle
 
 \section{Discret-time state space model}
-\label{sec:orgdf25772}
-\begin{frame}[label={sec:orge5f3d67}]{The discrete-time state-space model}
+\label{sec:orgcce3085}
+\begin{frame}[label={sec:orga03e75f}]{The discrete-time state-space model}
 \end{frame}
 
-\begin{frame}[label={sec:orgc315c14}]{The discrete-time state-space model}
+\begin{frame}[label={sec:org1b7eb53}]{The discrete-time state-space model}
 \begin{center}
   \begin{tikzpicture}[node distance=42mm, block/.style={inner sep=6pt, rectangle, draw, minimum width=15mm}, sumnode/.style={circle, draw, inner sep=2pt}]
     \node[coordinate] (input) {};
@@ -52,14 +52,14 @@
 \end{frame}
 
 
-\begin{frame}[label={sec:org871eb8d}]{Stability}
+\begin{frame}[label={sec:org5d3c8a5}]{Stability}
 \end{frame}
-\begin{frame}[label={sec:org5143890}]{Eigenvalues and eigenvectors}
+\begin{frame}[label={sec:org97893af}]{Eigenvalues and eigenvectors}
 \alert{Definition} The eigenvalues \(\lambda_i  \in \mathbb{R}\) and eigenvectors \(v_i \in \mathbb{R}^n\) of a matrix \(\Phi \in \mathbb{R}^{n\times{}n}\) are the \(n\) pairs \((\lambda_i, v_i \neq 0 ), \; i=1,2,\ldots,n\) that satisfy
 \[ \Phi v_i = \lambda_i v_i \]
 \end{frame}
 
-\begin{frame}[label={sec:orga4ef6e4}]{Stability}
+\begin{frame}[label={sec:org97f83c4}]{Stability}
 The system
 \begin{equation*}
 x(k+1)=\Phi x(k), \ \ x(0)=x_0
@@ -72,10 +72,10 @@ The \alert{eigenvalues} of \(\Phi\) are the  \alert{poles} of the system.
 \end{frame}
 
 \section{State feedback}
-\label{sec:org6c54675}
-\begin{frame}[label={sec:orgaa62416}]{State feedback control}
+\label{sec:org22f7393}
+\begin{frame}[label={sec:orgc1d1c16}]{State feedback control}
 \end{frame}
-\begin{frame}[label={sec:org6a0dafe}]{State feedback control}
+\begin{frame}[label={sec:org7e36995}]{State feedback control}
 Given
  \begin{equation}
  \begin{split}
@@ -104,7 +104,7 @@ Substituting this in the state-space model \eqref{eq:ssmodel} gives
 \end{equation}
 \end{frame}
 
-\begin{frame}[label={sec:org4bdb9dc}]{Pole placement by state feedback}
+\begin{frame}[label={sec:org9b791d2}]{Pole placement by state feedback}
 Given (or choosing) a desired placement of the closed-loop poles \(p_1, p_2, \ldots, p_n\), being roots of the desired characteristic polynomial
 \begin{equation}
 a_c(z) = (z-p_1)(z-p_2)\cdots(z-p_n) = z^n + \alpha_1 z^{n-1} + \cdots \alpha_n.
@@ -140,7 +140,7 @@ Set the coefficients of the desired characteristic polynomial \eqref{eq:desiredp
 \end{equation*}
 \end{frame}
 
-\begin{frame}[label={sec:org9823dd3}]{Pole placement by state feedback}
+\begin{frame}[label={sec:orgd5bbdf5}]{Pole placement by state feedback}
 The system of equations
 \begin{equation*}
 \begin{split}
@@ -159,7 +159,7 @@ M \textcolor{morange}{L}\transp = \alpha,
 where \(\alpha\transp = \bbm \alpha_1 & \alpha_2 & \cdots & \alpha_n \ebm.\)
 \end{frame}
 
-\begin{frame}[label={sec:orgdec3dc3},fragile]{Pole placement by state feedback}
+\begin{frame}[label={sec:org1c526d4},fragile]{Pole placement by state feedback}
  Given a desired placement of the closed-loop poles \(p_1, p_2, \ldots, p_n\), being roots of the desired characteristic polynomial
 \begin{equation*}
 a_c(z) = (z-p_1)(z-p_2)\cdots(z-p_n) = z^n + \alpha_1 z^{n-1} + \cdots \alpha_n.
@@ -188,7 +188,7 @@ L = place(Phi, Gamma, pd)
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:orga3cd068}]{The reference input gain \(l_0\)}
+\begin{frame}[label={sec:org98b4743}]{The reference input gain \(l_0\)}
 The closed-loop state space system
 \begin{equation*}
 \begin{split}
@@ -205,11 +205,11 @@ We want \(y_f =  u_{c,f}\),
 \end{frame}
 
 \section{State feedback with observer}
-\label{sec:org2e8ae4c}
-\begin{frame}[label={sec:org7e1e842}]{State feedback with reconstructed states}
+\label{sec:org4879af8}
+\begin{frame}[label={sec:org7fa7c18}]{State feedback with reconstructed states}
 \end{frame}
 
-\begin{frame}[label={sec:org2a1058e}]{Observer design}
+\begin{frame}[label={sec:orgb008220}]{Observer design}
 Given model
  \begin{equation*}
  \begin{split}
@@ -232,7 +232,7 @@ with poles given by the eigenvalues of the matrix \(\Phi_o = \Phi - \textcolor{m
 \end{frame}
 
 
-\begin{frame}[label={sec:orgd560d3e}]{Control by feedback from reconstructed states}
+\begin{frame}[label={sec:org7bf85df}]{Control by feedback from reconstructed states}
 The design problem can be separates into two problems
 \begin{enumerate}
 \item Determine the gain vector \(\textcolor{orange!80!black}{L}\) and the gain \(l_0\) of the control law
@@ -248,7 +248,7 @@ to get a good balance between disturbance rejection and noise attenuation.
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:orgfae4068}]{Computing the observer gain}
+\begin{frame}[label={sec:org7c6078e}]{Computing the observer gain}
 A matrix \(M\) and its transpose \(M\transp\) have the same eigenvalues. Hence, the problem of determining the gain \(K\) to obtain desired eigenvalues of 
 \[\Phi- \textcolor{mred}{K}C\] is equivalent to determining the gain \(K\) in 
 \[(\Phi-KC)\transp = \Phi\transp - C\transp \textcolor{mred}{K}\transp.\]
@@ -258,7 +258,7 @@ The last problem has the exact same form as the problem of determining \(L\) to 
 So, the same matlab function can be used for both problems.
 \end{frame}
 
-\begin{frame}[label={sec:org988a07f},fragile]{Computing the observer gain}
+\begin{frame}[label={sec:org2df0796},fragile]{Computing the observer gain}
  \begin{enumerate}
 \item \alert{Ackerman's method} 
 \begin{verbatim}
@@ -274,10 +274,10 @@ K = place(Phi', C', pd)'
 
 
 \section{Where to choose the poles}
-\label{sec:org9fdaa4e}
-\begin{frame}[label={sec:org5019d3d}]{Where to place the closed-loop poles?}
+\label{sec:org5d05aaa}
+\begin{frame}[label={sec:org93e0678}]{Where to place the closed-loop poles?}
 \end{frame}
-\begin{frame}[label={sec:org4d3661a}]{Where to place the closed-loop poles?}
+\begin{frame}[label={sec:org0ab5382}]{Where to place the closed-loop poles?}
 If the system is controllable we can place the closed-loop poles freely.
 
 \pause
@@ -294,7 +294,7 @@ Take into account
 \end{itemize}
 \end{frame}
 
-\begin{frame}[label={sec:orgcc4a069}]{Placing for desired speed and damping}
+\begin{frame}[label={sec:org77b05b0}]{Placing for desired speed and damping}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 \alert{s-plane}
@@ -312,7 +312,7 @@ Take into account
 \end{columns}
 \end{frame}
 
-\begin{frame}[label={sec:orgdcea2e4}]{The effect of plant zeros and poles}
+\begin{frame}[label={sec:org6b19ed2}]{The effect of plant zeros and poles}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 \begin{center}
@@ -331,7 +331,7 @@ Take into account
 \end{frame}
 
 
-\begin{frame}[label={sec:org7612825}]{Placing w.r.t plant zeros and poles}
+\begin{frame}[label={sec:orga0e6da5}]{Placing w.r.t plant zeros and poles}
 \begin{itemize}
 \item Cancel slow plant zeros
 \item Place fast closed-loop poles near fast plant poles

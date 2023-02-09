@@ -1,0 +1,82 @@
+\documentclass[border={-10mm, 0mm, 4mm, 4mm}]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgf,tikz}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.16}
+
+\begin{document}
+
+% \def\sysCont{tf([1, 2], [1, 1]);}
+\def\alphad{10}
+\pgfmathsetmacro{\phmax}{asin((\alphad-1)/(\alphad+1))}
+\def\Td{1}
+\pgfmathsetmacro{\wcornerhigh}{1/\Td}
+\pgfmathsetmacro{\wcornerlow}{1/\Td/\alphad}
+\pgfmathsetmacro{\wphmax}{1/\Td/sqrt(\alphad)}
+\def\wmin{0.005}
+\def\wmax{50}
+
+\def\pw{16cm}
+\def\ph{5cm}
+\def\phh{3.6cm}
+\begin{tikzpicture}
+  \draw[white] (0,0) to (1,0);
+  \begin{semilogxaxis} [
+      ylabel={$|F_{lead}(i\omega)|$},
+      %clip=false,
+      yshift = -1cm,
+      width=\pw,
+      height=\ph,
+      %grid=both,
+      every major grid/.style={red, opacity=0.5},
+      ymin = -20, ymax=40,
+      %minor y tick num=9,
+      ytick={0, 10, 20},
+      yticklabels={1, $\sqrt{\alpha_d}$, $\alpha_d$}, 
+      %xtick={2.34, 3.72},
+      xtick={\wcornerlow, \wphmax, \wcornerhigh},
+      xticklabel=\empty,
+      %ymin=0.2, ymax=6,
+      xmin=\wmin, xmax=\wmax,
+      %legend entries={Bessel filter, Delay of one},
+      %legend pos={south west},
+  ]
+    \addplot  shell[thick, red!50!black, no marks, prefix=pgfshell_, id=bodelead,] {octave --eval  "pkg load control; G=tf([\alphad*\Td, 1],[\Td, 1]);  [mag,phi,w]=bode(G,{\wmin, \wmax}); disp(cat(2,w',mag2db(mag)))"};
+    %\addplot  shell[blue!60, no marks, prefix=pgfshell_, id=bodelead,] {octave --eval  "pkg load control; G=tf([\alphad*\Td, 1],[1]);  [mag,phi,w]=bode(G,{\wmin, \wmax}); disp(cat(2,w',mag2db(mag)))"} node[pos=0.5, pin=0:{$\alpha_dT_ds +1$}] {};
+    %\addplot  shell[orange!80, no marks, prefix=pgfshell_, id=bodelead,] {octave --eval  "pkg load control; G=tf([1],[\Td, 1]);  [mag,phi,w]=bode(G,{\wmin, \wmax}); disp(cat(2,w',mag2db(mag)))"} node[pos=0.4, pin=0:{$\frac{1}{T_ds +1}$}] {};
+  \end{semilogxaxis}
+      \begin{semilogxaxis} [
+      yshift=-\ph,
+      ylabel=$\arg F_{lead}(i\omega)$,
+      xlabel={$\omega$ [rad/s]},
+      width=\pw,
+      height=\ph,
+      %grid=both,
+      %minor y tick num=9,
+      %every major grid/.style={red, opacity=0.5},
+      ytick={0, \phmax},
+      yticklabels={0, $\phi$}, 
+      xtick={\wcornerlow, \wphmax, \wcornerhigh},
+      xticklabels={$\frac{1}{\alpha_dT_d}$, $\frac{1}{\sqrt{\alpha_d}T_d}$, $\frac{1}{T_d}$},
+      % yticklabels={$\frac{J\omega_0}{k_d2}$, $\frac{2J\omega_0}{k_d}$},
+      % xticklabel=\empty,
+      % ymin=0.2, ymax=6,
+       xmin=\wmin, xmax=\wmax,
+      % legend entries={Bessel filter, Delay of one},
+      % legend pos={south west},
+      ]
+      \addplot  shell[thick, red!50!black, no marks, prefix=pgfshell_, id=bodelead,] {octave --eval  "pkg load control; G0=tf([\alphad*\Td, 1],[\Td, 1]);   [mag,phi,w]=bode(G0, {\wmin, \wmax}); disp(cat(2,w',phi))"};
+      %\addplot  shell[blue!60, no marks, prefix=pgfshell_, id=bodelead,] {octave --eval  "pkg load control; G0=tf([\alphad*\Td, 1],[1]);   [mag,phi,w]=bode(G0, {\wmin, \wmax}); disp(cat(2,w',phi))"};
+      %\addplot  shell[orange!80, no marks, prefix=pgfshell_, id=bodelead,] {octave --eval  "pkg load control; G0=tf([1],[\Td, 1]);   [mag,phi,w]=bode(G0, {\wmin, \wmax}); disp(cat(2,w',phi))"};
+    \end{semilogxaxis}
+
+
+\end{tikzpicture}
+
+\end{document}
+
+% Local Variables:
+% Tex-engine: default-shell-escape
+% End:

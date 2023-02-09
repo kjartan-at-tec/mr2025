@@ -1,4 +1,4 @@
-% Created 2021-11-15 Mon 07:24
+% Created 2022-11-10 Thu 15:17
 % Intended LaTeX compiler: pdflatex
 \documentclass[presentation,aspectratio=1610]{beamer}
 \usepackage[utf8]{inputenc}
@@ -35,11 +35,11 @@
 
 
 \section{Intro}
-\label{sec:org9a2e388}
+\label{sec:orga8428f5}
 
 \section{Discretization}
-\label{sec:orgee27423}
-\begin{frame}[label={sec:orgd3c4ac1}]{Context}
+\label{sec:org7360ea5}
+\begin{frame}[label={sec:orgfd75bc5}]{Context}
 \begin{itemize}
 \item Controller \(F(s)\) obtained from a design in continuous time.
 \end{itemize}
@@ -55,8 +55,8 @@
 \end{frame}
 
 \section{Implementation}
-\label{sec:orgdbdfb7b}
-\begin{frame}[label={sec:org852548e}]{Stability for the disk drive arm}
+\label{sec:orgbb3e09a}
+\begin{frame}[label={sec:orgf8415fb}]{Stability for the disk drive arm}
 \small 
 Case \(\frac{h^2}{J} = 1\). Suggested controller:
 
@@ -90,12 +90,12 @@ Case \(\frac{h^2}{J} = 1\). Suggested controller:
 \end{frame}
 
 \section{Preliminaries}
-\label{sec:orga443f1b}
-\begin{frame}[label={sec:orgdde3b0a}]{Preliminaries}
+\label{sec:org04f95d9}
+\begin{frame}[label={sec:org6fbb414}]{Preliminaries}
 \end{frame}
 
 
-\begin{frame}[label={sec:org3c5baf1}]{Z-transform of a shifted sequence}
+\begin{frame}[label={sec:org9251065}]{Z-transform of a shifted sequence}
 \[ x(k) \quad  \overset{\mathcal{Z}}{\longleftrightarrow} \quad X(z)= \sum_{k=0}^{\infty} x(k)z^{-k} \] 
 \pause
 \[ x(k+1) \quad  \overset{\mathcal{Z}}{\longleftrightarrow} \quad zX(z) - zx(0)\]
@@ -109,12 +109,12 @@ Case \(\frac{h^2}{J} = 1\). Suggested controller:
 \end{block}
 \end{frame}
 
-\begin{frame}[label={sec:org207d837}]{Discrete-time delay}
+\begin{frame}[label={sec:orgdbf12f1}]{Discrete-time delay}
 \[ x(k-1) \quad  \overset{\mathcal{Z}}{\longleftrightarrow} \quad \frac{1}{z}X(z))\]
 \end{frame}
 
 
-\begin{frame}[label={sec:orge29d69a}]{Stability for the disk drive arm}
+\begin{frame}[label={sec:org45cb9b0}]{Stability for the disk drive arm}
 \small 
 Case \(\frac{h^2}{J} = 1\). Suggested controller:
 
@@ -151,15 +151,15 @@ Case \(\frac{h^2}{J} = 1\). Suggested controller:
 
 
 \section{Warm-up: Differentiation}
-\label{sec:orge452f6d}
+\label{sec:org08f1454}
 
-\begin{frame}[label={sec:org21c3107}]{Differentiation}
+\begin{frame}[label={sec:orgc551c89}]{Differentiation}
 \begin{center}
 \includegraphics[width=0.5\linewidth]{../../figures/block-simple-derivative}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:orgcb70291}]{Discrete-time differentiation}
+\begin{frame}[label={sec:org24ceeec}]{Discrete-time differentiation}
 \begin{columns}
 \begin{column}{0.4\columnwidth}
 \vspace*{5mm}
@@ -180,10 +180,10 @@ Case \(\frac{h^2}{J} = 1\). Suggested controller:
 \end{frame}
 
 \section{Implementing the}
-\label{sec:org6dea8f3}
+\label{sec:org264108b}
 \section{Discretization}
-\label{sec:org49d922d}
-\begin{frame}[label={sec:org2985245}]{Discretization methods}
+\label{sec:orgd2bf2ae}
+\begin{frame}[label={sec:orgdab3b62}]{Discretization methods}
 \begin{enumerate}
 \item Forward difference. Substitute 
 \[ s = \frac{z-1}{h} \] in \(F(s)\) to get
@@ -193,7 +193,7 @@ Case \(\frac{h^2}{J} = 1\). Suggested controller:
 \[ F_d(z) = F(s')|_{s'=\frac{z-1}{zh}}. \]
 \end{enumerate}
 \end{frame}
-\begin{frame}[label={sec:orge7a582c}]{Discretization methods, contd.}
+\begin{frame}[label={sec:org2bf68ab}]{Discretization methods, contd.}
 \begin{enumerate}
 \setcounter{enumi}{2}
 \item Tustin's method (also known as the bilinear transform). Substitute
@@ -205,19 +205,19 @@ Since a unit ramp has z-transform \(\frac{zh}{(z-1)^2}\) and Laplace-transform \
 \end{enumerate}
 \end{frame}
 
-\begin{frame}[label={sec:org4083e78}]{Frequency warping using Tustin's}
+\begin{frame}[label={sec:orgb293404}]{Frequency warping using Tustin's}
 \begin{center}
 \includegraphics[width=0.6\linewidth]{../../figures/fig8_3.png}
 \end{center}
 The infinite positive imaginary axis in the s-plane is mapped to the finite-length upper half of the unit circle in the z-plane.
 \end{frame}
-\begin{frame}[label={sec:org76d75fe}]{Forward difference exercise}
+\begin{frame}[label={sec:org808d8f2}]{Forward difference exercise}
 \begin{center}
 \includegraphics[width=\linewidth]{../../figures/forward-diff-exercise}
 \end{center}
 \end{frame}
 
-\begin{frame}[label={sec:org2f76a46}]{Backward difference exercise}
+\begin{frame}[label={sec:org87e101f}]{Backward difference exercise}
 \begin{center}
 \includegraphics[width=\linewidth]{../../figures/backward-diff-exercise}
 \end{center}

@@ -174,7 +174,7 @@ Given observations \[\mathcal{D} = \{ (u_1,y_1), (u_2, y_2), \ldots, (u_N, y_N)\
 
     #+end_export
 
-** More robust: The Huber loss function
+** More robust: The Huber loss function                            :noexport:
 *** Text
     :PROPERTIES:
     :BEAMER_col: 0.4
